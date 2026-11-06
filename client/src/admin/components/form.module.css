@@ -1,0 +1,114 @@
+/* Kiểu chung cho form trong hộp thoại Admin (thêm/sửa mục giá, thêm vai trò) */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #3a3d44;
+}
+
+.input {
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #c8cbd1;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 15px;
+  color: #0b0c0e;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #0f7a86;
+  box-shadow: 0 0 0 3px rgba(15, 122, 134, 0.15);
+}
+
+.input[aria-invalid='true'] {
+  border-color: #b3202a;
+}
+
+.hint {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.error {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #fde8e8;
+  font-size: 14px;
+  color: #b3202a;
+}
+
+.checks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.checks legend {
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #3a3d44;
+  cursor: pointer;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  accent-color: #0f7a86;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.actionsSplit {
+  justify-content: space-between;
+}
+
+.actionsGroup {
+  display: flex;
+  gap: 12px;
+}

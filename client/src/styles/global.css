@@ -1,0 +1,117 @@
+/* Design tokens lấy từ Figma (JIEYOU Website) */
+:root {
+  --font-sans: 'Google Sans Flex', 'Google Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-text-primary: #0b0c0e;
+  --color-text-secondary: #6a6e77;
+  --color-text-placeholder: #9296a0;
+  --color-text-link: #0f7a86;
+  --color-text-inverse: #ffffff;
+  --color-text-muted-dark: #99a0ae;
+
+  --color-primary: #0cfbfe;
+  --color-brand-from: #12909c;
+  --color-brand-to: #04707d;
+  --color-black: #0f0f13;
+  --color-footer: #131313;
+  --color-surface: #f7f8fa;
+
+  --page-width: 1440px;
+  --content-width: 1280px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-variation-settings: 'GRAD' 0, 'ROND' 0, 'wdth' 100;
+  /* Figma không tự đổi optical size theo cỡ chữ – tắt để độ rộng chữ khớp thiết kế */
+  font-optical-sizing: none;
+  color: var(--color-text-primary);
+  background: var(--color-black);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Trang có chiều rộng thiết kế 1440px, căn giữa trên màn hình lớn hơn */
+.page {
+  position: relative;
+  width: 100%;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  overflow: hidden;
+  background: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

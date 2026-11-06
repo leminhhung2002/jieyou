@@ -1,0 +1,161 @@
+/* Ô kéo thả tệp – Figma 74:2712 (cao 120) / 74:3395 (cao 96) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #0b0c0e;
+}
+
+.zone {
+  position: relative;
+  display: flex;
+  border: 2px dashed #c8cbd1;
+  border-radius: 16px;
+  background: #fff;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.zone:hover,
+.dragging {
+  border-color: #14a9b3;
+  background: #f4fdfd;
+}
+
+.invalid {
+  border-color: #b3202a;
+}
+
+.trigger {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.trigger img {
+  flex-shrink: 0;
+}
+
+.trigger:focus-visible {
+  outline: 2px solid #14a9b3;
+  outline-offset: 2px;
+}
+
+.text {
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #6a6e77;
+  text-align: center;
+}
+
+.input {
+  display: none;
+}
+
+/* Đã chọn 1 tệp: ảnh xem trước + tên tệp */
+.selected {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 100%;
+}
+
+.thumb {
+  max-width: 220px;
+  max-height: 88px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: #f7f8fa;
+}
+
+.selectedText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  text-align: left;
+}
+
+.fileName {
+  overflow: hidden;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #0b0c0e;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSub {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+  white-space: nowrap;
+}
+
+/* Danh sách nhiều tệp */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 8px 8px 16px;
+  border: 1px solid #e3e5e9;
+  border-radius: 14px;
+}
+
+.item .fileName {
+  flex: 1;
+}
+
+.remove,
+.removeSingle {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}
+
+.remove:hover,
+.removeSingle:hover {
+  background: #fde8e8;
+}
+
+.removeSingle {
+  align-self: flex-start;
+  margin-top: -4px;
+}
+
+.hint {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.error {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}

@@ -1,0 +1,89 @@
+/* Figma: Web người dùng: Hóa đơn (74:3598) – Main: cột, khoảng cách 28px */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.page .header {
+  margin-bottom: 0;
+}
+
+/* ===== Tìm kiếm + lọc tháng (74:3682) ===== */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Ô tìm nền trắng, rộng 320px (74:3683) – ghi đè SearchInput của admin */
+.page .search {
+  width: 320px;
+  border-color: rgba(227, 229, 233, 0.6);
+  background: #fff;
+}
+
+.page .search:focus-within {
+  border-color: #14a9b3;
+}
+
+/* ===== Bảng (74:3689): tiêu đề cao 24.5px, hàng 57px ===== */
+.table table th {
+  height: 24.5px;
+  padding-top: 0;
+  padding-bottom: 0;
+  vertical-align: top;
+}
+
+.table table td {
+  height: 57px;
+}
+
+.table table td.muted {
+  color: #3a3d44;
+}
+
+.pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #0f7a86;
+  white-space: nowrap;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+
+.pdf img {
+  flex-shrink: 0;
+}
+
+.pdf:hover:not(:disabled) {
+  color: #0c626c;
+  text-decoration: underline;
+}
+
+.pdf:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.notIssued {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.footnote {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+@media (max-width: 640px) {
+  .page .search {
+    width: 100%;
+  }
+}

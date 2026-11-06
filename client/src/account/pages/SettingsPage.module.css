@@ -1,0 +1,127 @@
+/* Figma 74:3988 – sticker lệch trái 16px so với lề nội dung */
+.header {
+  margin-left: -16px;
+}
+
+/* 74:3998 – 2 cột bằng nhau 526px, cách 24px */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* 74:4000 – thẻ pad 25px */
+.card {
+  padding: 25px;
+}
+
+/* 74:4003 – các ô cách nhau 16px */
+.grid {
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+}
+
+/* 74:4025 – nút 44px, chữ 16px */
+.save {
+  font-size: 16px;
+  line-height: 16px;
+}
+
+/* 74:4032 – các dòng cài đặt: pad dọc 14px, kẻ dưới #e3e5e9 trừ dòng cuối */
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e3e5e9;
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.rowText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.rowTitle {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: normal;
+  color: #0b0c0e;
+}
+
+.rowSub {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+/* 74:4039 – "Đổi mật khẩu" chữ teal 14px */
+.link {
+  flex-shrink: 0;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #0f7a86;
+  white-space: nowrap;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Hộp thoại mật khẩu */
+.dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.dialogNote {
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #6a6e77;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+@media (max-width: 1100px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    margin-left: 0;
+  }
+}

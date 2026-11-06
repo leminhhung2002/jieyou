@@ -1,0 +1,303 @@
+/* Figma: "Đăng nhập" (121:15778) & "Sign Up" (121:15747) */
+
+.page,
+.signupPage {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ---------- Logo (40:4074) ---------- */
+.logoBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+.logo {
+  position: relative;
+  display: block;
+  width: 131px;
+  height: 38px;
+  color: #0b0c0e;
+  text-decoration: none;
+}
+.logoMark { position: absolute; left: 3px; top: 2px; }
+.logoText {
+  position: absolute;
+  left: 47px;
+  right: 8px;
+  top: 13px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 17px;
+  letter-spacing: 2.72px;
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+}
+
+/* ---------- Đăng nhập ---------- */
+.loginBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 36px 20px 0;
+}
+.loginHeading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.loginTitle {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 32px;
+  letter-spacing: -0.7px;
+  color: #0b0c0e;
+}
+.loginSub { font-size: 15px; line-height: 21px; color: #6a6e77; }
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+/* Tabs (121:15799) */
+.tabs {
+  display: flex;
+  align-items: flex-start;
+  height: 48px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #f0f1f4;
+}
+.tab {
+  flex: 1 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+  color: #6a6e77;
+  cursor: pointer;
+}
+.tabActive {
+  background: #fff;
+  color: #0b0c0e;
+  filter: drop-shadow(0 1px 1px rgba(11, 12, 14, 0.08));
+}
+.tab:focus-visible { outline: 2px solid #0f7a86; outline-offset: -2px; }
+
+/* Ô nhập (121:15804) */
+.field { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 19.6px;
+  color: #0b0c0e;
+}
+.box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: #f9f9fb;
+  filter: drop-shadow(0 2px 2px rgba(24, 25, 26, 0.04));
+}
+.boxAlt { background: #f7f8fa; filter: none; }
+.box:focus-within { box-shadow: 0 0 0 1.5px #0f7a86; }
+.box > img { flex-shrink: 0; }
+.input {
+  flex: 1 0 0;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+  line-height: 16px;
+  color: #0b0c0e;
+}
+.input::placeholder { color: #9296a0; }
+.inputPw { letter-spacing: 3px; }
+.otpInput { letter-spacing: 6px; }
+.otpInput::placeholder { letter-spacing: 0; }
+.eye {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.eye::after { content: ''; position: absolute; inset: -12px; }
+.eye[aria-pressed='true'] { opacity: 0.6; }
+.otpMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 18px;
+  color: #6a6e77;
+}
+.textBtn {
+  padding: 8px 0;
+  margin: -8px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: #0f7a86;
+  cursor: pointer;
+}
+.textBtn:disabled { color: #9296a0; cursor: default; }
+
+.forgotRow { display: flex; justify-content: flex-end; width: 100%; }
+.link {
+  padding: 12px 0;
+  margin: -12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 19.6px;
+  color: #0f7a86;
+  text-decoration: none;
+}
+
+.foot {
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #6a6e77;
+  text-align: center;
+}
+.footLink {
+  display: inline-block;
+  padding: 12px 0;
+  margin: -12px 0;
+  font-weight: 500;
+  color: #0f7a86;
+  text-decoration: none;
+}
+
+/* ---------- Đăng ký (121:15747) ---------- */
+.signupHeader { background: #fff; }
+.signupNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+.iconBtn { composes: iconBtn from '../ui.module.css'; }
+.signupHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 16px;
+}
+.signupTitle {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 32px;
+  letter-spacing: -0.15px;
+  color: #1c2024;
+}
+.signupSub { font-size: 14px; line-height: 18px; color: #80838d; }
+
+.signupBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 20px 16px;
+  background: #fff;
+}
+.sField { display: flex; flex-direction: column; gap: 6px; }
+.sLabel {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #1c2024;
+}
+.sInput {
+  width: 100%;
+  height: 40px;
+  padding: 10px 8px;
+  border: 0;
+  outline: 0;
+  border-radius: 8px;
+  background: #f9f9fb;
+  box-shadow: 0 2px 4px rgba(24, 25, 26, 0.04);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  color: #0b0c0e;
+}
+.sInput::placeholder { color: #9296a0; }
+.sInput:focus { box-shadow: 0 0 0 1.5px #0f7a86; }
+.sInputError { box-shadow: 0 0 0 1.5px #d92d3a; }
+.fieldError { font-size: 12px; line-height: 16px; color: #b3202a; }
+
+.agree {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+.agreeInput {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  opacity: 0;
+}
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #c9ccd2;
+  border-radius: 7px;
+  background: #fff;
+}
+.checkbox img { visibility: hidden; }
+.agreeInput:checked + .checkbox { border-color: #0f7a86; background: #0f7a86; }
+.agreeInput:checked + .checkbox img { visibility: visible; }
+.agreeInput:focus-visible + .checkbox { outline: 2px solid #0f7a86; outline-offset: 2px; }
+.checkboxError { border-color: #d92d3a; }
+.agreeText {
+  padding-top: 1px;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: #6a6e77;
+}
+.agreeLink {
+  font-weight: 500;
+  line-height: 18.2px;
+  color: #0f7a86;
+  text-decoration: none;
+}

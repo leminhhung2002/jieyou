@@ -1,0 +1,133 @@
+/* Figma: Web người dùng: Thông báo (74:3756) – Main: cột, khoảng cách 28px */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.page .header {
+  margin-bottom: 0;
+}
+
+/* Nút "Đánh dấu tất cả đã đọc" (74:3840): cao 44px, chữ 16px, lề trái 21 / phải 15 */
+.page .markAll {
+  padding: 0 15px 0 21px;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+/* ===== Chip lọc + danh sách (74:3844) ===== */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Một dòng thông báo (74:3854) */
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 0;
+  border-bottom: 1px solid #e3e5e9;
+  text-align: left;
+}
+
+.unread {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.unread:hover {
+  background: #f7f8fa;
+}
+
+.unread:focus-visible {
+  outline: 2px solid #14a9b3;
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+}
+
+.tile_green {
+  background: #e1f5ea;
+}
+
+.tile_red {
+  background: #fde8e8;
+}
+
+.tile_teal {
+  background: #e8fbfb;
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title {
+  font-size: 16px;
+  line-height: 22.4px;
+  color: #0b0c0e;
+}
+
+.desc {
+  font-size: 14px;
+  line-height: 21px;
+  color: #6a6e77;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: #0f7a86;
+}
+
+.state {
+  padding: 24px 0;
+  font-size: 15px;
+  line-height: 21px;
+  color: #6a6e77;
+}
+
+.retry {
+  font-weight: 500;
+  color: #0f7a86;
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .page .header {
+    flex-wrap: wrap;
+  }
+}

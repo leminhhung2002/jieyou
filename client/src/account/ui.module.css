@@ -1,0 +1,498 @@
+/* ===== Tiêu đề trang (74:2825) ===== */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.sticker {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.eyebrow {
+  font-size: 14px;
+  line-height: 14px;
+  color: #6a6e77;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 40.8px;
+  letter-spacing: -1.36px;
+}
+
+.subtitle {
+  font-size: 16px;
+  line-height: 24px;
+  color: #6a6e77;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ===== Bố cục form 632 + 420 (74:2836) ===== */
+.formLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 632fr) minmax(320px, 420fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.formMain,
+.formAside {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* ===== Thẻ (74:2837) ===== */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid rgba(227, 229, 233, 0.6);
+  border-radius: 24px;
+  background: #fff;
+}
+
+.cardTitle {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 23.4px;
+  letter-spacing: -0.18px;
+}
+
+/* ===== Ô nhập (74:2840 – 74:2877) ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.span2 {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+}
+
+.control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 16px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 14px;
+  background: #f7f8fa;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.control img {
+  flex-shrink: 0;
+}
+
+.control:focus-within {
+  border-color: #14a9b3;
+  background: #fff;
+}
+
+.invalid,
+.invalid:focus-within {
+  border-color: #b3202a;
+}
+
+.disabled {
+  opacity: 0.7;
+}
+
+.input,
+.select {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+  line-height: 16px;
+  color: #0b0c0e;
+}
+
+.input::placeholder {
+  color: #9296a0;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+/* Figma 74:3223 – chữ cách trái 16px, mũi tên 20px cách phải 14.5px, cách trên 13px (trong viền) */
+.selectControl {
+  padding-right: 16px;
+}
+
+.select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 30px;
+}
+
+.select:disabled {
+  cursor: not-allowed;
+}
+
+.chevron {
+  position: absolute;
+  top: 13px;
+  right: 14.5px;
+  pointer-events: none;
+}
+
+.hint {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.error {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}
+
+.formError {
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #fde8e8;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #b3202a;
+}
+
+/* ===== Thẻ Chi phí (74:2879) ===== */
+.costCard {
+  padding: 25px;
+}
+
+.costRows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+}
+
+.costRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 11px 0;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.costRow dt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #3a3d44;
+}
+
+.costRow dd {
+  margin: 0;
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+  color: #0b0c0e;
+}
+
+.costTotal {
+  padding: 6px 0;
+  border-top: 1px solid #e3e5e9;
+}
+
+.costTotal dt {
+  font-weight: 500;
+  color: #0b0c0e;
+}
+
+.costTotal dd {
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 26.4px;
+  letter-spacing: -0.44px;
+}
+
+.sign {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  background: #e3e5e9;
+}
+
+.costNote {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+/* ===== Nút (74:2906, 74:2909) ===== */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 32px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  white-space: nowrap;
+  transition: filter 0.15s, background 0.15s, opacity 0.15s;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.size_xl {
+  height: 56px;
+}
+
+.size_md {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 15px;
+  line-height: 15px;
+}
+
+.block {
+  width: 100%;
+}
+
+.primary {
+  border: 1px solid #0c626c;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(180deg, #14a9b3 0%, #0f7a86 100%);
+  box-shadow: inset 0 -3px 6px 0 rgba(14, 82, 91, 0.35), 0 2px 4px 0 rgba(10, 85, 96, 0.16),
+    0 1px 1px 0 rgba(10, 85, 96, 0.12);
+  color: #fff;
+}
+
+.primary:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.outline {
+  border: 1.5px solid #c8cbd1;
+  background: #fff;
+  color: #0b0c0e;
+}
+
+.outline:hover:not(:disabled) {
+  background: #f7f8fa;
+}
+
+/* ===== Bảng (74:2145) ===== */
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  height: 41px;
+  padding: 0 16px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: 0.48px;
+  text-transform: uppercase;
+  color: #6a6e77;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table td {
+  height: 61px;
+  padding: 0 16px;
+  border-top: 1px solid #e3e5e9;
+  font-size: 15px;
+  line-height: 21px;
+  color: #0b0c0e;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table th:first-child,
+.table td:first-child {
+  padding-left: 0;
+}
+
+.table th:last-child,
+.table td:last-child {
+  padding-right: 0;
+}
+
+.table td.primaryCell {
+  font-weight: 500;
+}
+
+.empty {
+  color: #6a6e77;
+  text-align: center !important;
+}
+
+/* ===== Công tắc – Figma 74:3217 / 74:4073: 44×26, nền #0f7a86 (bật) / #c8cbd1 (tắt), núm trắng 20px cách 3px ===== */
+.toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  background: #c8cbd1;
+  transition: background 0.2s;
+}
+
+.toggleOn {
+  background: #0f7a86;
+}
+
+.toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #fff;
+  transition: transform 0.2s;
+}
+
+.toggleOn .knob {
+  transform: translateX(18px);
+}
+
+/* ===== Thẻ lựa chọn ===== */
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 14px;
+  background: #fff;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.choice:hover:not(:disabled) {
+  border-color: #c8cbd1;
+}
+
+.choiceOn,
+.choiceOn:hover:not(:disabled) {
+  border-color: #14a9b3;
+  background: #e8fbfb;
+}
+
+.choice:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.choiceText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.choiceTitle {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 21px;
+  color: #0b0c0e;
+}
+
+.choiceSub {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+@media (max-width: 1100px) {
+  .formLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-wrap: wrap;
+  }
+  .headerActions {
+    margin-left: 0;
+  }
+  .title {
+    font-size: 28px;
+    line-height: 34px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.errorLink {
+  font-weight: 500;
+  color: #0f7a86;
+  text-decoration: underline;
+}

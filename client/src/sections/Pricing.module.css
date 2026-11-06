@@ -1,0 +1,312 @@
+.section {
+  position: relative;
+  display: flex;
+  padding: 40px 60px;
+  background: var(--color-black);
+  overflow: hidden;
+}
+
+/* Chùm sáng 2275×906 (112:10986) */
+.beam {
+  position: absolute;
+  left: calc(50% + 36.5px);
+  top: 354px;
+  width: 2275px;
+  height: 906px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  flex: 1 0 0;
+  min-width: 1px;
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  max-width: 640px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 56px;
+  letter-spacing: -0.96px;
+  color: #fff;
+}
+
+.sub {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+}
+
+.options {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 300px;
+  width: 1313px;
+  max-width: 100%;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  width: 411px;
+  height: 200px;
+  padding: 0 40px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 32px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background-image: linear-gradient(
+      -65.43deg,
+      rgba(255, 255, 255, 0.012) 0%,
+      rgba(228, 226, 236, 0.04) 30.851%,
+      rgba(255, 255, 255, 0.02) 79.572%,
+      rgba(201, 191, 244, 0.08) 103.79%
+    ),
+    linear-gradient(90deg, #131313, #131313);
+  /* Viền trắng 50% của Figma trên nền tối hiển thị mờ – dùng viền gradient mảnh */
+  border-color: rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(12, 251, 254, 0.35);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  white-space: nowrap;
+}
+
+.name {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 32px;
+  color: #fff;
+}
+
+.price {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.from {
+  font-size: 24px;
+  line-height: 18px;
+  letter-spacing: -0.26px;
+  color: var(--color-text-muted-dark);
+}
+
+.amount {
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 24px;
+  color: var(--color-primary);
+}
+
+.unit {
+  font-size: 20px;
+  line-height: 15px;
+  letter-spacing: -0.26px;
+  color: var(--color-text-muted-dark);
+}
+
+.dot {
+  position: absolute;
+  left: 352px;
+  top: 13px;
+  width: 44px;
+  height: 44px;
+}
+
+/* ===== Folder (112:11034) ===== */
+.folder {
+  position: relative;
+  width: 275.556px;
+  height: 250px;
+  flex-shrink: 0;
+}
+
+.folderBody {
+  position: absolute;
+  left: calc(50% + 0.14px);
+  bottom: 29.17px;
+  width: 255.833px;
+  height: 215px;
+  transform: translateX(-50%);
+  border-radius: 10px;
+  background-image: linear-gradient(102.9deg, #6edfee 17.084%, #5ba8ff 119.13%);
+}
+
+.folderTab {
+  position: absolute;
+  left: calc(50% + 0.14px);
+  bottom: 173.33px;
+  width: 255.833px;
+  height: 70.833px;
+  transform: translateX(-50%);
+  border-radius: 10px;
+  mix-blend-mode: plus-lighter;
+  background-image: linear-gradient(-76.51deg, rgba(64, 224, 228, 0) 5.0528%, rgba(64, 224, 228, 0.75) 92.065%);
+}
+
+/* Lớp kính mờ: SVG gốc dùng foreignObject backdrop-filter – không chạy trong <img>, nên dựng lại bằng CSS */
+.folderBlur {
+  position: absolute;
+  left: calc(50% - 0.28px);
+  top: 36.67px;
+  width: 292.223px;
+  height: 213.333px;
+  transform: translateX(-50%);
+  clip-path: path('M271.853 213.333H20.6252C13.4639 213.333 7.58157 207.676 7.30204 200.52L0.0103743 13.8538C-0.285022 6.2916 5.76562 0 13.3335 0H124.109C128.507 0 132.622 2.16873 135.108 5.79668L154.664 34.3366C157.15 37.9646 161.265 40.1333 165.663 40.1333H278.889C286.476 40.1333 292.533 46.4545 292.21 54.0341L288.636 137.956L285.166 200.736C284.775 207.803 278.93 213.333 271.853 213.333Z');
+  backdrop-filter: blur(13.33px);
+  -webkit-backdrop-filter: blur(13.33px);
+}
+
+.folderGlass {
+  position: absolute;
+  left: calc(50% - 0.28px);
+  top: 36.67px;
+  width: 293.333px;
+  height: 213.333px;
+  transform: translateX(-50%);
+  padding: 0 0.2% 0 0.18%;
+}
+
+.folderLine1,
+.folderLine2 {
+  position: absolute;
+  top: 42.5px;
+  height: 0;
+  mix-blend-mode: plus-lighter;
+  transform: translateX(-50%);
+}
+
+.folderLine1 {
+  left: calc(50% - 108.61px);
+  width: 91.667px;
+}
+
+.folderLine2 {
+  left: calc(50% - 116.94px);
+  width: 50px;
+}
+
+.lineInner1,
+.lineInner2 {
+  position: absolute;
+}
+
+.lineInner1 {
+  inset: -7.5px -3.64% -3.33px -3.64%;
+}
+
+.lineInner2 {
+  inset: -14.17px -20% -10px -20%;
+}
+
+.lineInner1 img,
+.lineInner2 img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== Nút "Xem bảng giá đầy đủ" (112:11043) ===== */
+.ctaWrap {
+  position: absolute;
+  left: 521.5px;
+  bottom: 390.19px;
+  padding: 2px 6px;
+  filter: drop-shadow(0 10px 11px rgba(15, 122, 134, 0.65));
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  border: 1px solid #fff;
+  border-radius: 99px;
+  background: #fff;
+  box-shadow: 0 2px 2px rgba(27, 28, 29, 0.04);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 26px;
+  color: #000;
+  white-space: nowrap;
+  transition: transform 0.15s;
+}
+
+.cta:hover {
+  transform: translateY(-1px);
+}
+
+.cta img {
+  transition: transform 0.15s;
+}
+
+.cta:hover img {
+  transform: translateX(3px);
+}
+
+@media (max-width: 1400px) {
+  .ctaWrap {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 900px) {
+  .section {
+    padding: 56px 16px;
+  }
+  .title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+  .inner {
+    gap: 56px;
+  }
+  .options {
+    gap: 160px;
+  }
+  .card {
+    width: 100%;
+  }
+  .ctaWrap {
+    bottom: 300px;
+  }
+}

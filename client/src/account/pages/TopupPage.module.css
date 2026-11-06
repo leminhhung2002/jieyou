@@ -1,0 +1,234 @@
+/* Figma: Web người dùng: Nạp tiền (74:2396) – Main: cột, khoảng cách 28px */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Sticker + chữ canh trên (74:2469) */
+.page .header {
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+
+/* Cột trái: thẻ số tiền → (28px) phương thức → (12px) nút nạp (74:2479) */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Thẻ số tiền nạp (74:2480) ===== */
+.amountCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  border: 1px solid rgba(227, 229, 233, 0.6);
+  border-radius: 24px;
+  background: #f7f8fa;
+}
+
+.amountLabel {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.amountRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* span ẩn + input chồng lên nhau trong cùng ô lưới → input rộng đúng bằng chữ số */
+.amountSizer {
+  display: inline-grid;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.amountSizer > span,
+.amountInput {
+  grid-area: 1 / 1;
+  font: inherit;
+  font-weight: 600;
+  font-size: 52px;
+  line-height: 57.2px;
+  letter-spacing: -1.82px;
+  white-space: pre;
+}
+
+.amountSizer > span {
+  visibility: hidden;
+  padding-right: 2px;
+}
+
+.amountInput {
+  width: 100%;
+  min-width: 1ch;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #0b0c0e;
+  caret-color: #0f7a86;
+}
+
+.amountInput::placeholder {
+  color: #9296a0;
+}
+
+.amountCard:focus-within {
+  border-color: #14a9b3;
+}
+
+.caret {
+  flex-shrink: 0;
+  width: 2px;
+  height: 44px;
+  background: #0f7a86;
+}
+
+.currency {
+  flex-shrink: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 24px;
+  color: #6a6e77;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.preset {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14px;
+  line-height: 14px;
+  color: #0b0c0e;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.preset:hover {
+  border-color: #c8cbd1;
+}
+
+.preset.presetOn {
+  border-color: #0b0c0e;
+  background: #0b0c0e;
+  color: #fff;
+}
+
+.error {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}
+
+/* ===== Phương thức thanh toán (74:2500) ===== */
+.methodCard {
+  margin-top: 28px;
+}
+
+.method {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  border-radius: 14px;
+}
+
+.methodIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #e3e5e9;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.methodText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.methodTitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: normal;
+  color: #0b0c0e;
+}
+
+.methodSub {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.radio {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 7px solid #0f7a86;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.submit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12.75px;
+}
+
+/* ===== Cột phải: Hạn mức nạp (74:2517) & Chi tiết (74:2536) ===== */
+.page .limits,
+.page .detail {
+  padding: 24px;
+}
+
+.limits dl {
+  gap: 0;
+}
+
+.limits dl > div {
+  min-height: 44px;
+  padding: 12px 0 11px;
+}
+
+.limits dt {
+  color: #3a3d44;
+}
+
+.detail dl > div:first-child {
+  padding: 12px 0 11px;
+}
+
+.detail > p:last-child {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 19.5px;
+}
+
+.detail > p:last-child img {
+  flex-shrink: 0;
+}

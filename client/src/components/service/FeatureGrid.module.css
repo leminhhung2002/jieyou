@@ -1,0 +1,110 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+  padding: 80px 100px;
+  background: var(--color-black);
+}
+
+/* Text/Heading 0 */
+.title {
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 56px;
+  letter-spacing: -0.96px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Hàng 1 cao 211px, hàng 2 cao 220px (đúng như Figma) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 211px 220px;
+  gap: 16px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(138.86deg, rgba(255, 255, 255, 0.02) 36.556%, rgba(255, 255, 255, 0.12) 103.45%);
+  box-shadow: 0 0 0 1px rgba(229, 229, 229, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Viền sáng trên / tối dưới (inset) */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(11, 15, 23, 0.32);
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px rgba(229, 229, 229, 0.18);
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  text-align: center;
+}
+
+.text h3 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: normal;
+  letter-spacing: -0.2px;
+  color: #fff;
+}
+
+.text p {
+  font-size: 16px;
+  line-height: 24px;
+  color: #fff;
+  opacity: 0.6;
+  text-wrap: pretty;
+}
+
+@media (max-width: 1100px) {
+  .section {
+    padding: 64px 20px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .title {
+    font-size: 36px;
+    line-height: 44px;
+  }
+}

@@ -1,0 +1,237 @@
+/* Section cao 764px, cửa sổ 706×416 căn giữa trên nền vệt sáng xanh hai bên */
+.section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 764px;
+  padding: 80px 100px;
+  overflow: hidden;
+  background: var(--color-black);
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg img {
+  position: absolute;
+  left: -6.66%;
+  top: -5.38%;
+  width: 114.3%;
+  height: 110.64%;
+}
+
+.window {
+  position: relative;
+  width: 706px;
+  max-width: 100%;
+  height: 416px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(
+    0deg,
+    rgba(64, 224, 228, 0.1) 24.408%,
+    rgba(0, 0, 0, 0.1) 62.978%,
+    rgba(0, 0, 0, 0.1) 82.057%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+}
+
+/* Viền/bóng trong của khung cửa sổ */
+.window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 -2px 7px -3px rgba(15, 18, 23, 0.21), inset 1px 1px 4px 1px rgba(19, 29, 34, 0.6),
+    inset 2px 4px 4px -2px rgba(255, 255, 255, 0.08), inset 0 8px 12px 0 rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+/* Thanh tiêu đề 48px */
+.bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 48px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #2a2a2a;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.063) 0%,
+    rgba(255, 255, 255, 0.087) 9.79%,
+    rgba(255, 255, 255, 0.038) 18.78%,
+    rgba(255, 255, 255, 0.063) 100%
+  );
+}
+
+/* SVG 50×14 cho khung 48×12 (tràn 1px mỗi cạnh) */
+.dots {
+  margin: -1px;
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: normal;
+  letter-spacing: -0.2px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+}
+
+.navBtn {
+  position: relative;
+  display: flex;
+  padding: 8px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.16));
+  box-shadow: 0 0 0 1px rgba(15, 22, 25, 0.37), inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(11, 15, 23, 0.32);
+}
+
+/* Cụm vệt sáng đáy cửa sổ (664×135 tại 20.5, 381) */
+.glows {
+  position: absolute;
+  left: 20.5px;
+  top: 381px;
+  width: 664px;
+  height: 135px;
+  pointer-events: none;
+}
+
+.glows img {
+  position: absolute;
+  max-width: none;
+}
+
+.glowCore {
+  left: -40px;
+  top: -5px;
+  width: 744px;
+  height: 180px;
+  mix-blend-mode: plus-lighter;
+}
+
+.glowLine1 {
+  left: 144.42px;
+  top: -51.58px;
+  width: 375.158px;
+  height: 109.158px;
+  mix-blend-mode: lighten;
+  animation: pulse 3.2s ease-in-out infinite;
+}
+
+.glowLine2 {
+  left: 176px;
+  top: 20px;
+  width: 312px;
+  height: 46px;
+  mix-blend-mode: plus-lighter;
+  animation: pulse 3.2s ease-in-out infinite reverse;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glows img {
+    animation: none;
+  }
+}
+
+.items {
+  position: absolute;
+  left: 47px;
+  top: 97px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  width: 611px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.items li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+/* Folder 1: 59.915×60 (ảnh export 2x có tràn 0.2% phía trên) */
+.folder {
+  width: 59.915px;
+  height: auto;
+  margin-top: -0.12px;
+  transition: transform 0.2s ease;
+}
+
+.items li:hover .folder {
+  transform: translateY(-3px);
+}
+
+/* Text/Label: Medium 14/20 */
+.items span {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Biến thể trang UniPay: Regular 14, line-height normal */
+.regular span {
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.2px;
+}
+
+@media (max-width: 800px) {
+  .section {
+    min-height: 0;
+    padding: 56px 16px;
+  }
+  .window {
+    height: auto;
+    padding: 80px 16px 48px;
+  }
+  .items {
+    position: static;
+    width: 100%;
+    gap: 32px !important;
+  }
+  .items span {
+    white-space: normal;
+  }
+}

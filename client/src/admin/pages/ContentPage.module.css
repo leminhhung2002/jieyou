@@ -1,0 +1,84 @@
+/* ===== Tabs – Figma "row · Tin tức" (76:827) ===== */
+.tabs {
+  display: flex;
+  gap: 28px;
+  height: 30px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #e3e5e9;
+}
+
+.tab {
+  position: relative;
+  height: 29px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 15px;
+  color: #6a6e77;
+  white-space: nowrap;
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-start;
+  transition: color 0.15s;
+}
+
+.tab:hover {
+  color: #0b0c0e;
+}
+
+.tab:focus-visible {
+  outline: 2px solid #0f7a86;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.tabActive {
+  /* Figma: chữ tab đang chọn cao hơn 2px, gạch dưới 2px trùng đường viền */
+  height: 31px;
+  margin-top: -2px;
+  color: #0b0c0e;
+  border-bottom: 2px solid #0f7a86;
+}
+
+.panel {
+  min-width: 0;
+}
+
+.note {
+  margin-top: 28px;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.error {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #b3202a;
+}
+
+.empty {
+  padding: 40px 24px;
+  border-radius: 24px;
+  background: #f7f8fa;
+  font-size: 15px;
+  line-height: 21px;
+  color: #6a6e77;
+  text-align: center;
+}
+
+.clip {
+  display: block;
+  max-width: 560px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modalText {
+  margin: 12px 0 20px;
+  font-size: 15px;
+  line-height: 22px;
+  color: #3a3d44;
+}

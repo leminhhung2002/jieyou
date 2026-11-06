@@ -1,0 +1,185 @@
+/* Figma: Pricing (112:12329) – thực chất là section "Nền tảng" */
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+  padding: 80px 100px;
+  background: var(--color-black);
+}
+
+.title {
+  font-weight: 500;
+  font-size: 48px;
+  line-height: normal;
+  letter-spacing: -1.2px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 32px;
+  transition: transform 0.2s ease;
+}
+
+.item:hover {
+  transform: translateY(-3px);
+}
+
+.item:focus-visible {
+  outline: 2px solid #34cdfa;
+  outline-offset: 4px;
+}
+
+/* "Elemento": kính mờ 165×165 (viền 2.667 + đệm 26.667 + icon 106.667) */
+.card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding: 26.667px;
+  overflow: hidden;
+  border: 2.667px solid rgba(216, 216, 216, 0.05);
+  background: linear-gradient(135deg, rgba(248, 251, 255, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
+  backdrop-filter: blur(33.333px);
+  -webkit-backdrop-filter: blur(33.333px);
+  box-shadow: 26.667px 13.333px 53.333px rgba(0, 0, 0, 0.08);
+  transition: border-color 0.2s;
+}
+
+/* Shopee Live: cao 160px, logo căn giữa */
+.cardCenter {
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+}
+
+/* Nền tảng đang chọn: viền sáng hơn */
+.active .card {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.inner {
+  position: absolute;
+  inset: -1.333px;
+  pointer-events: none;
+  box-shadow: inset 0 0 26.667px var(--inner);
+}
+
+/* Lớp glow (plus-lighter) nằm trong luồng, icon sắc nét đè lên ở 25.33px */
+.glowBox {
+  position: relative;
+  flex-shrink: 0;
+  width: 106.667px;
+  height: 106.667px;
+  mix-blend-mode: plus-lighter;
+}
+
+.glowBox > span,
+.ellipse,
+.spot {
+  position: absolute;
+  display: block;
+}
+
+.glowBox img,
+.ellipse img,
+.spot img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+.icon {
+  position: absolute;
+  left: 25.33px;
+  top: 25.33px;
+  width: 106.667px;
+  height: 106.667px;
+}
+
+/* image 4444766: sprite Zalo, cắt theo Figma */
+.zalo {
+  position: absolute;
+  left: 25.33px;
+  top: 25.33px;
+  width: 110.476px;
+  height: 106.667px;
+  overflow: hidden;
+}
+
+.zalo img {
+  position: absolute;
+  left: -170.61%;
+  top: -31.39%;
+  width: 292.86%;
+  height: 194.48%;
+  max-width: none;
+}
+
+.shopee {
+  position: relative;
+  flex-shrink: 0;
+  width: 106.667px;
+  height: 62.431px;
+  object-fit: cover;
+}
+
+/* Vệt sáng màu ở đáy thẻ: 76.667×43.333 tại (42, 135.33), SVG tràn -138.46% / -78.26% */
+.ellipse {
+  left: 42px;
+  top: 135.33px;
+  width: 76.667px;
+  height: 43.333px;
+}
+
+.ellipse img {
+  inset: -138.46% -78.26%;
+  width: 256.52%;
+  height: 376.92%;
+}
+
+/* Đốm sáng góc trên trái (ngoài thẻ, mix-blend screen) */
+.spot {
+  left: 26.67px;
+  top: 26.67px;
+  width: 60px;
+  height: 60px;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.spot img {
+  inset: -111.11%;
+  width: 322.22%;
+  height: 322.22%;
+}
+
+@media (max-width: 700px) {
+  .section {
+    padding: 56px 16px;
+    gap: 40px;
+  }
+  .item {
+    transform: scale(0.7);
+    margin: -24px;
+  }
+}

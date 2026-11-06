@@ -1,0 +1,275 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  padding: 64px 60px;
+  background: var(--color-black);
+}
+
+.title {
+  font-weight: 500;
+  font-size: 48px;
+  line-height: normal;
+  letter-spacing: -1.2px;
+  text-align: center;
+  color: #fff;
+}
+
+.wrap {
+  padding: 0 80px;
+}
+
+.steps {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 100px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: clip;
+}
+
+.col {
+  flex: 1 0 0;
+  min-width: 1px;
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  padding: 32px 0;
+}
+
+.colLeft {
+  align-items: flex-end;
+}
+
+.colRight {
+  align-items: flex-start;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  width: 100%;
+}
+
+.stepLeft {
+  justify-content: flex-end;
+}
+
+/* Hiệu ứng cuộn: bước chưa tới thì mờ + lệch xuống; tới nơi thì hiện rõ, số phát sáng */
+.step {
+  opacity: 0.18;
+  transform: translateY(32px);
+  filter: blur(2px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.6s ease;
+}
+
+.step.active {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.step .number {
+  transition: filter 0.6s ease;
+}
+
+.step.active .number {
+  filter: drop-shadow(0 0 18px rgba(12, 251, 254, 0.35));
+}
+
+.stepLeft .stepText {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.stepText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.stepTitle,
+.number {
+  color: transparent;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.stepTitle {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 32px;
+  white-space: nowrap;
+}
+
+.stepDesc {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.26px;
+  color: var(--color-text-muted-dark);
+}
+
+.number {
+  flex-shrink: 0;
+  font-weight: 600;
+  font-size: 100px;
+  /* text-box-trim: cắt về chiều cao chữ hoa như Figma */
+  line-height: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* ===== Trục giữa ===== */
+.line {
+  position: relative;
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 3px;
+  border-radius: 1000px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.1) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.glow {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 3px;
+  transform: translateX(-50%);
+  border-radius: 1000px;
+  /* radialGradient của Figma: tâm ở đáy vệt sáng */
+  background: radial-gradient(
+    17.7px 209.1px at 50% 102.5%,
+    #bcfff3 1%,
+    #90fef5 3.75%,
+    #64fdf8 6.5%,
+    #38fcfb 9.25%,
+    #22fcfd 10.6%,
+    #0cfbfe 12%,
+    rgba(14, 214, 218, 0.9) 34%,
+    rgba(17, 176, 182, 0.8) 56%,
+    rgba(19, 139, 146, 0.7) 78%,
+    rgba(21, 101, 110, 0.6) 100%
+  );
+  transition: height 0.25s ease-out;
+}
+
+/* Điểm sáng ở đầu vệt – kích thước/vị trí quy đổi từ các ellipse Figma (gồm phần glow tràn) */
+.marker {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+}
+
+.marker img {
+  position: absolute;
+  max-width: none;
+}
+
+.m1 { left: -25.5px; bottom: -25px; width: 54px; height: 54px; }
+.m2 { left: -39px; bottom: -38.5px; width: 81px; height: 81px; mix-blend-mode: plus-lighter; }
+.m3 { left: -13.5px; bottom: -13px; width: 30px; height: 30px; mix-blend-mode: plus-lighter; }
+.m4 { left: -3px; bottom: -2.5px; width: 9px; height: 9px; mix-blend-mode: plus-lighter; }
+
+/* ===== Khối giữ chỗ vô hình (giữ đúng nhịp so le như Figma) ===== */
+.spacer {
+  display: flex;
+  align-items: flex-start;
+  gap: 80px;
+  width: 100%;
+  visibility: hidden;
+}
+
+.spacerLogo {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+}
+
+.spacerCard {
+  flex: 1 0 0;
+  min-width: 1px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px;
+  border: 1px solid transparent;
+}
+
+.spacerTitle {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.spacerDesc {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.26px;
+}
+
+@media (max-width: 1100px) {
+  .section {
+    padding: 56px 16px;
+    gap: 56px;
+  }
+  .wrap {
+    padding: 0;
+  }
+  .steps {
+    gap: 24px;
+  }
+  .line,
+  .spacer {
+    display: none;
+  }
+  .steps {
+    flex-direction: column;
+  }
+  .col {
+    gap: 40px;
+    padding: 0;
+    align-items: stretch;
+  }
+  .step,
+  .stepLeft {
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 24px;
+  }
+  .stepLeft .number {
+    order: -1;
+  }
+  .stepLeft .stepText {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .stepText {
+    width: auto !important;
+    flex-shrink: 1;
+  }
+  .stepTitle {
+    white-space: normal;
+  }
+  .number {
+    font-size: 64px;
+  }
+}

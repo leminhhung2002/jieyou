@@ -1,0 +1,81 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+  padding: 100px 60px;
+  background: var(--color-black);
+}
+
+.title {
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -1.8px;
+  color: #fff;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 385.787px;
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Ảnh export 2x từ Figma, hiển thị ở kích thước gốc (≈386×404) */
+.mock {
+  width: 100%;
+  height: auto;
+  margin-bottom: -4px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .mock {
+  transform: translateY(-4px);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.text h3 {
+  font-weight: 500;
+  font-size: 20px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.text p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 1300px) {
+  .list {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 700px) {
+  .section {
+    padding: 56px 16px;
+  }
+  .card {
+    width: 100%;
+  }
+}

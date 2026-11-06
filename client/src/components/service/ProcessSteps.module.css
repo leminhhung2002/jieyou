@@ -1,0 +1,137 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 80px 40px;
+  background: var(--color-black);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+  max-width: 100%;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 48px;
+  line-height: normal;
+  letter-spacing: -1.2px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.track {
+  position: relative;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* radialGradient của Figma (xoay -90°): đầu sáng ở bên phải */
+.glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 204px;
+  height: 3px;
+  border-radius: 1000px;
+  background: radial-gradient(
+    209.1px 17.7px at 102.5% 50%,
+    #bcfff3 1%,
+    #90fef5 3.75%,
+    #64fdf8 6.5%,
+    #38fcfb 9.25%,
+    #22fcfd 10.6%,
+    #0cfbfe 12%,
+    rgba(17, 176, 182, 0.5) 56%,
+    rgba(21, 101, 110, 0) 100%
+  );
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 322px;
+  flex-shrink: 0;
+  padding: 40px 28px 28px;
+  border-radius: 24px;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.step:hover,
+.step:focus-visible {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.number {
+  font-weight: 500;
+  font-size: 100px;
+  line-height: 72px;
+  height: 72px;
+  color: transparent;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.stepTitle {
+  font-size: 20px;
+  line-height: 26px;
+  color: #fff;
+}
+
+.stepDesc {
+  font-size: 16px;
+  line-height: 24px;
+  color: #fff;
+  opacity: 0.6;
+  text-wrap: pretty;
+}
+
+@media (max-width: 1400px) {
+  .steps {
+    flex-wrap: wrap;
+  }
+  .track {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .section {
+    padding: 56px 16px;
+  }
+  .step {
+    width: 100%;
+  }
+}

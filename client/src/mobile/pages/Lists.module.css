@@ -1,0 +1,211 @@
+/* Màn hình danh sách: Hồ sơ của tôi (121:15947), Hồ sơ trống (121:16113), Thông báo (121:16149),
+   Lịch sử & Cài đặt (không có frame – cùng kiểu thẻ/dòng). */
+
+.tabScreen { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+
+.content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 16px;
+}
+.contentAfterBack { padding-top: 4px; }
+
+.backRow {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 20px;
+}
+
+.bigTitle {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 32px;
+  letter-spacing: -0.7px;
+  color: #0b0c0e;
+}
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  white-space: nowrap;
+}
+.titleAction {
+  padding: 12px 0;
+  margin: -12px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 19.6px;
+  color: #0f7a86;
+  cursor: pointer;
+}
+.titleAction:disabled { opacity: 0.6; }
+
+/* Chips (121:15956) */
+.chips { display: flex; gap: 8px; height: 36px; }
+.chip {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #0b0c0e;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.chip::after { content: ''; }
+.chipActive { background: #fff; }
+.chip:focus-visible { outline: 2px solid #0f7a86; outline-offset: 2px; }
+
+/* Thẻ trắng chứa dòng */
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+  border-radius: 20px;
+  background: #fff;
+}
+
+/* Dòng hồ sơ (121:16003) */
+.appRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  color: inherit;
+  text-decoration: none;
+}
+.appRow:focus-visible,
+.noteRow:focus-visible,
+.actionRow:focus-visible { outline: 2px solid #0f7a86; outline-offset: -2px; border-radius: 12px; }
+.appText { flex: 1 0 0; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.appTitle { font-size: 15px; font-weight: 500; line-height: 20.25px; color: #0b0c0e; }
+.appCode { font-size: 12px; line-height: 16px; color: #9296a0; }
+.appStatus { font-size: 13px; line-height: normal; }
+
+/* Trạng thái rỗng (121:18732) */
+.empty {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.emptyArt {
+  position: relative;
+  flex-shrink: 0;
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+}
+.layer { position: absolute; }
+.layer img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; }
+.emptyText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 248.813px;
+  text-align: center;
+}
+.emptyTitle { font-size: 20px; font-weight: 500; line-height: normal; color: #0b0c0e; }
+.emptySub { font-size: 15px; line-height: 21px; color: #6a6e77; }
+
+/* Nhóm thông báo (121:18781) */
+.group { display: flex; flex-direction: column; gap: 12px; }
+.groupLabel { font-size: 14px; font-weight: 400; line-height: normal; color: #6a6e77; }
+
+.noteRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.noteRow > img { flex-shrink: 0; }
+.noteText {
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  line-height: normal;
+}
+.noteTitle { font-size: 14px; font-weight: 500; color: #0b0c0e; }
+.noteBody { font-size: 12px; color: #6a6e77; }
+.noteMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.noteTime { font-size: 12px; font-weight: 300; line-height: normal; color: #6a6e77; white-space: nowrap; }
+.dot { width: 8px; height: 8px; border-radius: 4px; background: #009dd2; }
+.dotRead { opacity: 0; }
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Lịch sử giao dịch */
+.txRow { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; }
+.txMeta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.txAmount { font-size: 14px; font-weight: 500; line-height: normal; color: #0b0c0e; white-space: nowrap; }
+.txPlus { color: #0b6b42; }
+
+/* Cài đặt */
+.infoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 12px 0;
+  font-size: 14px;
+}
+.infoLabel { flex-shrink: 0; line-height: normal; color: #6a6e77; }
+.infoValue { min-width: 0; margin: 0; font-weight: 500; line-height: 20px; color: #0b0c0e; text-align: right; overflow-wrap: anywhere; }
+.actionRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #0f7a86;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.danger { color: #b3202a; }

@@ -1,0 +1,78 @@
+.shell {
+  min-height: 100dvh;
+  background: #e9eaee;
+  overflow-x: clip;
+}
+
+.column {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: #f7f8fa;
+  color: #0b0c0e;
+}
+
+@media (min-width: 431px) {
+  .column { box-shadow: 0 0 0 1px rgba(11, 12, 14, 0.06), 0 12px 40px rgba(11, 12, 14, 0.08); }
+}
+
+.blank {
+  min-height: 100dvh;
+  background: #f7f8fa;
+}
+
+/* ---------- Thanh tab (121:17545) ---------- */
+.tabBar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 20;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  padding: 16px 47px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff);
+  pointer-events: none;
+}
+
+.tabPill {
+  flex: 1 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(225, 225, 225, 0.48);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+
+.tab {
+  flex: 1 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 44px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.tab:focus-visible { outline: 2px solid #0f7a86; outline-offset: 1px; }
+
+.tabActive {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(to bottom, #333 3.571%, #222);
+  box-shadow: 0 0 0 1px #222;
+}
+
+/* House trong Figma là icon trắng (tab đang chọn), các tab còn lại icon tối #1C2024 */
+.tab img[data-tone='light'] { filter: brightness(0) opacity(0.89); }
+.tabActive img[data-tone='light'] { filter: none; }
+.tabActive img[data-tone='dark'] { filter: brightness(0) invert(1); }

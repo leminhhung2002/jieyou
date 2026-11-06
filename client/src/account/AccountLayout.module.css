@@ -1,0 +1,266 @@
+/* Figma "App" (74:1996): nền #f0f1f4, sidebar 264px, khung nội dung trắng bo 32px */
+.app {
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+  padding: 12px 12px 12px 0;
+  background: #f0f1f4;
+  color: #0b0c0e;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  width: 264px;
+  flex-shrink: 0;
+  height: calc(100vh - 24px);
+  min-height: 640px;
+  /* app padding-top 12px + 16px = 28px như Figma */
+  padding: 16px 12px 0 20px;
+  overflow-y: auto;
+  transition: width 0.2s;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  width: 232px;
+  height: 60px;
+  padding: 0 0 24px 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandName {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 17px;
+  letter-spacing: 2.72px;
+  text-transform: uppercase;
+}
+
+.collapseBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  transition: background 0.15s;
+}
+
+.collapseBtn:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.nav,
+.group,
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.groupTitle {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 11px;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: #9296a0;
+  white-space: nowrap;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 232px;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 15px;
+  color: #3a3d44;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.item img {
+  flex-shrink: 0;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.active,
+.active:hover {
+  background: #fff;
+  border-color: #e3e5e9;
+  color: #0c626c;
+}
+
+/* Khối tài khoản (không có trong Figma – cần để đăng xuất) */
+.account {
+  margin-top: auto;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 232px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.accountText {
+  min-width: 0;
+}
+
+.accountName {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accountSub {
+  font-size: 12px;
+  color: #6a6e77;
+}
+
+.logout {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 13px;
+  color: #0f7a86;
+}
+
+.logout:hover {
+  background: #e8fbfb;
+}
+
+.main {
+  position: relative;
+  flex: 1 0 0;
+  min-width: 1px;
+  min-height: calc(100vh - 24px);
+  padding: 32px 44px;
+  border: 0.5px solid rgba(227, 229, 233, 0.6);
+  border-radius: 32px;
+  background: #fff;
+}
+
+.loadError {
+  font-size: 15px;
+  color: #b3202a;
+}
+
+.loadError button {
+  font-weight: 500;
+  color: #0f7a86;
+  text-decoration: underline;
+}
+
+/* ===== Menu thu gọn (nút "Thu gọn menu") ===== */
+.collapsed .sidebar {
+  width: 84px;
+  padding-right: 8px;
+  padding-left: 12px;
+}
+
+.collapsed .brandRow {
+  width: 64px;
+  flex-direction: column-reverse;
+  height: auto;
+  gap: 12px;
+  padding: 0 0 16px;
+}
+
+.collapsed .brandName,
+.collapsed .label,
+.collapsed .groupTitle,
+.collapsed .accountText {
+  display: none;
+}
+
+.collapsed .item {
+  width: 64px;
+  justify-content: center;
+  padding: 0;
+}
+
+.collapsed .group + .group {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e3e5e9;
+}
+
+.collapsed .account {
+  width: 64px;
+  padding: 8px 4px;
+  justify-content: center;
+}
+
+.collapsed .logout {
+  font-size: 11px;
+  padding: 6px 4px;
+}
+
+@media (max-width: 1000px) {
+  .app {
+    flex-direction: column;
+    padding: 8px;
+  }
+  .sidebar,
+  .collapsed .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 8px;
+  }
+  .collapseBtn {
+    display: none;
+  }
+  .nav,
+  .list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .groupTitle {
+    display: none;
+  }
+  .item,
+  .collapsed .item {
+    width: auto;
+    padding: 0 12px;
+  }
+  .collapsed .label {
+    display: inline;
+  }
+  .account {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .main {
+    padding: 24px 16px;
+  }
+}

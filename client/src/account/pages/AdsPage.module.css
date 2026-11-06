@@ -1,0 +1,125 @@
+/* Figma 74:2658 – cột form và cột chi phí thẳng hàng phía trên */
+.layout {
+  align-items: start;
+}
+
+/* ===== Vị trí banner (74:2663) ===== */
+.slots {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Thẻ vị trí: đệm 8px, bo 16px; đang chọn viền 2px #0f7a86 (74:2664) */
+.slots > .slot[role='radio'] {
+  gap: 12px;
+  padding: 8px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.slots > .slot[role='radio']:hover:not(:disabled) {
+  border-color: #c8cbd1;
+}
+
+.slots > .slot[aria-checked='true'][role='radio'],
+.slots > .slot[aria-checked='true'][role='radio']:hover {
+  border: 2px solid #0f7a86;
+  background: #e8fbfb;
+}
+
+.slot > span:last-child {
+  flex: 1;
+  gap: 4px;
+}
+
+.slot > span:last-child > span:last-child {
+  line-height: 19.5px;
+}
+
+.slotIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f7f8fa;
+}
+
+.slot[aria-checked='true'] .slotIcon {
+  background: #fff;
+}
+
+.note {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.error {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}
+
+/* ===== Ngày chạy + hình ảnh (74:2693) ===== */
+.dates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* Ô ngày dạng native, biểu tượng lịch 20px bên trái (74:2698) – cả ô bấm được để mở lịch */
+.dateInput {
+  cursor: pointer;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.dateInput::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.booked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: -4px;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.bookedList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bookedChip {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #f0f1f4;
+  color: #3a3d44;
+  text-decoration: line-through;
+  text-decoration-color: rgba(58, 61, 68, 0.5);
+}
+
+@media (max-width: 640px) {
+  .dates {
+    grid-template-columns: 1fr;
+  }
+}

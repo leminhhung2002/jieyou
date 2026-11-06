@@ -1,0 +1,252 @@
+.section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 80px 40px;
+  background: var(--color-black);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  height: 452px;
+  padding: 120px 100px;
+  overflow: hidden;
+  border-radius: 40px;
+}
+
+.image,
+.vector,
+.v174,
+.v175 {
+  pointer-events: none;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 40px;
+  mix-blend-mode: lighten;
+}
+
+/* Ảnh bị lật cả hai trục trong Figma (w/h âm) => xoay 180° */
+.image img {
+  position: absolute;
+  left: -13.79%;
+  top: -49.14%;
+  width: 121.64%;
+  height: 731.97%;
+  transform: rotate(180deg);
+}
+
+.vector {
+  position: absolute;
+  left: 433px;
+  top: -526px;
+  width: 1084px;
+  height: 962px;
+}
+
+.vector img,
+.v174 img,
+.v175 img {
+  position: absolute;
+  display: block;
+}
+
+.vector img {
+  inset: -2.08% -1.85%;
+  width: 103.7%;
+  height: 104.16%;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  width: 100%;
+}
+
+.title {
+  width: 582px;
+  max-width: 100%;
+  font-weight: 500;
+  font-size: 56px;
+  line-height: 60px;
+  letter-spacing: -1.68px;
+  text-align: center;
+  color: #fff;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.field {
+  position: relative;
+  display: flex;
+  width: 400px;
+  max-width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.16));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.32), inset 0.5px 0.5px 0 0.5px rgba(255, 255, 255, 0.12);
+}
+
+.field input {
+  width: 100%;
+  padding: 10px 24px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 16px;
+  line-height: 26px;
+  color: #fff;
+}
+
+.field input::placeholder {
+  color: #fff;
+  opacity: 1;
+}
+
+.field:focus-within {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7), inset 0.5px 0.5px 0 0.5px rgba(255, 255, 255, 0.12);
+}
+
+.submit {
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: #f0f0f0;
+  box-shadow: 0 12px 24px 2px rgba(15, 15, 19, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12), inset 0 1px 0 #fff;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 26px;
+  color: #000;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.submit:hover:not(:disabled) {
+  background: #fff;
+}
+
+.submit:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.error {
+  position: absolute;
+  top: calc(100% + 10px);
+  min-height: 20px;
+  font-size: 14px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.v174,
+.v175 {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mix-blend-mode: lighten;
+}
+
+.v174 {
+  left: -78px;
+  top: 58px;
+  width: 1021.108px;
+  height: 550.176px;
+}
+
+.v175 {
+  left: -61.63px;
+  top: 187.21px;
+  width: 593.412px;
+  height: 319.995px;
+}
+
+.v174 > span,
+.v175 > span {
+  position: relative;
+  flex: none;
+  transform: rotate(7.42deg);
+}
+
+.v174 > span {
+  width: 974px;
+  height: 428px;
+}
+
+.v175 > span {
+  width: 566px;
+  height: 249px;
+}
+
+.v174 img {
+  inset: -18.27% -8.03%;
+  width: 116.06%;
+  height: 136.54%;
+}
+
+.v175 img {
+  inset: -31.41% -13.82%;
+  width: 127.64%;
+  height: 162.82%;
+}
+
+/* Khấc cắt mép trái (112:9319) */
+.notch {
+  position: absolute;
+  left: 40px;
+  bottom: 199px;
+  width: 36px;
+  height: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.notch img {
+  flex: none;
+  width: 230px;
+  height: 36px;
+  transform: rotate(-90deg);
+}
+
+@media (max-width: 900px) {
+  .section {
+    padding: 48px 16px;
+  }
+  .card {
+    height: auto;
+    padding: 64px 20px;
+  }
+  .title {
+    font-size: 36px;
+    line-height: 42px;
+  }
+  .form {
+    flex-direction: column;
+    width: 100%;
+  }
+  .field {
+    width: 100%;
+  }
+  .notch {
+    display: none;
+  }
+}

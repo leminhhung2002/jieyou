@@ -1,0 +1,25 @@
+/* Figma: Admin: Nhật ký hoạt động (76:1079) */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+/* Cột thời gian chữ thường (bảng mặc định in đậm cột đầu) */
+tbody td.plain.plain {
+  font-weight: 400;
+  color: #3a3d44;
+}
+
+/* Người thực hiện in đậm (76:1156) */
+td.strong {
+  font-weight: 500;
+  color: #0b0c0e;
+}
+
+.error {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #b3202a;
+}

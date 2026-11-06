@@ -1,0 +1,53 @@
+/* Sticker lệch trái 16px so với khối tiêu đề (74:3344: left -16, chữ ở left 84) */
+.header > img:first-child {
+  margin-left: -16px;
+}
+
+/* Thông báo miễn phí (74:3353): nền #e8fbfb, cao 56, bo 16 */
+.notice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  margin-bottom: 28px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: #e8fbfb;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 21px;
+  color: #0c626c;
+}
+
+.notice img {
+  flex-shrink: 0;
+}
+
+.layout {
+  align-items: start;
+}
+
+/* Thẻ "Thông tin cửa hàng" (74:3358): đệm 27px, tiêu đề cách lưới 14px */
+section.card {
+  gap: 14px;
+  padding: 27px;
+}
+
+.span {
+  grid-column: 1 / -1;
+}
+
+/* Mũi tên ô chọn cách mép phải 16px (74:3372) */
+.select select + img {
+  right: 16px;
+}
+
+/* Thẻ "Tóm tắt" (74:3400): đệm 24px, tiêu đề cách 5px, các dòng sát nhau */
+section.summary {
+  gap: 5px;
+  padding: 24px;
+}
+
+section.summary dl {
+  gap: 0;
+}

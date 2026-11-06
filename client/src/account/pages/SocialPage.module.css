@@ -1,0 +1,98 @@
+/* Figma 74:3493 – sticker lệch trái 16px so với lề nội dung */
+.header {
+  margin-left: -16px;
+}
+
+/* 74:3508 – lưới 2×2 nền tảng, cách 12px */
+.platforms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* 74:3516 – thẻ nền tảng cao 76px, pad 14/12, bo 16px, icon thương hiệu 32px cách chữ 8px */
+.platforms .platform {
+  gap: 8px;
+  height: 76px;
+  padding: 14px 12px;
+  border-radius: 16px;
+}
+
+/* 74:3509 – đang chọn: viền 2px #0f7a86, nền #e8fbfb */
+.platforms .platformOn,
+.platforms .platformOn:hover:not(:disabled) {
+  border: 2px solid #0f7a86;
+  background: #e8fbfb;
+}
+
+/* 74:3538 – các ô cách nhau 16px theo cả hai chiều */
+.grid {
+  gap: 16px;
+}
+
+.error {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}
+
+/* 74:3557 – ô xác nhận cảnh báo */
+.warning {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 21px;
+  color: #6a6e77;
+  cursor: pointer;
+}
+
+.checkInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* 74:3558 – ô 22px bo 7px, nền #0f7a86 + dấu tích trắng 14px khi chọn */
+.checkBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #c8cbd1;
+  border-radius: 7px;
+  background: #fff;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.checkBox img {
+  visibility: hidden;
+}
+
+.checkInput:checked + .checkBox {
+  border: 0;
+  background: #0f7a86;
+}
+
+.checkInput:checked + .checkBox img {
+  visibility: visible;
+}
+
+.checkInput:focus-visible + .checkBox {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .header {
+    margin-left: 0;
+  }
+}

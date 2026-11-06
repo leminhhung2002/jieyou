@@ -1,0 +1,129 @@
+/* Figma 74:3172 – thẻ "Thiết bị": khoảng cách 14px giữa tiêu đề / lựa chọn / ô nhập */
+.deviceCard {
+  gap: 14px;
+}
+
+/* 74:3175 – 2 thẻ thiết bị chia đều, cách 12px */
+.devices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* 74:3185 – thẻ thiết bị: pad 18px, bo 16px, viền 1.5px #e3e5e9 */
+.devices .device {
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+/* 74:3176 – đang chọn: viền 2px #0f7a86, nền #e8fbfb */
+.devices .deviceOn,
+.devices .deviceOn:hover:not(:disabled) {
+  border: 2px solid #0f7a86;
+  background: #e8fbfb;
+}
+
+.device > span:last-child {
+  gap: 1px;
+  padding-top: 1px;
+}
+
+.device > span:last-child > span:last-child {
+  line-height: 19.5px;
+}
+
+/* 74:3186 – ô biểu tượng 40px bo 12px: trắng khi chọn, #f7f8fa khi không */
+.deviceIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f7f8fa;
+}
+
+.deviceOn .deviceIcon {
+  background: #fff;
+}
+
+/* 74:3194 – Số lượng 200px + Địa chỉ phần còn lại, cách 16px */
+.row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.error {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}
+
+/* 74:3207 – thẻ hóa đơn MISA */
+.invoiceHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 40px;
+}
+
+.invoiceIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.invoiceText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.invoiceTitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: normal;
+  color: #0b0c0e;
+}
+
+.invoiceSub {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+/* Tắt hóa đơn điện tử: ô Thuế VAT mờ đi (thuế vẫn tính vào tổng) */
+.off {
+  opacity: 0.7;
+}
+
+.off select {
+  cursor: not-allowed;
+}
+
+/* 74:3234 – tiêu đề → các dòng 6px, các dòng → ghi chú 10px */
+.cost {
+  gap: 6px;
+}
+
+.cost > p:last-child {
+  margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+  .devices,
+  .row {
+    grid-template-columns: 1fr;
+  }
+}

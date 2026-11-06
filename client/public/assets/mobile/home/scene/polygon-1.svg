@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="352.659" height="188.736" viewBox="0 0 352.659 188.736" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Polygon 1" filter="url(#filter0_f_0_294)" style="mix-blend-mode:plus-lighter">
+<path d="M176.329 75.1938L216.958 109.209L277.465 113.543H75.1938L135.701 109.209L176.329 75.1938Z" fill="#EDFFFF"/>
+</g>
+<defs>
+<filter id="filter0_f_0_294" x="0" y="0" width="352.659" height="188.736" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="37.5969" result="effect1_foregroundBlur_0_294"/>
+</filter>
+</defs>
+</svg>

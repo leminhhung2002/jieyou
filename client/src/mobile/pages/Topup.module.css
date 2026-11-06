@@ -1,0 +1,262 @@
+/* Figma: "Nạp tiền" (121:15832) & "Nạp tiền thành công" (121:15912) */
+.withBar { padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 12px 16px 0;
+}
+
+/* Thẻ số tiền (121:15845) */
+.amountCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #fff;
+  overflow: hidden;
+}
+.caption { font-size: 12px; line-height: normal; color: #9296a0; }
+.amountRow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.amountField {
+  display: inline-grid;
+  min-width: 0;
+  max-width: calc(100% - 40px);
+}
+.sizer,
+.amountInput {
+  grid-area: 1 / 1;
+  font: inherit;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 44px;
+  letter-spacing: -1.4px;
+  white-space: pre;
+}
+.sizer { visibility: hidden; }
+.amountInput {
+  width: 100%;
+  min-width: 1ch;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #0b0c0e;
+  caret-color: transparent;
+}
+.amountInput::placeholder { color: #9296a0; }
+.caret {
+  flex-shrink: 0;
+  width: 2px;
+  height: 34px;
+  background: #0f7a86;
+}
+.caretBlink { animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .caretBlink { animation: none; } }
+.currency {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #6a6e77;
+}
+
+.presets {
+  display: flex;
+  gap: 10px;
+  margin-right: -20px;
+  padding-right: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.presets::-webkit-scrollbar { display: none; }
+.preset {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 16px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  line-height: 14px;
+  color: #0b0c0e;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.presetActive { border-color: #0b0c0e; background: #0b0c0e; color: #fff; }
+.preset:focus-visible { outline: 2px solid #0f7a86; outline-offset: 2px; }
+
+/* Phương thức (121:15865) */
+.method {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: #fff;
+}
+.methodIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #0f7a86;
+}
+.methodText {
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  line-height: normal;
+}
+.methodName { font-size: 15px; font-weight: 500; color: #0b0c0e; }
+.methodSub { font-size: 12px; color: #6a6e77; }
+.radio {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 6px solid #0f7a86;
+  border-radius: 10px;
+  background: #fff;
+}
+.radio:focus-visible { outline: 2px solid #0f7a86; outline-offset: 2px; }
+
+/* Tổng kết (121:15875) */
+.summary {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 20px;
+  background: #fff;
+}
+.sumRowPlain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.sumRow,
+.sumRowTotal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 11px 0;
+}
+.sumRowTotal {
+  padding: 5px 0;
+  border-top: 1px solid rgba(227, 229, 233, 0.6);
+}
+.sumIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  background: #e3e5e9;
+}
+.sumLabel { font-size: 14px; font-weight: 500; line-height: 20px; color: #6a6e77; }
+.sumLabelFlex { flex: 1 0 0; min-width: 0; font-size: 14px; font-weight: 500; line-height: 20px; color: #6a6e77; }
+.sumLabelTotal { flex: 1 0 0; min-width: 0; font-size: 14px; font-weight: 500; line-height: 20px; color: #0b0c0e; }
+.sumValue { font-size: 14px; font-weight: 500; line-height: normal; color: #0b0c0e; text-align: right; white-space: nowrap; }
+.sumValueTotal {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.44px;
+  color: #0b0c0e;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ---------- Thành công (121:15918) ---------- */
+.success {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+  padding: 96px 20px calc(112px + env(safe-area-inset-bottom, 0px));
+}
+.successHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 276px;
+  max-width: 100%;
+}
+.successRing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 9999px;
+  background: #e1f5ea;
+}
+.successIcon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
+}
+.successMark {
+  position: absolute;
+  inset: 11.11%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #1fa463;
+}
+.successText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.successTitle {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 30px;
+  letter-spacing: -0.22px;
+  color: #0b0c0e;
+}
+.successSub { font-size: 15px; line-height: 21px; color: #6a6e77; }
+.receipt {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 20px;
+  background: #fff;
+}
+.receiptRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 0;
+  white-space: nowrap;
+}
+.receiptLabel { font-size: 16px; line-height: 24px; color: #6a6e77; }
+.receiptValue { font-size: 14px; font-weight: 500; line-height: 20px; color: #0b0c0e; text-align: right; overflow: hidden; text-overflow: ellipsis; }

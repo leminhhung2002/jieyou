@@ -1,0 +1,4 @@
+/* Figma 74:2836 – cột form và cột chi phí thẳng hàng phía trên */
+.layout {
+  align-items: start;
+}

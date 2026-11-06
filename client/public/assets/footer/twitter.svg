@@ -1,0 +1,32 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Twitter Icon">
+<g id="Ellipse 251" filter="url(#filter0_di_0_152)">
+<circle cx="17" cy="17" r="16" fill="url(#paint0_linear_0_152)" shape-rendering="crispEdges"/>
+</g>
+<g id="Twitter Logo">
+<path id="twitter" d="M14.026 24C20.0636 24 23.3673 18.997 23.3673 14.6658C23.3673 14.5251 23.3673 14.3844 23.3609 14.2436C24.0012 13.783 24.5582 13.2008 25 12.5418C24.411 12.8041 23.7771 12.9769 23.1112 13.06C23.7899 12.657 24.3085 12.0108 24.5582 11.2431C23.9244 11.6206 23.2201 11.8893 22.471 12.0364C21.8691 11.3967 21.0176 11 20.0764 11C18.2645 11 16.7919 12.4715 16.7919 14.282C16.7919 14.5379 16.8239 14.7874 16.8752 15.0305C14.1477 14.8962 11.7275 13.5846 10.1076 11.6014C9.82593 12.0876 9.66587 12.6506 9.66587 13.252C9.66587 14.3907 10.2485 15.3952 11.1257 15.9838C10.5878 15.9646 10.082 15.8174 9.64026 15.5743C9.64026 15.5871 9.64026 15.5999 9.64026 15.6191C9.64026 17.2057 10.7735 18.5364 12.2717 18.8371C11.9964 18.9139 11.7083 18.9523 11.4074 18.9523C11.1961 18.9523 10.9912 18.9331 10.7927 18.8947C11.2089 20.1998 12.4254 21.1467 13.8595 21.1722C12.7327 22.0551 11.3177 22.5797 9.78111 22.5797C9.51861 22.5797 9.2561 22.5669 9 22.5349C10.447 23.4562 12.1757 24 14.026 24Z" fill="white" fill-opacity="0.8"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_di_0_152" x="0" y="0" width="34" height="34" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="1" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_0_152"/>
+<feOffset/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.129412 0 0 0 0 0.129412 0 0 0 0 0.129412 0 0 0 1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_152"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_152" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="0.5" operator="erode" in="SourceAlpha" result="effect2_innerShadow_0_152"/>
+<feOffset dx="0.5" dy="0.5"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.12 0"/>
+<feBlend mode="normal" in2="shape" result="effect2_innerShadow_0_152"/>
+</filter>
+<linearGradient id="paint0_linear_0_152" x1="17" y1="1" x2="17" y2="33" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.04"/>
+<stop offset="1" stop-color="white" stop-opacity="0.16"/>
+</linearGradient>
+</defs>
+</svg>

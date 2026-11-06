@@ -1,0 +1,204 @@
+/* Figma: Cover 1440×617, nền đen + gradient xám nhẹ ở đáy */
+.section {
+  position: relative;
+  height: 617px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 63.646%, rgba(63, 63, 63, 0.15) 100%),
+    #000;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Vector 4: lưới phối cảnh, rộng 3008px, top 47% / bottom -21.72% */
+.grid {
+  position: absolute;
+  left: calc(50% - 0.01px);
+  top: 47%;
+  bottom: -21.72%;
+  width: 3007.987px;
+  transform: translateX(-50%);
+}
+
+.grid img {
+  position: absolute;
+  top: 0;
+  right: 6.14%;
+  bottom: 11.32%;
+  left: 5.78%;
+  display: block;
+  width: 88.08%;
+  height: 88.68%;
+}
+
+.stars {
+  position: absolute;
+  left: calc(50% - 16px);
+  top: calc(50% - 181.92px);
+  width: 1976px;
+  height: 1213.154px;
+  max-width: none;
+  transform: translate(-50%, -50%);
+}
+
+/* 2 vệt sáng "Light greyish" xoay -17.2°, hoà trộn screen */
+.light {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mix-blend-mode: screen;
+}
+
+.light > div {
+  position: relative;
+  flex: none;
+  transform: rotate(-17.2deg);
+}
+
+.light img {
+  position: absolute;
+  display: block;
+  max-width: none;
+}
+
+.light1 {
+  left: -653px;
+  top: -783px;
+  width: 2547.029px;
+  height: 2202.848px;
+}
+
+.light1 > div {
+  width: 2159.357px;
+  height: 1637.512px;
+}
+
+.light1 img {
+  inset: -3.66% -2.78%;
+  width: 105.56%;
+  height: 107.32%;
+}
+
+.light2 {
+  left: -551px;
+  top: -655px;
+  width: 1622.461px;
+  height: 1403.217px;
+}
+
+.light2 > div {
+  width: 1375.513px;
+  height: 1043.097px;
+}
+
+.light2 img {
+  inset: -5.75% -4.36%;
+  width: 108.72%;
+  height: 111.5%;
+}
+
+.content {
+  position: absolute;
+  left: 100px;
+  top: 47px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+  width: 1240px;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 48px;
+  line-height: normal;
+  letter-spacing: -1.2px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+/* Huy hiệu 300×300, SVG có đổ bóng tràn ra ngoài khung */
+.badge {
+  position: relative;
+  flex-shrink: 0;
+  width: 300px;
+  height: 300px;
+}
+
+.badge img {
+  position: absolute;
+  top: -0.99%;
+  left: -13.49%;
+  display: block;
+  width: 126.98%;
+  height: 126.98%;
+  max-width: none;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 24px 0 24px 28px;
+  border-radius: 24px;
+  font-size: 26px;
+  line-height: normal;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Thiết kế cố định dòng đầu rộng 322px (chữ tràn ra) -> giữ để căn giữa khớp Figma */
+.item:first-child {
+  width: 322px;
+}
+
+.check {
+  flex-shrink: 0;
+  width: 38.672px;
+  height: 30px;
+}
+
+@media (max-width: 1100px) {
+  .section {
+    height: auto;
+    padding: 56px 20px;
+  }
+  .content {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    gap: 40px;
+  }
+  .row {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .item {
+    white-space: normal;
+    font-size: 20px;
+  }
+  .item:first-child {
+    width: auto;
+  }
+}

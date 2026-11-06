@@ -1,0 +1,106 @@
+/* Figma: "Chi tiết hồ sơ bị từ chối" (121:16043) */
+.withBar { padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 12px 16px 0;
+}
+
+.head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.headText { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.service { font-size: 18px; font-weight: 500; line-height: normal; color: #0b0c0e; }
+.sentAt { font-size: 13px; line-height: 18.2px; color: #6a6e77; }
+
+.reason {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px;
+  border-radius: 20px;
+  background: #fde8e8;
+}
+.reasonTitle { font-size: 14px; font-weight: 500; line-height: 18px; color: #b3202a; }
+.reasonText { padding-top: 2px; font-size: 15px; line-height: 23.25px; color: #0b0c0e; }
+
+/* Tiến trình 3 bước (121:16065) */
+.timeline {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 20px;
+  list-style: none;
+  border-radius: 24px;
+  background: #fff;
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.stepDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+}
+.dot_done { background: #1fa463; }
+.dot_rejected { background: #d92d3a; }
+.dot_current { background: #fff; box-shadow: inset 0 0 0 2px #f76b15; }
+.dot_todo { background: #e3e5e9; }
+.stepText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  line-height: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+.stepLabel { font-weight: 500; color: #0b0c0e; }
+.stepDate { color: #6a6e77; }
+.connector {
+  position: relative;
+  flex: 1 0 0;
+  align-self: stretch;
+  min-width: 0;
+}
+.lineDone,
+.lineTodo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 13px;
+  height: 2px;
+  border-radius: 99px;
+}
+.lineDone { background: #1fa463; }
+.lineTodo { background: #e3e5e9; }
+
+/* Tiền (121:16098) */
+.money {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 24px;
+  background: #fff;
+}
+.moneyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 12px 0;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.moneyLabel { line-height: normal; color: #6a6e77; }
+.moneyValue { font-weight: 500; line-height: 20px; color: #0b0c0e; text-align: right; }

@@ -1,0 +1,159 @@
+/* Thành phần dùng chung của App mobile (/app) – số đo theo Figma "App Mobile" (121:15746). */
+
+.screen {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.subtle { background: #f7f8fa; }
+.white { background: #fff; }
+.dark { background: #0f0f13; }
+
+/* ---------- Thanh tiêu đề (121:15838) ---------- */
+.topBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+.topTitle {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - 14px);
+  transform: translateX(-50%);
+  max-width: calc(100% - 136px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+  color: #0b0c0e;
+  text-align: center;
+}
+
+/* Icon button 36px (47:12756) – vùng chạm mở rộng tới 44px */
+.iconBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: rgba(0, 0, 85, 0.02);
+  cursor: pointer;
+}
+.iconBtn::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+.iconBtn:focus-visible { outline: 2px solid #0f7a86; outline-offset: 2px; }
+
+/* ---------- Nút chính "btn" 48px ---------- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  padding: 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #12909c 3.571%, #04707d 139.29%);
+  box-shadow: 0 10px 22px -10px rgba(15, 122, 134, 0.65), 0 0 0 1px #0f8894;
+  overflow: hidden;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.btn:disabled { opacity: 0.6; cursor: default; }
+.btn:focus-visible { outline: 2px solid #0b0c0e; outline-offset: 3px; }
+
+/* ---------- Thanh hành động đáy ---------- */
+.bottomBar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 20;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  padding: 16px 24px calc(32px + env(safe-area-inset-bottom, 0px));
+  border-radius: 16px 16px 0 0;
+}
+.bottomPlain { background: transparent; }
+.bottomPanel {
+  background: #fff;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ---------- Icon loại hồ sơ 40px + badge trạng thái 12px ---------- */
+.typeIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+}
+.tintWhite { filter: brightness(0) invert(1); }
+.badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.badgeApproved { background: #1fa463; box-shadow: 0 0 0 1px #fff; }
+.badgeRejected { background: #d92d3a; box-shadow: 0 0 0 1px #fff; }
+.badgePending { background: #f76b15; }
+
+/* Màu chữ trạng thái (Hồ sơ của tôi 121:15947) */
+.stApproved { color: #0b6b42; }
+.stRejected { color: #b3202a; }
+.stPending { color: #cc4e00; }
+
+/* ---------- chữ phụ ---------- */
+.muted {
+  padding: 24px 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: #6a6e77;
+  text-align: center;
+}
+.error {
+  font-size: 13px;
+  line-height: 18px;
+  color: #b3202a;
+}
+.devCode {
+  font-size: 13px;
+  line-height: 18px;
+  color: #cc4e00;
+}

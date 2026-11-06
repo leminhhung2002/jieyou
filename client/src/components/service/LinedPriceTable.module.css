@@ -1,0 +1,27 @@
+/* Line 36: nét 1px trắng 16%, mờ dần về 2 đầu (thay cho viền đặc của PriceTable).
+   Vẽ bằng nền của cả hàng <tr> để gradient trải đều trên toàn bộ chiều rộng bảng. */
+.wrap table thead th,
+.wrap table tbody th,
+.wrap table tbody td {
+  /* Đường kẻ Figma cao 0 (không chiếm chỗ) -> vẽ đè lên đáy vùng đệm thay vì dùng border */
+  border-bottom: 0;
+}
+
+.wrap table thead tr,
+.wrap table tbody tr {
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.16) 50%, rgba(255, 255, 255, 0));
+  background-position: bottom;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+}
+
+/* Hàng cuối: không có đường kẻ, không đệm dưới (khung Slot kết thúc ngay sau chữ) */
+.wrap table tbody tr:last-child {
+  background-image: none;
+}
+
+.wrap table tbody tr:last-child th,
+.wrap table tbody tr:last-child td {
+  padding-bottom: 0;
+  border-bottom: 0;
+}

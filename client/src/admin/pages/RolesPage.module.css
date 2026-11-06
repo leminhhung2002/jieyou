@@ -1,0 +1,68 @@
+/* Ô ma trận: icon tick 22px (Figma đặt cao hơn tâm dòng 4px) hoặc gạch "—" */
+.cell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  vertical-align: middle;
+}
+
+.check {
+  display: block;
+  transform: translateY(-4px);
+}
+
+.dash {
+  font-size: 15px;
+  line-height: 21px;
+  color: #c8cbd1;
+}
+
+.toggle {
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+/* Mở rộng vùng bấm ra 38px mà không đổi bố cục */
+.toggle::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 10px;
+  transition: background 0.15s;
+}
+
+.toggle:hover::before {
+  background: rgba(15, 122, 134, 0.08);
+}
+
+.toggle:focus-visible {
+  outline: none;
+}
+
+.toggle:focus-visible::before {
+  box-shadow: 0 0 0 2px #0f7a86;
+}
+
+.toggle:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.note {
+  margin-top: 28px;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.error {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #b3202a;
+}

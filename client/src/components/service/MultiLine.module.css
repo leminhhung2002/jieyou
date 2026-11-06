@@ -1,0 +1,9 @@
+.line {
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  .line {
+    white-space: normal;
+  }
+}

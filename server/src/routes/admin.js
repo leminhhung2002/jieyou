@@ -1,0 +1,364 @@
+import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
+import { config } from '../config.js';
+import { asyncHandler } from '../middleware/errorHandler.js';
+import { requireAdmin, signAdminToken } from '../middleware/adminAuth.js';
+import { adminStore, PERMISSIONS, SERVICE_TYPES } from '../services/adminStore.js';
+import { userStore } from '../services/userStore.js';
+import { accountStore } from '../services/accountStore.js';
+import { verifyPassword } from '../services/password.js';
+import { isNonEmptyString } from '../utils/validators.js';
+import { badRequest, conflict, notFound, unauthorized, HttpError } from '../utils/httpError.js';
+
+const router = Router();
+const DAY = 24 * 3600_000;
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: config.isProd ? 10 : 200,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { error: { message: 'Quá nhiều lần đăng nhập, vui lòng thử lại sau' } },
+});
+
+const isToday = (iso) => new Date(iso).toDateString() === new Date().toDateString();
+
+function applicationView(app) {
+  const overdue = app.status === 'pending' && Date.now() - new Date(app.submittedAt).getTime() > DAY;
+  const customer = userStore.findById(app.customerId);
+  return {
+    code: app.code,
+    type: app.type,
+    service: SERVICE_TYPES[app.type]?.name,
+    serviceLabel: SERVICE_TYPES[app.type]?.label,
+    customer: { id: customer?.id, name: customer?.businessName, shortName: shortName(customer?.businessName) },
+    status: overdue ? 'overdue' : app.status,
+    submittedAt: app.submittedAt,
+    held: app.held,
+    details: app.details,
+    rejectReason: app.rejectReason || null,
+    reviewedBy: app.reviewedBy || null,
+    reviewedAt: app.reviewedAt || null,
+  };
+}
+
+/** "Công ty TNHH An Phát" -> "An Phát" (cột Khách hàng rút gọn ở màn Duyệt hồ sơ) */
+function shortName(name = '') {
+  return name.replace(/^(Công ty TNHH|Công ty|CTCP|Cửa hàng|Hộ KD)\s+/i, '').replace(/\s+Trading$/i, '');
+}
+
+function customerView(u) {
+  return {
+    id: u.id,
+    businessName: u.businessName,
+    taxCode: u.taxCode,
+    phone: u.phone,
+    email: u.email,
+    balance: u.balance || 0,
+    status: u.status || 'active',
+    createdAt: u.createdAt,
+  };
+}
+
+function transactionView(t) {
+  const c = userStore.findById(t.customerId);
+  return { ...t, customer: { id: c?.id, name: c?.businessName, shortName: shortName(c?.businessName) } };
+}
+
+/* ======================= Đăng nhập quản trị ======================= */
+
+router.post(
+  '/auth/login',
+  loginLimiter,
+  asyncHandler(async (req, res) => {
+    const { username, password } = req.body || {};
+    const admin = adminStore.findAdminByUsername(String(username || '').trim().toLowerCase());
+    if (!admin || typeof password !== 'string' || !(await verifyPassword(password, admin.passwordHash))) {
+      throw unauthorized('Tên đăng nhập hoặc mật khẩu không đúng');
+    }
+    adminStore.log(admin.username, 'Đăng nhập', 'Hệ thống quản trị');
+    res.json({ data: { token: signAdminToken(admin), admin: adminStore.toPublicAdmin(admin) } });
+  }),
+);
+
+router.get('/auth/me', requireAdmin(), (req, res) => {
+  res.json({ data: adminStore.toPublicAdmin(req.admin) });
+});
+
+/* ============================ Tổng quan ============================ */
+
+router.get('/overview', requireAdmin(), (req, res) => {
+  const apps = adminStore.listApplications().map(applicationView);
+  const pending = apps.filter((a) => a.status === 'pending' || a.status === 'overdue');
+  const overdue = pending.filter((a) => a.status === 'overdue');
+  const customers = userStore.list();
+  const topupsToday = adminStore.listTransactions().filter((t) => t.type === 'topup' && t.status === 'success' && isToday(t.createdAt));
+  const stuck = adminStore.listTransactions().filter((t) => t.type === 'topup' && t.status === 'pending' && !t.reconciled);
+
+  const queue = [...pending].sort((a, b) => b.submittedAt.localeCompare(a.submittedAt));
+  // Hàng đợi: hồ sơ mới nhất trước, luôn kèm các hồ sơ quá hạn
+  const preview = [...queue.filter((a) => a.status !== 'overdue').slice(0, 2), ...overdue.slice(0, 2)];
+
+  res.json({
+    data: {
+      stats: {
+        pending: pending.length,
+        overdue: overdue.length,
+        newCustomersToday: customers.filter((c) => isToday(c.createdAt)).length,
+        totalCustomers: customers.length,
+        topupToday: topupsToday.reduce((s, t) => s + t.amount, 0),
+        topupTodayCount: topupsToday.length,
+        webhookErrors: stuck.length,
+      },
+      queue: preview,
+      attention: [
+        overdue.length && { kind: 'overdue', title: `${overdue.length} hồ sơ quá hạn xử lý`, subtitle: 'Ưu tiên duyệt trước', link: '/admin/duyet-ho-so' },
+        adminStore.db.invoicesPending && {
+          kind: 'invoice',
+          title: `${adminStore.db.invoicesPending} hóa đơn chờ phát hành`,
+          subtitle: 'Kế toán xử lý',
+          link: '/admin/giao-dich',
+        },
+      ].filter(Boolean),
+    },
+  });
+});
+
+/* ============================ Duyệt hồ sơ ============================ */
+
+router.get('/applications', requireAdmin('applications'), (req, res) => {
+  const { type, status = 'pending' } = req.query;
+  let list = adminStore.listApplications().map(applicationView);
+  if (status === 'pending') list = list.filter((a) => a.status === 'pending' || a.status === 'overdue');
+  else if (status !== 'all') list = list.filter((a) => a.status === status);
+  const counts = Object.fromEntries(Object.keys(SERVICE_TYPES).map((k) => [k, list.filter((a) => a.type === k).length]));
+  if (type && type !== 'all') list = list.filter((a) => a.type === type);
+  list.sort((a, b) => b.submittedAt.localeCompare(a.submittedAt));
+  res.json({ data: list, meta: { counts, types: SERVICE_TYPES } });
+});
+
+router.get('/applications/:code', requireAdmin('applications'), (req, res, next) => {
+  const app = adminStore.findApplication(req.params.code);
+  if (!app) return next(notFound('Hồ sơ không tồn tại'));
+  res.json({ data: applicationView(app) });
+});
+
+function requirePending(code) {
+  const app = adminStore.findApplication(code);
+  if (!app) throw notFound('Hồ sơ không tồn tại');
+  if (app.status !== 'pending') throw conflict('Hồ sơ đã được xử lý');
+  return app;
+}
+
+router.post('/applications/:code/approve', requireAdmin('applications'), (req, res) => {
+  const app = requirePending(req.params.code);
+  Object.assign(app, { status: 'approved', reviewedBy: req.admin.username, reviewedAt: new Date().toISOString() });
+  // Tiền tạm giữ chuyển thành phí dịch vụ
+  if (app.held > 0) adminStore.addTransaction({ customerId: app.customerId, type: 'fee', amount: -app.held, note: app.code });
+  adminStore.log(req.admin.username, 'Duyệt hồ sơ', app.code);
+  accountStore.onApplicationReviewed(app);
+  res.json({ data: applicationView(app) });
+});
+
+router.post('/applications/:code/reject', requireAdmin('applications'), (req, res) => {
+  const reason = String(req.body?.reason || '').trim();
+  if (reason.length < 5) throw badRequest('Vui lòng nhập lý do từ chối (tối thiểu 5 ký tự)', { field: 'reason' });
+  if (reason.length > 500) throw badRequest('Lý do tối đa 500 ký tự', { field: 'reason' });
+  const app = requirePending(req.params.code);
+  Object.assign(app, { status: 'rejected', rejectReason: reason, reviewedBy: req.admin.username, reviewedAt: new Date().toISOString() });
+  // Hoàn lại tiền tạm giữ vào số dư khách hàng
+  if (app.held > 0) {
+    const customer = userStore.findById(app.customerId);
+    if (customer) userStore.update(customer.id, { balance: (customer.balance || 0) + app.held });
+    adminStore.addTransaction({ customerId: app.customerId, type: 'refund', amount: app.held, note: app.code });
+  }
+  adminStore.log(req.admin.username, 'Từ chối hồ sơ', app.code);
+  accountStore.onApplicationReviewed(app);
+  res.json({ data: applicationView(app) });
+});
+
+/* ============================ Khách hàng ============================ */
+
+router.get('/customers', requireAdmin('customers'), (req, res) => {
+  const q = String(req.query.q || '').trim().toLowerCase();
+  const status = req.query.status;
+  let list = userStore.list().map(customerView);
+  if (q) {
+    const digits = q.replace(/\D/g, '');
+    list = list.filter(
+      (c) =>
+        c.businessName?.toLowerCase().includes(q) ||
+        (digits && (c.taxCode?.includes(digits) || c.phone?.includes(digits))),
+    );
+  }
+  if (status && status !== 'all') list = list.filter((c) => c.status === status);
+  list.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  res.json({ data: list });
+});
+
+router.patch('/customers/:id/status', requireAdmin('customers'), (req, res) => {
+  const { status } = req.body || {};
+  if (!['active', 'locked'].includes(status)) throw badRequest('Trạng thái không hợp lệ');
+  const user = userStore.findById(req.params.id);
+  if (!user) throw notFound('Khách hàng không tồn tại');
+  userStore.update(user.id, { status });
+  adminStore.log(req.admin.username, status === 'locked' ? 'Khóa tài khoản' : 'Mở khóa tài khoản', user.businessName);
+  res.json({ data: customerView(user) });
+});
+
+/* ============================ Giao dịch ============================ */
+
+router.get('/transactions', requireAdmin('transactions'), (req, res) => {
+  const all = adminStore.listTransactions();
+  const topupsToday = all.filter((t) => t.type === 'topup' && t.status === 'success' && isToday(t.createdAt));
+  const pendingApps = adminStore.listApplications().filter((a) => a.status === 'pending');
+  const holding = pendingApps.reduce((s, a) => s + (a.held || 0), 0);
+  const unreconciled = all.filter((t) => t.type === 'topup' && !t.reconciled).length;
+  let list = all.map(transactionView);
+  if (req.query.status && req.query.status !== 'all') list = list.filter((t) => t.status === req.query.status);
+  res.json({
+    data: list,
+    meta: {
+      topupToday: topupsToday.reduce((s, t) => s + t.amount, 0),
+      topupTodayCount: topupsToday.length,
+      holding,
+      holdingAdsCount: pendingApps.filter((a) => a.type === 'ads' && a.held > 0).length,
+      unreconciled,
+      reconciledAt: (() => {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        return d.toISOString();
+      })(),
+    },
+  });
+});
+
+/* ======================= Nội dung · Bảng giá ======================= */
+
+function validatePriceItem(body, partial = false) {
+  const out = {};
+  if (!partial || body.serviceSlug !== undefined) {
+    const svc = adminStore.listPriceItems().find((p) => p.serviceSlug === body.serviceSlug);
+    const known = svc?.serviceName || SERVICE_NAMES[body.serviceSlug];
+    if (!known) throw badRequest('Dịch vụ không hợp lệ', { field: 'serviceSlug' });
+    out.serviceSlug = body.serviceSlug;
+    out.serviceName = known;
+  }
+  if (!partial || body.name !== undefined) {
+    if (!isNonEmptyString(body.name, 120)) throw badRequest('Vui lòng nhập tên mục giá', { field: 'name' });
+    out.name = body.name.trim();
+  }
+  if (!partial || body.unitPrice !== undefined) {
+    const n = Number(body.unitPrice);
+    if (!Number.isInteger(n) || n < 0 || n > 10_000_000_000) throw badRequest('Đơn giá không hợp lệ', { field: 'unitPrice' });
+    out.unitPrice = n;
+  }
+  if (!partial || body.vat !== undefined) {
+    if (body.vat === null || body.vat === '') out.vat = null;
+    else {
+      const v = Number(body.vat);
+      if (![0, 5, 8, 10].includes(v)) throw badRequest('VAT chỉ nhận 0, 5, 8 hoặc 10%', { field: 'vat' });
+      out.vat = v;
+    }
+  }
+  if (!partial || body.status !== undefined) {
+    if (!['draft', 'published'].includes(body.status ?? 'draft')) throw badRequest('Trạng thái không hợp lệ', { field: 'status' });
+    out.status = body.status ?? 'draft';
+  }
+  return out;
+}
+
+const SERVICE_NAMES = {
+  'quang-cao-tren-san': 'Quảng cáo trên sàn',
+  'ho-so-bo-cong-thuong': 'Hồ sơ Bộ Công Thương',
+  'may-ban-hang-misa': 'Máy bán hàng + MISA',
+  'tang-tuong-tac-mxh': 'Tăng tương tác MXH',
+  'cong-thanh-toan-pos': 'Hồ sơ cổng thanh toán POS',
+  'tai-khoan-unipay': 'Tài khoản UniPay',
+};
+
+router.get('/price-items', requireAdmin('content'), (_req, res) => {
+  res.json({ data: adminStore.listPriceItems(), meta: { services: SERVICE_NAMES } });
+});
+
+router.post('/price-items', requireAdmin('content'), (req, res) => {
+  const item = adminStore.addPriceItem(validatePriceItem(req.body || {}));
+  adminStore.log(req.admin.username, item.status === 'published' ? 'Xuất bản bảng giá' : 'Thêm mục giá', item.name);
+  res.status(201).json({ data: item });
+});
+
+router.patch('/price-items/:id', requireAdmin('content'), (req, res) => {
+  const existing = adminStore.findPriceItem(req.params.id);
+  if (!existing) throw notFound('Mục giá không tồn tại');
+  const patch = validatePriceItem(req.body || {}, true);
+  const wasPublished = existing.status === 'published';
+  const item = adminStore.updatePriceItem(existing.id, patch);
+  const action =
+    patch.status === 'published' && !wasPublished ? 'Xuất bản bảng giá' : patch.status === 'draft' && wasPublished ? 'Gỡ xuất bản bảng giá' : 'Cập nhật bảng giá';
+  adminStore.log(req.admin.username, action, item.name);
+  res.json({ data: item });
+});
+
+router.delete('/price-items/:id', requireAdmin('content'), (req, res) => {
+  const existing = adminStore.findPriceItem(req.params.id);
+  if (!existing) throw notFound('Mục giá không tồn tại');
+  adminStore.removePriceItem(existing.id);
+  adminStore.log(req.admin.username, 'Xóa mục giá', existing.name);
+  res.json({ data: { ok: true } });
+});
+
+/* ============================ Phân quyền ============================ */
+
+router.get('/roles', requireAdmin('roles'), (_req, res) => {
+  res.json({ data: adminStore.listRoles(), meta: { permissions: PERMISSIONS } });
+});
+
+function validatePermissions(list) {
+  const keys = PERMISSIONS.map((p) => p.key);
+  if (!Array.isArray(list) || !list.every((k) => keys.includes(k))) throw badRequest('Danh sách quyền không hợp lệ');
+  return [...new Set(list)];
+}
+
+router.post('/roles', requireAdmin('roles'), (req, res) => {
+  const name = String(req.body?.name || '').trim();
+  if (!isNonEmptyString(name, 60)) throw badRequest('Vui lòng nhập tên vai trò', { field: 'name' });
+  if (adminStore.listRoles().some((r) => r.name.toLowerCase() === name.toLowerCase())) throw conflict('Vai trò đã tồn tại');
+  const role = adminStore.createRole(name, validatePermissions(req.body?.permissions || []));
+  adminStore.log(req.admin.username, 'Thêm vai trò', role.name);
+  res.status(201).json({ data: role });
+});
+
+router.patch('/roles/:id', requireAdmin('roles'), (req, res) => {
+  const role = adminStore.findRole(req.params.id);
+  if (!role) throw notFound('Vai trò không tồn tại');
+  if (role.locked) throw new HttpError(403, 'Không thể sửa quyền của Super Admin');
+  const permissions = validatePermissions(req.body?.permissions);
+  adminStore.updateRole(role.id, { permissions });
+  adminStore.log(req.admin.username, 'Cập nhật phân quyền', role.name);
+  res.json({ data: role });
+});
+
+router.delete('/roles/:id', requireAdmin('roles'), (req, res) => {
+  const role = adminStore.findRole(req.params.id);
+  if (!role) throw notFound('Vai trò không tồn tại');
+  if (role.locked) throw new HttpError(403, 'Không thể xóa vai trò Super Admin');
+  const inUse = adminStore.countAdminsInRole(role.id);
+  if (inUse) throw conflict(`Vai trò đang được gán cho ${inUse} tài khoản, không thể xóa`);
+  adminStore.removeRole(role.id);
+  adminStore.log(req.admin.username, 'Xóa vai trò', role.name);
+  res.json({ data: { ok: true } });
+});
+
+/* ============================ Nhật ký ============================ */
+
+router.get('/logs', requireAdmin('roles'), (req, res) => {
+  const q = String(req.query.q || '').trim().toLowerCase();
+  const action = req.query.action;
+  let list = [...adminStore.listLogs()].sort((a, b) => b.at.localeCompare(a.at));
+  if (q) list = list.filter((l) => l.actor.toLowerCase().includes(q) || l.target.toLowerCase().includes(q));
+  if (action && action !== 'all') list = list.filter((l) => l.action === action);
+  const actions = [...new Set(adminStore.listLogs().map((l) => l.action))];
+  res.json({ data: list.slice(0, 200), meta: { actions } });
+});
+
+export default router;

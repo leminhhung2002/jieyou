@@ -1,0 +1,68 @@
+/* Figma: Admin: Khách hàng (76:449) */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+/* Cột số dư căn phải, lề phải 12px như Figma (76:531) */
+th.money,
+td.money {
+  padding-right: 12px !important;
+}
+
+.error {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #b3202a;
+}
+
+/* ===== Hộp thoại khóa / mở khóa ===== */
+.modalText {
+  margin-top: 8.5px;
+  font-size: 15px;
+  line-height: 21px;
+  color: #6a6e77;
+}
+
+.summary {
+  margin: 16px 0 0;
+  padding: 4px 16px;
+  border-radius: 14px;
+  background: #f7f8fa;
+}
+
+.summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.summary div + div {
+  border-top: 1px solid #e3e5e9;
+}
+
+.summary dt {
+  color: #3a3d44;
+}
+
+.summary dd {
+  margin: 0;
+  font-weight: 500;
+  color: #0b0c0e;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.actions > button {
+  flex: 1 0 0;
+  min-width: 0;
+}

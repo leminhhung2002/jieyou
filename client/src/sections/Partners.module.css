@@ -1,0 +1,71 @@
+.section {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 0 120px 40px;
+  background: transparent;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 32px;
+  line-height: normal;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.viewport {
+  width: 1200px;
+  max-width: 100%;
+  height: 80px;
+  overflow: hidden;
+  opacity: 0.5;
+  -webkit-mask: url('/assets/partners/mask.svg') 0 0 / 1200px 80px no-repeat;
+  mask: url('/assets/partners/mask.svg') 0 0 / 1200px 80px no-repeat;
+}
+
+/* Vị trí ban đầu khớp Figma: hàng logo lệch trái 499px */
+.track {
+  display: flex;
+  width: max-content;
+  transform: translateX(-499px);
+  animation: marquee 40s linear infinite;
+}
+
+.viewport:hover .track {
+  animation-play-state: paused;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding-right: 24px;
+}
+
+.row img {
+  width: 106.667px;
+  height: 80px;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(-499px);
+  }
+  to {
+    /* 17 logo × (106.667 + 24) = 2221.34px cho mỗi bản */
+    transform: translateX(calc(-499px - 2221.34px));
+  }
+}
+
+@media (max-width: 900px) {
+  .section {
+    padding: 0 16px 40px;
+  }
+  .title {
+    font-size: 24px;
+  }
+}

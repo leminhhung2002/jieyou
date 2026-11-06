@@ -1,0 +1,280 @@
+.section {
+  display: flex;
+  justify-content: center;
+  padding: 80px;
+  background: var(--color-black);
+}
+
+.card {
+  position: relative;
+  flex: 1 0 0;
+  max-width: var(--content-width);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  padding: 100px;
+  border-radius: 40px;
+  overflow: hidden;
+}
+
+/* image 4444749 – lật ngang (-scale-y + rotate 180°) */
+.bg {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 373px;
+  object-fit: cover;
+  object-position: bottom;
+  transform: translateY(-50%) scaleX(-1);
+  mix-blend-mode: lighten;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 56px;
+  letter-spacing: -0.96px;
+  white-space: nowrap;
+  color: transparent;
+  background-image: linear-gradient(105.95deg, #fff 52.998%, rgba(255, 255, 255, 0.8) 116.22%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.sub {
+  width: 665px;
+  max-width: 100%;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.18px;
+  color: #fff;
+}
+
+.stores {
+  display: flex;
+  gap: 12px;
+}
+
+.store {
+  position: relative;
+  width: 180px;
+  height: 60px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: rgba(25, 27, 34, 0.38);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  transition: background 0.15s;
+}
+
+.store:hover {
+  background: rgba(25, 27, 34, 0.6);
+}
+
+.apple {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 30px;
+  height: 36px;
+}
+
+.play {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 31.5px;
+  height: 36px;
+}
+
+/* Text trong component store của Figma được scale 0.6 (20.25px/36px/22.5px gốc) */
+.appleText {
+  position: absolute;
+  left: 54px;
+  top: 50%;
+  width: 117px;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(-50%);
+  font-weight: 500;
+}
+
+.small {
+  font-size: 12.15px;
+  line-height: 12.15px;
+  white-space: nowrap;
+}
+
+.big {
+  font-size: 21.6px;
+  line-height: 1;
+  letter-spacing: -0.42px;
+  white-space: nowrap;
+}
+
+.playText {
+  position: absolute;
+  left: 54px;
+  top: 7.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.25px;
+}
+
+.getIt {
+  font-size: 13.5px;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+.playWord {
+  width: 111px;
+  height: 22.5px;
+  transform: scaleY(-1);
+}
+
+/* ===== iPhone mockup (68:2259) ===== */
+.phone {
+  position: absolute;
+  left: 852px;
+  top: 56.5px;
+  width: 315.362px;
+  height: 650px;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 47.805px;
+  background: #000;
+  box-shadow: inset 0 0 0 2.313px rgba(160, 160, 160, 0.9), 0 0 1.5px #a0a0a0;
+}
+
+.frame::after {
+  content: '';
+  position: absolute;
+  inset: 3.85px;
+  border-radius: 47.805px;
+  border: 0.771px solid rgba(255, 255, 255, 0.7);
+  filter: blur(0.771px);
+}
+
+.screenFrame {
+  position: absolute;
+  left: 3.08px;
+  top: 3.08px;
+  width: 309.193px;
+  height: 643.832px;
+  border-radius: 44.721px;
+  background: #000100;
+  box-shadow: inset 0 0 2.7px 3px #879194;
+}
+
+.screen {
+  position: absolute;
+  left: 9.25px;
+  top: 9.25px;
+  width: 296.856px;
+  height: 631.495px;
+  overflow: hidden;
+  border-radius: 40.095px;
+  background: #dae2d3;
+}
+
+.screen img {
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 300.712px;
+  height: 650.771px;
+  object-fit: cover;
+}
+
+.island {
+  position: absolute;
+  left: 114.89px;
+  top: 18.51px;
+  width: 85.587px;
+  height: 23.903px;
+}
+
+.btn {
+  position: absolute;
+  width: 3.855px;
+  background: linear-gradient(90deg, #000 0%, #3a3a3a 60%, #000 100%);
+}
+
+.btnPower {
+  left: 313.82px;
+  top: 189.68px;
+  height: 77.106px;
+  border-radius: 0 1.542px 1.542px 0;
+}
+
+.btnAction {
+  left: -2.31px;
+  top: 114.89px;
+  height: 23.903px;
+  border-radius: 1.542px 0 0 1.542px;
+}
+
+.btnVolUp {
+  left: -2.31px;
+  top: 161.92px;
+  height: 43.179px;
+  border-radius: 1.542px 0 0 1.542px;
+}
+
+.btnVolDown {
+  left: -2.31px;
+  top: 217.44px;
+  height: 43.179px;
+  border-radius: 1.542px 0 0 1.542px;
+}
+
+@media (max-width: 1400px) {
+  .phone {
+    left: auto;
+    right: 112.64px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .section {
+    padding: 40px 16px;
+  }
+  .card {
+    padding: 48px 24px 360px;
+  }
+  .bg {
+    height: 100%;
+  }
+  .phone {
+    right: 50%;
+    top: auto;
+    bottom: -320px;
+    transform: translateX(50%);
+  }
+  .title {
+    font-size: 36px;
+    line-height: 44px;
+  }
+}

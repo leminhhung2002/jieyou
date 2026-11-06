@@ -1,0 +1,518 @@
+/* ===== Khung màn hình (Figma Container 1440×1036, p12, nền #0b0c0e) ===== */
+.screen {
+  min-height: 100vh;
+  background: #0b0c0e;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: var(--page-width);
+  min-height: max(100vh, 1036px);
+  padding: 12px;
+}
+
+/* ===== Cột trái ===== */
+.panel {
+  position: relative;
+  flex: 0 0 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 48px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #0e525b;
+  color: #fff;
+}
+
+.panelWide {
+  flex-basis: 700px;
+}
+
+.panelBg {
+  position: absolute;
+  left: -25.49%;
+  top: -2.2%;
+  width: 137.53%;
+  height: 159.25%;
+  pointer-events: none;
+}
+
+.panelBgLogin {
+  position: absolute;
+  left: -10.58%;
+  top: -2.73%;
+  width: 121.16%;
+  height: 140.3%;
+  pointer-events: none;
+}
+
+.brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 56px;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brandName {
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 24px;
+  letter-spacing: 4.48px;
+}
+
+.brandSub {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: 5.04px;
+  opacity: 0.9;
+}
+
+.panelTitle {
+  position: relative;
+  width: 480px;
+  max-width: 100%;
+  font-weight: 500;
+  font-size: 46px;
+  line-height: 52.9px;
+  letter-spacing: -1.38px;
+}
+
+.features {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  font-size: 16px;
+  line-height: 22.4px;
+  color: #cdf7f8;
+}
+
+/* ===== Cột phải ===== */
+.main {
+  flex: 1 0 0;
+  min-width: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 56px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 20.239px;
+  width: 540px;
+  max-width: 100%;
+  padding: 36px 32px;
+  border-radius: 16px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 40.8px;
+  letter-spacing: -1.36px;
+  color: #fff;
+}
+
+.subtitle {
+  font-size: 15px;
+  line-height: 21px;
+  color: #6a6e77;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20.239px;
+}
+
+/* Khối các ô nhập: trong Figma cao 367.594px, các ô dàn đều */
+.fields {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 367.594px;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+.row > * {
+  flex: 1 0 0;
+  min-width: 1px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row .field {
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  line-height: normal;
+  color: #fff;
+}
+
+.inputBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.loginForm .inputBox {
+  border-color: #000;
+  border-radius: 14px;
+}
+
+.inputBox:focus-within {
+  border-color: rgba(12, 251, 254, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.inputBox input {
+  flex: 1 0 0;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 16px;
+  line-height: 16px;
+  color: #fff;
+}
+
+.inputBox input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.passwordInput {
+  letter-spacing: 3px;
+}
+
+.passwordInput::placeholder {
+  letter-spacing: 0;
+}
+
+.eye {
+  display: flex;
+  width: 20px;
+  height: 23px;
+  opacity: 0.8;
+}
+
+.eye:hover {
+  opacity: 1;
+}
+
+.inputError {
+  border-color: rgba(255, 99, 99, 0.7) !important;
+}
+
+.fieldError {
+  margin-top: -4px;
+  font-size: 13px;
+  color: #ff8a8a;
+}
+
+.agree {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 22px;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+.agree input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.checkbox img {
+  opacity: 0;
+}
+
+.agree input:checked + .checkbox {
+  background: #0f7a86;
+  border-color: #0f7a86;
+}
+
+.agree input:checked + .checkbox img {
+  opacity: 1;
+}
+
+.agree input:focus-visible + .checkbox {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.link {
+  font-weight: 500;
+  line-height: 18.2px;
+  color: #0cfbfe;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #12909c 3.571%, #04707d 139.29%);
+  box-shadow: 0 0 0 1px #0f8894;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  color: #fff;
+  transition: filter 0.15s;
+}
+
+.primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.foot {
+  display: flex;
+  justify-content: center;
+  min-height: 22px;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.foot button {
+  font-size: 13px;
+}
+
+/* ===== Đăng nhập: tab + khối nội dung (cao 367.594px, gap 80px) ===== */
+.loginBody {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-height: 367.594px;
+}
+
+.tabs {
+  display: flex;
+  height: 48px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tab {
+  flex: 1 0 0;
+  height: 40px;
+  border-radius: 9px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 14px;
+  color: #6a6e77;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tabActive {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  filter: drop-shadow(0 1px 1px rgba(11, 12, 14, 0.08));
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.forgot {
+  align-self: flex-end;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #fff;
+}
+
+.forgot:hover {
+  color: var(--color-primary);
+}
+
+/* ===== OTP ===== */
+.otpGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.otp {
+  display: flex;
+  gap: 16px;
+}
+
+.otpBox {
+  width: 60px;
+  height: 68px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  outline: 0;
+  font-weight: 500;
+  font-size: 24px;
+  text-align: center;
+  color: #fff;
+  caret-color: var(--color-primary);
+  transition: border-color 0.15s;
+}
+
+.otpBox:focus {
+  border-color: rgba(12, 251, 254, 0.6);
+}
+
+.resend {
+  min-height: 19.594px;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+  white-space: pre;
+}
+
+.resendBtn {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #fff;
+}
+
+.resendBtn:disabled {
+  color: #6a6e77;
+  cursor: default;
+}
+
+.resendBtn:not(:disabled):hover {
+  color: var(--color-primary);
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 99, 99, 0.12);
+  font-size: 14px;
+  color: #ff9c9c;
+}
+
+.alertInfo {
+  background: rgba(12, 251, 254, 0.08);
+  color: #9ffcfd;
+}
+
+.devHint {
+  font-size: 12px;
+  color: #f0d6a5;
+}
+
+.textBtn {
+  font-weight: 500;
+  color: #0cfbfe;
+}
+
+.textBtn:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1100px) {
+  .panel,
+  .panelWide {
+    display: none;
+  }
+  .main {
+    padding: 24px 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .card {
+    padding: 24px 8px;
+  }
+  .otp {
+    gap: 8px;
+  }
+  .otpBox {
+    width: 100%;
+    height: 56px;
+  }
+  .row {
+    flex-direction: column;
+  }
+}

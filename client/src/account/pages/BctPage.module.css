@@ -1,0 +1,256 @@
+/* ===== Thanh bước (74:2994): rộng 640, mỗi bước 92px, đường nối ~90.7px ở top 13px ===== */
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  width: 640px;
+  max-width: 100%;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.stepItem {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.stepItem:first-child {
+  flex: 0 0 92px;
+}
+
+.line {
+  flex: 1;
+  height: 2px;
+  margin-top: 13px;
+  background: #e3e5e9;
+}
+
+.lineDone {
+  background: #0f7a86;
+}
+
+.step,
+.stepBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 92px;
+  width: 92px;
+}
+
+.stepBtn {
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.stepBtn:hover .stepLabel {
+  color: #0c626c;
+}
+
+.dot {
+  position: relative;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.dot_current {
+  border: 3px solid #0f7a86;
+}
+
+.dot_todo {
+  border: 2px solid #c8cbd1;
+}
+
+/* Bước đã xong: nền teal + dấu tích */
+.dot_done {
+  border: 2px solid #0f7a86;
+  background: #0f7a86;
+}
+
+.dot_done::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.stepLabel {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16.9px;
+  text-align: center;
+  white-space: nowrap;
+  color: #0b0c0e;
+}
+
+.here {
+  font-size: 12px;
+  line-height: 15.6px;
+  text-align: center;
+  white-space: nowrap;
+  color: #6a6e77;
+}
+
+/* ===== Bố cục 652 + 400 (74:3019) – khác 632/420 mặc định ===== */
+div.layout {
+  grid-template-columns: minmax(0, 652fr) minmax(320px, 400fr);
+  align-items: start;
+}
+
+/* Thẻ "Bạn cần chuẩn bị" đệm 25px (74:3020) */
+section.card {
+  padding: 25px;
+}
+
+/* ===== Danh sách cần chuẩn bị (74:4255) ===== */
+.checklist {
+  display: flex;
+  flex-direction: column;
+  width: 588px;
+  max-width: 100%;
+}
+
+.checkItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-height: 81px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e3e5e9;
+}
+
+.checkItem:last-child {
+  border-bottom: 0;
+}
+
+.checkIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #e3e5e9;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.checkText {
+  display: flex;
+  flex-direction: column;
+  padding-top: 1px;
+  min-width: 0;
+}
+
+.checkTitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22.4px;
+  color: #0b0c0e;
+}
+
+.checkDesc {
+  font-size: 14px;
+  line-height: 21px;
+  color: #6a6e77;
+}
+
+/* ===== Nút: "Bắt đầu" giãn + "Lưu nháp" 134.5px, cách 12px (74:3080) ===== */
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.mainBtn {
+  flex: 1;
+  min-width: 0;
+}
+
+.draftBtn {
+  flex: 0 0 134.5px;
+  padding: 0 24px;
+}
+
+/* ===== Tài liệu ===== */
+.docs {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ===== Xác nhận ===== */
+.review {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.reviewRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 52px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e3e5e9;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.reviewRow:last-child {
+  border-bottom: 0;
+}
+
+.reviewRow dt {
+  flex: 0 0 200px;
+  color: #6a6e77;
+}
+
+.reviewRow dd {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+  color: #0b0c0e;
+}
+
+.edit {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #0f7a86;
+}
+
+.edit:hover {
+  background: #e8fbfb;
+}
+
+@media (max-width: 1100px) {
+  div.layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .reviewRow {
+    flex-wrap: wrap;
+  }
+  .reviewRow dt {
+    flex-basis: 100%;
+  }
+}

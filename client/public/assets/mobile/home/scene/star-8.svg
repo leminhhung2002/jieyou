@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="627.116" height="508.31" viewBox="0 0 627.116 508.31" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Star 8" filter="url(#filter0_f_0_250)" style="mix-blend-mode:plus-lighter">
+<path d="M313.558 90.2325L392.2 353.356L536.884 418.077H313.558H90.2325L240.402 353.356L313.558 90.2325Z" fill="url(#paint0_linear_0_250)" fill-opacity="0.36"/>
+</g>
+<defs>
+<filter id="filter0_f_0_250" x="0" y="0" width="627.116" height="508.31" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="45.1163" result="effect1_foregroundBlur_0_250"/>
+</filter>
+<linearGradient id="paint0_linear_0_250" x1="313.558" y1="90.2325" x2="313.558" y2="418.077" gradientUnits="userSpaceOnUse">
+<stop stop-color="#050505" stop-opacity="0"/>
+<stop offset="1" stop-color="#1322EC"/>
+</linearGradient>
+</defs>
+</svg>
