@@ -88,9 +88,9 @@ export default function Footer() {
               </address>
             </div>
             <div className={styles.contact}>
-              <a href="tel:02873096667">
+              <a href="tel:0843666670">
                 <img src={asset('footer/phone.svg')} width="20" height="20" alt="" />
-                02873096667
+                0843.6666.70
               </a>
               <a href="mailto:agency.jieyou@gmail.com">
                 <img src={asset('footer/mail.svg')} width="20" height="20" alt="" />
