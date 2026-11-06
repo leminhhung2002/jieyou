@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { adminStore, SERVICE_TYPES } from './adminStore.js';
 import { userStore } from './userStore.js';
 import { DEFAULT_SETTINGS } from '../data/accountCatalog.js';
+import { atToday } from '../utils/seedTime.js';
 import { emailApplicationResult, emailInvoiceIssued } from './accountEmails.js';
 
 /**
@@ -200,11 +201,7 @@ export const accountStore = {
     // Thông báo (màn "Thông báo")
     const N = (kind, category, title, body, createdAt, read = true) =>
       db.notifications.push({ id: crypto.randomUUID(), userId: user.id, kind, category, title, body, createdAt, read });
-    const todayAt = (h, m) => {
-      const d = new Date();
-      d.setHours(h, m, 0, 0);
-      return d.toISOString();
-    };
+    const todayAt = atToday;
     N('success', 'transaction', 'Nạp tiền thành công', '+5.000.000 đ đã vào tài khoản trả trước.', todayAt(10, 2), false);
     N('error', 'application', 'Hồ sơ MB-2410-0031 bị từ chối', 'Thiếu ảnh giấy phép kinh doanh. Sửa và gửi lại.', todayAt(9, 50), false);
     N('ads', 'application', 'Quảng cáo QC-2411-0042 đang chờ duyệt', 'Đã tạm giữ 1.500.000 đ.', qc?.submittedAt || todayAt(9, 0));

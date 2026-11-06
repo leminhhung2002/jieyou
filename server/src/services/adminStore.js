@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { hashPassword } from './password.js';
 import { userStore } from './userStore.js';
 import { config } from '../config.js';
+import { atToday, daysAgo } from '../utils/seedTime.js';
 
 /**
  * Dữ liệu quản trị (in-memory) + dữ liệu mẫu khớp thiết kế Admin trong Figma.
@@ -35,17 +36,6 @@ const db = {
   invoicesPending: 2,
 };
 
-const atToday = (h, m) => {
-  const d = new Date();
-  d.setHours(h, m, 0, 0);
-  return d.toISOString();
-};
-const daysAgo = (days, h, m) => {
-  const d = new Date();
-  d.setDate(d.getDate() - days);
-  d.setHours(h, m, 0, 0);
-  return d.toISOString();
-};
 
 export const adminStore = {
   db,

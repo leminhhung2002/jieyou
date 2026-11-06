@@ -232,3 +232,14 @@ test('dev mailbox', async () => {
   assert.equal(r.status, 200);
   assert.match(await r.text(), /Thông số cấu hình máy POS/);
 });
+
+test('seedTime: mốc dữ liệu mẫu không ở tương lai, "quá 24 giờ" luôn đúng (kể cả lúc 00:08)', async () => {
+  const { atToday, daysAgo } = await import('../src/utils/seedTime.js');
+  const now = new Date(2026, 10, 7, 0, 8);
+  const a = new Date(atToday(10, 5, now));
+  const b = new Date(atToday(9, 40, now));
+  assert.ok(a <= now && b < a && a.toDateString() === now.toDateString());
+  const old = new Date(daysAgo(1, 8, 15, now));
+  assert.ok(now - old > 24 * 3600_000);
+  assert.equal(atToday(10, 5, new Date(2026, 10, 7, 15, 0)), new Date(2026, 10, 7, 10, 5).toISOString());
+});
