@@ -24,7 +24,7 @@ export default function NotFoundPage() {
           <Link to="/" className={styles.primary}>
             Về trang chủ
           </Link>
-          <a href="mailto:contact@unipay.net.vn" className={styles.ghost}>
+          <a href="mailto:agency.jieyou@gmail.com" className={styles.ghost}>
             Liên hệ hỗ trợ
           </a>
         </div>

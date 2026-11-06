@@ -83,7 +83,7 @@ export default function Footer() {
             <div className={styles.address}>
               <p className={styles.name}>CÔNG TY CỔ PHẦN GIẢI PHÁP JIEYOU</p>
               <address>
-                Tầng 2, Tòa nhà Saigon Paragon, Số 03 Nguyễn Lương Bằng, Phường Tân Mỹ, <br />
+                78 Bạch Đằng, Phường Tân Sơn Hoà, <br />
                 TP Hồ Chí Minh, Việt Nam
               </address>
             </div>
@@ -92,9 +92,9 @@ export default function Footer() {
                 <img src={asset('footer/phone.svg')} width="20" height="20" alt="" />
                 02873096667
               </a>
-              <a href="mailto:contact@unipay.net.vn">
+              <a href="mailto:agency.jieyou@gmail.com">
                 <img src={asset('footer/mail.svg')} width="20" height="20" alt="" />
-                contact@unipay.net.vn
+                agency.jieyou@gmail.com
               </a>
             </div>
           </div>

@@ -19,7 +19,7 @@ export const config = {
   adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || 'admin12345',
   // Địa chỉ website công khai – dùng cho link và ảnh trong email
   publicUrl: (process.env.PUBLIC_URL || process.env.CLIENT_ORIGIN?.split(',')[0] || 'http://localhost:5173').replace(/\/$/, ''),
-  mailFrom: process.env.MAIL_FROM || 'JIEYOU <no-reply@jieyou.vn>',
+  mailFrom: process.env.MAIL_FROM || 'JIEYOU <no-reply@jieyouagency.com>',
 };
 
 if (config.isProd && config.adminDefaultPassword === 'admin12345') {
