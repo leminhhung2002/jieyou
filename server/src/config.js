@@ -6,6 +6,8 @@ export const config = {
   env,
   isProd: env === 'production',
   port: Number(process.env.PORT) || 4000,
+  // Production sau nginx: đặt HOST=127.0.0.1 để cổng Node không lộ ra ngoài
+  host: process.env.HOST || undefined,
   clientOrigins: (process.env.CLIENT_ORIGIN || 'http://localhost:5173')
     .split(',')
     .map((s) => s.trim())

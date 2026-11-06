@@ -9,6 +9,6 @@ await adminStore.seed();
 accountStore.seed();
 
 const app = createApp();
-app.listen(config.port, () => {
+app.listen(config.port, config.host, () => {
   console.log(`JIEYOU API đang chạy tại http://localhost:${config.port} (${config.env})`);
 });
