@@ -26,6 +26,6 @@ if (config.isProd && config.adminDefaultPassword === 'admin12345') {
   throw new Error('ADMIN_DEFAULT_PASSWORD must be set in production');
 }
 
-if (config.isProd && config.jwtSecret === 'dev-secret') {
-  throw new Error('JWT_SECRET must be set in production');
+if (config.isProd && (config.jwtSecret === 'dev-secret' || config.jwtSecret.length < 32)) {
+  throw new Error('JWT_SECRET must be set in production (at least 32 characters)');
 }

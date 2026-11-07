@@ -42,7 +42,7 @@ export const userStore = {
   /** Bỏ các trường nhạy cảm trước khi trả về client. */
   toPublic(user) {
     if (!user) return null;
-    const { passwordHash, ...rest } = user;
+    const { passwordHash, tokenVersion, ...rest } = user;
     return rest;
   },
   _reset() {

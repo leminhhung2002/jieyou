@@ -1,7 +1,10 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { config } from '../config.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth, signToken } from '../middleware/auth.js';
+import { credentialVersion } from '../utils/jwt.js';
+import { securityLog } from '../utils/securityLog.js';
 import { adminStore, SERVICE_TYPES } from '../services/adminStore.js';
 import { accountStore, priceOf } from '../services/accountStore.js';
 import { userStore } from '../services/userStore.js';
@@ -29,6 +32,20 @@ const router = Router();
 router.use(requireAuth);
 
 const MIN_PASSWORD = 8;
+const MAX_PASSWORD = 128;
+
+// Chống dò mật khẩu hiện tại bằng token đã đánh cắp (OWASP A07)
+const passwordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: config.isProd ? 10 : 100,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  keyGenerator: (req) => req.user.id,
+  message: { error: { message: 'Quá nhiều lần thử, vui lòng thử lại sau' } },
+});
+
+// Không nhận các khóa có thể gây ô nhiễm prototype (OWASP A08)
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const DAY = 24 * 3600_000;
 
 /* ----------------------------- tiện ích ----------------------------- */
@@ -439,6 +456,7 @@ router.put('/drafts/:type', (req, res) => {
   // Chỉ giữ các trường chuỗi/số/boolean/tệp (tên + dung lượng), giới hạn độ dài
   const clean = {};
   for (const [k, v] of Object.entries(details).slice(0, 30)) {
+    if (UNSAFE_KEYS.has(k) || k.length > 60) continue;
     if (['string', 'number', 'boolean'].includes(typeof v)) clean[k] = typeof v === 'string' ? v.slice(0, 500) : v;
     else if (Array.isArray(v)) clean[k] = fileList(v);
     else if (v && typeof v === 'object') clean[k] = fileList([v])[0] || null;
@@ -567,17 +585,23 @@ router.patch('/settings', (req, res) => {
 
 router.post(
   '/password',
+  passwordLimiter,
   asyncHandler(async (req, res) => {
     const { currentPassword, newPassword } = req.body || {};
     const user = req.user;
-    if (user.passwordHash && !(await verifyPassword(String(currentPassword || ''), user.passwordHash))) {
+    const current = String(currentPassword || '').slice(0, MAX_PASSWORD + 1);
+    if (user.passwordHash && (current.length > MAX_PASSWORD || !(await verifyPassword(current, user.passwordHash)))) {
+      securityLog('password.change.failed', req, { userId: user.id });
       throw badRequest('Mật khẩu hiện tại không đúng', { field: 'currentPassword' });
     }
     if (typeof newPassword !== 'string' || newPassword.length < MIN_PASSWORD) {
       throw badRequest(`Mật khẩu mới phải có ít nhất ${MIN_PASSWORD} ký tự`, { field: 'newPassword' });
     }
-    userStore.update(user.id, { passwordHash: await hashPassword(newPassword) });
-    res.json({ data: { ok: true } });
+    if (newPassword.length > MAX_PASSWORD) throw badRequest(`Mật khẩu tối đa ${MAX_PASSWORD} ký tự`, { field: 'newPassword' });
+    // Tăng phiên bản → đăng xuất mọi thiết bị khác; trả token mới cho thiết bị hiện tại
+    const u = userStore.update(user.id, { passwordHash: await hashPassword(newPassword), tokenVersion: credentialVersion(user) + 1 });
+    securityLog('password.changed', req, { userId: user.id });
+    res.json({ data: { ok: true, token: signToken(u) } });
   }),
 );
 

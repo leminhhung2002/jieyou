@@ -30,8 +30,12 @@ export const accountApi = {
   settings: (opts) => request('/account/settings', opts),
   updateProfile: (patch) => request('/account/profile', { method: 'PATCH', body: patch }),
   updateSettings: (patch) => request('/account/settings', { method: 'PATCH', body: patch }),
-  changePassword: (currentPassword, newPassword) =>
-    request('/account/password', { method: 'POST', body: { currentPassword, newPassword } }),
+  // Server trả token mới (các phiên cũ bị đăng xuất) – lưu lại để thiết bị này vẫn đăng nhập
+  changePassword: async (currentPassword, newPassword) => {
+    const data = await request('/account/password', { method: 'POST', body: { currentPassword, newPassword } });
+    if (data?.token) tokenStorage.set(data.token);
+    return data;
+  },
 
   /** Mở bản in hóa đơn (HTML có token) ở tab mới để in / lưu PDF. */
   async openInvoice(no) {

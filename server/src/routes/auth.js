@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import { config } from '../config.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { requireAuth, signToken } from '../middleware/auth.js';
+import { signJwt, verifyJwt, credentialVersion } from '../utils/jwt.js';
+import { securityLog } from '../utils/securityLog.js';
 import { requestOtp, verifyOtp, OTP_PURPOSES } from '../services/otpService.js';
 import { userStore } from '../services/userStore.js';
 import { pendingRegistrations } from '../services/pendingRegistrations.js';
@@ -24,9 +25,12 @@ const limiter = (limit, message) =>
 
 const otpLimiter = limiter(10, 'Quá nhiều yêu cầu OTP, vui lòng thử lại sau');
 const loginLimiter = limiter(20, 'Quá nhiều lần thử, vui lòng thử lại sau');
+const resetLimiter = limiter(10, 'Quá nhiều lần thử, vui lòng thử lại sau');
 
 const VERIFY_TOKEN_TTL = '15m';
 const MIN_PASSWORD = 8;
+// Giới hạn trên để tránh tốn CPU khi băm chuỗi cực dài (DoS)
+const MAX_PASSWORD = 128;
 
 function requirePhone(raw) {
   const phone = normalizePhone(raw);
@@ -38,6 +42,7 @@ function requirePassword(pw) {
   if (typeof pw !== 'string' || pw.length < MIN_PASSWORD) {
     throw badRequest(`Mật khẩu phải có ít nhất ${MIN_PASSWORD} ký tự`, { field: 'password' });
   }
+  if (pw.length > MAX_PASSWORD) throw badRequest(`Mật khẩu tối đa ${MAX_PASSWORD} ký tự`, { field: 'password' });
   return pw;
 }
 
@@ -152,12 +157,12 @@ router.post(
 
     if (purpose === 'login') {
       if (user.settings?.otpLogin === false) throw new HttpError(403, 'Tài khoản đã tắt đăng nhập bằng mã OTP, vui lòng dùng mật khẩu');
+      securityLog('login.otp', req, { userId: user.id });
       return res.json({ data: session(user) });
     }
 
-    const verificationToken = jwt.sign({ typ: 'phone-verified', phone, purpose }, config.jwtSecret, {
-      expiresIn: VERIFY_TOKEN_TTL,
-    });
+    // `ver` gắn token với mật khẩu hiện tại: đặt lại xong thì token này không dùng lại được
+    const verificationToken = signJwt({ typ: 'phone-verified', phone, purpose, ver: credentialVersion(user) }, VERIFY_TOKEN_TTL);
     res.json({ data: { verificationToken } });
   }),
 );
@@ -173,7 +178,9 @@ router.post(
     const { identifier, password } = req.body || {};
     const user = findByIdentifier(identifier ?? req.body?.phone);
     // Thông báo chung để không lộ tài khoản nào đã tồn tại.
-    if (!user || typeof password !== 'string' || !(await verifyPassword(password, user.passwordHash))) {
+    const ok = user && typeof password === 'string' && password.length <= MAX_PASSWORD && (await verifyPassword(password, user.passwordHash));
+    if (!ok) {
+      securityLog('login.failed', req, { userId: user?.id || null });
       throw unauthorized('Thông tin đăng nhập hoặc mật khẩu không đúng');
     }
     res.json({ data: session(user) });
@@ -182,19 +189,22 @@ router.post(
 
 router.post(
   '/password/reset',
+  resetLimiter,
   asyncHandler(async (req, res) => {
-    let phone;
+    let p;
     try {
-      const p = jwt.verify(String(req.body?.verificationToken || ''), config.jwtSecret);
+      p = verifyJwt(req.body?.verificationToken);
       if (p.typ !== 'phone-verified' || p.purpose !== 'reset') throw new Error('bad token');
-      phone = p.phone;
     } catch {
       throw unauthorized('Phiên xác thực OTP không hợp lệ hoặc đã hết hạn');
     }
     requirePassword(req.body?.password);
-    const user = userStore.findByPhone(phone);
+    const user = userStore.findByPhone(p.phone);
     if (!user) throw notFound('Tài khoản không tồn tại');
-    userStore.update(user.id, { passwordHash: await hashPassword(req.body.password) });
+    // Token chỉ dùng được một lần: sau khi đặt lại, phiên bản đã tăng nên token cũ bị từ chối
+    if ((p.ver || 0) !== credentialVersion(user)) throw unauthorized('Phiên xác thực OTP không hợp lệ hoặc đã hết hạn');
+    userStore.update(user.id, { passwordHash: await hashPassword(req.body.password), tokenVersion: credentialVersion(user) + 1 });
+    securityLog('password.reset', req, { userId: user.id });
     res.json({ data: { ok: true } });
   }),
 );

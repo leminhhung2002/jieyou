@@ -17,9 +17,41 @@ export function createApp() {
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
 
-  app.use(helmet({ contentSecurityPolicy: false }));
+  // OWASP A05: Content-Security-Policy chặn script lạ (XSS), nhúng trang (clickjacking), form gửi ra ngoài.
+  // Hash là của script in hóa đơn `window.onload=()=>window.print()` (routes/account.js, mở dạng blob kế thừa CSP này).
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'sha256-XsEvYQeI61UwT9Mz4WdasBY8eAeHqQfnMuYdrCWz23s='"],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+          fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
+          imgSrc: ["'self'", 'data:', 'blob:'],
+          connectSrc: ["'self'"],
+          frameAncestors: ["'none'"],
+          formAction: ["'self'"],
+          objectSrc: ["'none'"],
+          baseUri: ["'self'"],
+          upgradeInsecureRequests: config.isProd ? [] : null,
+        },
+      },
+      crossOriginEmbedderPolicy: false,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    }),
+  );
+  app.use((_req, res, next) => {
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+    next();
+  });
   app.use(cors({ origin: config.clientOrigins, credentials: true }));
   app.use(express.json({ limit: '100kb' }));
+  // API trả dữ liệu cá nhân: không cho trình duyệt / proxy lưu cache
+  app.use('/api', (_req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+  });
 
   app.get('/api/health', (_req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
   app.use('/api/auth', authRoutes);

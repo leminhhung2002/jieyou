@@ -8,6 +8,7 @@ import { userStore } from '../services/userStore.js';
 import { accountStore } from '../services/accountStore.js';
 import { verifyPassword } from '../services/password.js';
 import { isNonEmptyString } from '../utils/validators.js';
+import { securityLog } from '../utils/securityLog.js';
 import { badRequest, conflict, notFound, unauthorized, HttpError } from '../utils/httpError.js';
 
 const router = Router();
@@ -73,9 +74,11 @@ router.post(
   asyncHandler(async (req, res) => {
     const { username, password } = req.body || {};
     const admin = adminStore.findAdminByUsername(String(username || '').trim().toLowerCase());
-    if (!admin || typeof password !== 'string' || !(await verifyPassword(password, admin.passwordHash))) {
+    if (!admin || typeof password !== 'string' || password.length > 128 || !(await verifyPassword(password, admin.passwordHash))) {
+      securityLog('admin.login.failed', req, { username: String(username || '').slice(0, 60) });
       throw unauthorized('Tên đăng nhập hoặc mật khẩu không đúng');
     }
+    securityLog('admin.login', req, { admin: admin.username });
     adminStore.log(admin.username, 'Đăng nhập', 'Hệ thống quản trị');
     res.json({ data: { token: signAdminToken(admin), admin: adminStore.toPublicAdmin(admin) } });
   }),
@@ -202,6 +205,7 @@ router.patch('/customers/:id/status', requireAdmin('customers'), (req, res) => {
   const user = userStore.findById(req.params.id);
   if (!user) throw notFound('Khách hàng không tồn tại');
   userStore.update(user.id, { status });
+  securityLog(status === 'locked' ? 'customer.locked' : 'customer.unlocked', req, { admin: req.admin.username, userId: user.id });
   adminStore.log(req.admin.username, status === 'locked' ? 'Khóa tài khoản' : 'Mở khóa tài khoản', user.businessName);
   res.json({ data: customerView(user) });
 });

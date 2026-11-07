@@ -158,9 +158,13 @@ test('nháp, hồ sơ, cài đặt và đổi mật khẩu', async () => {
   // Chưa có mật khẩu → không được tắt OTP
   assert.equal((await call('PATCH', '/account/settings', { otpLogin: false }, token)).status, 400);
   assert.equal((await call('POST', '/account/password', { newPassword: 'short' }, token)).status, 400);
-  assert.equal((await call('POST', '/account/password', { newPassword: 'matkhau123' }, token)).status, 200);
-  assert.equal((await call('POST', '/account/password', { currentPassword: 'sai', newPassword: 'matkhau456' }, token)).status, 400);
-  const s = await call('PATCH', '/account/settings', { otpLogin: false, email: { invoices: true } }, token);
+  const changed = await call('POST', '/account/password', { newPassword: 'matkhau123' }, token);
+  assert.equal(changed.status, 200);
+  // Đổi mật khẩu → token cũ hết hiệu lực, dùng token mới server trả về
+  assert.equal((await call('GET', '/account/summary', undefined, token)).status, 401);
+  const token2 = changed.body.data.token;
+  assert.equal((await call('POST', '/account/password', { currentPassword: 'sai', newPassword: 'matkhau456' }, token2)).status, 400);
+  const s = await call('PATCH', '/account/settings', { otpLogin: false, email: { invoices: true } }, token2);
   assert.equal(s.status, 200);
   assert.equal(s.body.data.settings.email.invoices, true);
 
