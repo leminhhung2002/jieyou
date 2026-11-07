@@ -8,7 +8,7 @@ import { requestOtp, verifyOtp, OTP_PURPOSES } from '../services/otpService.js';
 import { userStore } from '../services/userStore.js';
 import { pendingRegistrations } from '../services/pendingRegistrations.js';
 import { hashPassword, verifyPassword } from '../services/password.js';
-import { normalizePhone, isEmail, isNonEmptyString, isTaxCode } from '../utils/validators.js';
+import { normalizePhone, isEmail, isTaxCode } from '../utils/validators.js';
 import { badRequest, conflict, notFound, unauthorized, HttpError } from '../utils/httpError.js';
 
 const router = Router();
@@ -71,8 +71,11 @@ router.post(
     const { businessName, taxCode, email, password, agreeTerms } = req.body || {};
     const phone = requirePhone(req.body?.phone);
 
-    if (!isNonEmptyString(businessName, 200)) throw badRequest('Vui lòng nhập tên doanh nghiệp', { field: 'businessName' });
-    if (!isTaxCode(taxCode)) throw badRequest('Mã số thuế gồm 10 hoặc 13 chữ số', { field: 'taxCode' });
+    // Tên doanh nghiệp và mã số thuế không bắt buộc – chỉ kiểm tra khi có nhập
+    const name = typeof businessName === 'string' ? businessName.trim() : '';
+    const tax = typeof taxCode === 'string' || typeof taxCode === 'number' ? String(taxCode).trim() : '';
+    if (name.length > 200) throw badRequest('Tên doanh nghiệp quá dài', { field: 'businessName' });
+    if (tax && !isTaxCode(tax)) throw badRequest('Mã số thuế gồm 10 hoặc 13 chữ số', { field: 'taxCode' });
     if (!isEmail(email)) throw badRequest('Email không hợp lệ', { field: 'email' });
     requirePassword(password);
     if (agreeTerms !== true) throw badRequest('Bạn cần đồng ý với Điều khoản sử dụng', { field: 'agreeTerms' });
@@ -82,8 +85,8 @@ router.post(
 
     pendingRegistrations.set(phone, {
       phone,
-      businessName: businessName.trim(),
-      taxCode: String(taxCode).replace(/\D/g, ''),
+      businessName: name,
+      taxCode: tax.replace(/\D/g, ''),
       email: email.trim().toLowerCase(),
       passwordHash: await hashPassword(password),
     });

@@ -15,8 +15,8 @@ const EMPTY = { businessName: '', taxCode: '', phone: '', email: '', password: '
 // Cùng quy tắc với trang Đăng ký trên Web (pages/RegisterPage.jsx)
 function validate(v) {
   const e = {};
-  if (!v.businessName.trim()) e.businessName = 'Vui lòng nhập tên doanh nghiệp';
-  if (!/^\d{10}(-?\d{3})?$/.test(v.taxCode.trim())) e.taxCode = 'Mã số thuế gồm 10 hoặc 13 chữ số';
+  // Tên doanh nghiệp và mã số thuế không bắt buộc
+  if (v.taxCode.trim() && !/^\d{10}(-?\d{3})?$/.test(v.taxCode.trim())) e.taxCode = 'Mã số thuế gồm 10 hoặc 13 chữ số';
   if (!isValidVnPhone(v.phone)) e.phone = 'Số điện thoại không hợp lệ';
   if (!isEmail(v.email)) e.email = 'Email không hợp lệ';
   if (v.password.length < 8) e.password = 'Mật khẩu tối thiểu 8 ký tự';
@@ -25,8 +25,8 @@ function validate(v) {
 }
 
 const FIELDS = [
-  { key: 'businessName', label: 'Tên doanh nghiệp', placeholder: 'Công ty TNHH An Phát', autoComplete: 'organization' },
-  { key: 'taxCode', label: 'Mã số thuế', placeholder: '0123456789', inputMode: 'numeric', maxLength: 14 },
+  { key: 'businessName', label: 'Tên doanh nghiệp (không bắt buộc)', placeholder: 'Công ty TNHH An Phát', autoComplete: 'organization' },
+  { key: 'taxCode', label: 'Mã số thuế (không bắt buộc)', placeholder: '0123456789', inputMode: 'numeric', maxLength: 14 },
   { key: 'phone', label: 'Số điện thoại', placeholder: '0912 345 678', type: 'tel', inputMode: 'tel', autoComplete: 'tel', maxLength: 15 },
   { key: 'email', label: 'Email', placeholder: 'ten@congty.vn', type: 'email', inputMode: 'email', autoComplete: 'email' },
   { key: 'password', label: 'Mật khẩu', placeholder: 'Tối thiểu 8 ký tự', type: 'password', autoComplete: 'new-password' },

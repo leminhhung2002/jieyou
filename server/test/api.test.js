@@ -77,6 +77,10 @@ test('register: validate -> OTP -> verify -> me -> login (phone & email)', async
   assert.equal((await post('/auth/register', { ...REG, password: '123' })).status, 400);
   assert.equal((await post('/auth/register', { ...REG, email: 'abc' })).status, 400);
 
+  // Tên doanh nghiệp và mã số thuế không bắt buộc
+  const optional = await post('/auth/register', { ...REG, businessName: '', taxCode: '', phone: '0987 654 321', email: 'khongmst@congty.vn' });
+  assert.equal(optional.status, 202);
+
   const start = await post('/auth/register', REG);
   assert.equal(start.status, 202);
   assert.equal(start.body.data.phone, '0912345678');

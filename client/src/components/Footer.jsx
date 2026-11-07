@@ -81,7 +81,7 @@ export default function Footer() {
           </Link>
           <div className={styles.details}>
             <div className={styles.address}>
-              <p className={styles.name}>CÔNG TY CỔ PHẦN GIẢI PHÁP JIEYOU</p>
+              <p className={styles.name}>CÔNG TY TNHH TMDV JIEYOU VIỆT NAM</p>
               <address>
                 78 Bạch Đằng, Phường Tân Sơn Hoà, <br />
                 TP Hồ Chí Minh, Việt Nam

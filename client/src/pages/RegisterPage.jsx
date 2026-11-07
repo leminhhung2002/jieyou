@@ -15,8 +15,8 @@ const EMPTY = { businessName: '', taxCode: '', phone: '', email: '', password: '
 
 function validate(v) {
   const e = {};
-  if (!v.businessName.trim()) e.businessName = 'Vui lòng nhập tên doanh nghiệp';
-  if (!/^\d{10}(-?\d{3})?$/.test(v.taxCode.trim())) e.taxCode = 'Mã số thuế gồm 10 hoặc 13 chữ số';
+  // Tên doanh nghiệp và mã số thuế không bắt buộc
+  if (v.taxCode.trim() && !/^\d{10}(-?\d{3})?$/.test(v.taxCode.trim())) e.taxCode = 'Mã số thuế gồm 10 hoặc 13 chữ số';
   if (!isValidVnPhone(v.phone)) e.phone = 'Số điện thoại không hợp lệ';
   if (!isEmail(v.email)) e.email = 'Email không hợp lệ';
   if (v.password.length < 8) e.password = 'Mật khẩu tối thiểu 8 ký tự';
@@ -135,7 +135,7 @@ export default function RegisterPage() {
       <form className={styles.form} onSubmit={submitForm} noValidate>
         <div className={styles.fields}>
           <TextField
-            label="Tên doanh nghiệp"
+            label="Tên doanh nghiệp (không bắt buộc)"
             icon="ic-building"
             placeholder="Công ty TNHH An Phát"
             autoComplete="organization"
@@ -145,7 +145,7 @@ export default function RegisterPage() {
           />
           <div className={styles.row}>
             <TextField
-              label="Mã số thuế"
+              label="Mã số thuế (không bắt buộc)"
               placeholder="0123456789"
               inputMode="numeric"
               value={values.taxCode}

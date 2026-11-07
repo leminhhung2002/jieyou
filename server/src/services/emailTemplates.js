@@ -100,7 +100,7 @@ export function renderEmail({ subject, preheader = '', greetingName, heading, ta
             .map((p) => `<p style="margin:16px 0 0;${text}">${escapeHtml(p)}</p>`)
             .join('')}`)}
           ${cta ? block(buttonHtml(cta)) : ''}
-          ${block(`<p style="margin:0;${text}color:${C.strong};">Trân trọng,</p><p style="margin:8px 0 0;font-family:${FONT};font-size:18px;line-height:26px;font-weight:600;color:${C.strong};">Công ty cổ phần JIEYOU</p>`)}
+          ${block(`<p style="margin:0;${text}color:${C.strong};">Trân trọng,</p><p style="margin:8px 0 0;font-family:${FONT};font-size:18px;line-height:26px;font-weight:600;color:${C.strong};">CÔNG TY TNHH TMDV JIEYOU VIỆT NAM</p>`)}
         </table>
       </td></tr>
       <tr><td style="padding:16px;">
@@ -128,7 +128,7 @@ export function renderEmail({ subject, preheader = '', greetingName, heading, ta
     ...(cta ? ['', `${cta.label}: ${cta.url}`] : []),
     '',
     'Trân trọng,',
-    'Công ty cổ phần JIEYOU',
+    'CÔNG TY TNHH TMDV JIEYOU VIỆT NAM',
   ].join('\n');
 
   return { subject, html, text: plain };
