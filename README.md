@@ -93,7 +93,9 @@ npm test -w server
 
 **Bảo mật:** mật khẩu băm `scrypt`, OTP 6 số băm SHA-256, hết hạn 5 phút, tối đa 5 lần nhập sai, chờ 60 giây mới được gửi lại; rate-limit các endpoint xác thực; JWT cho phiên đăng nhập; `helmet` + CORS theo `CLIENT_ORIGIN`.
 
-**Môi trường dev:** mã OTP được in ra console của server và trả về trong response (`devCode`), giao diện hiển thị dòng `[DEV] Mã OTP: …` để test nhanh. Ở production cần nối nhà cung cấp SMS tại `server/src/services/otpService.js` → `sendSms()`.
+**Gửi OTP qua email:** mã OTP (đăng ký, đăng nhập, quên mật khẩu) được gửi về email của tài khoản qua Gmail SMTP (`SMTP_USER` / `SMTP_PASS` = Mật khẩu ứng dụng, xem `server/.env.example`); số điện thoại vẫn là định danh đăng nhập. Thư OTP không có ảnh/liên kết để hạn chế bị lọc thư rác; tài khoản mẫu dùng email `@example.com` nên không gửi thật.
+
+**Môi trường dev:** chưa đặt `SMTP_PASS` thì email chỉ ghi log và lưu ở `GET /api/dev/emails`; mã OTP còn được trả về trong response (`devCode`), giao diện hiển thị dòng `[DEV] Mã OTP: …` để test nhanh.
 
 **Lưu trữ:** dữ liệu người dùng hiện lưu trong bộ nhớ (`server/src/services/userStore.js`), restart server sẽ mất. Giao diện store được tách riêng để thay bằng DB thật (PostgreSQL/MongoDB) mà không phải sửa route. Nội dung dịch vụ/bảng giá nằm trong `server/src/data/`.
 

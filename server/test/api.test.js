@@ -5,6 +5,7 @@ import { userStore } from '../src/services/userStore.js';
 import { _resetOtps } from '../src/services/otpService.js';
 import { normalizePhone, isTaxCode } from '../src/utils/validators.js';
 import { pendingRegistrations } from '../src/services/pendingRegistrations.js';
+import { mailer } from '../src/services/mailer.js';
 
 let server;
 let base;
@@ -86,6 +87,13 @@ test('register: validate -> OTP -> verify -> me -> login (phone & email)', async
   assert.equal(start.body.data.phone, '0912345678');
   const code = start.body.data.devCode;
   assert.match(code, /^\d{6}$/);
+  // Mã OTP gửi qua email đăng ký (không còn SMS)
+  assert.equal(start.body.data.sentTo, 'te*@congty.vn');
+  const otpMail = mailer.list().find((m) => m.tag === 'otp.register');
+  assert.equal(otpMail.to, 'ten@congty.vn');
+  assert.ok(otpMail.subject.startsWith(code));
+  assert.ok(otpMail.text.includes(code) && otpMail.html.includes(code));
+  assert.doesNotMatch(otpMail.html, /<a |<img /); // không link/ảnh: hạn chế bị lọc thư rác
 
   const wrong = code === '000000' ? '111111' : '000000';
   assert.equal((await post('/auth/register/verify', { phone: REG.phone, code: wrong })).status, 400);

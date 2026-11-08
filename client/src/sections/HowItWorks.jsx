@@ -3,7 +3,7 @@ import { asset } from '../utils/format.js';
 import styles from './HowItWorks.module.css';
 
 const STEPS = [
-  { n: 1, title: 'Đăng ký tài khoản OTP', desc: 'Tạo tài khoản doanh nghiệp miễn phí, xác thực bằng mã OTP gửi về điện thoại.', titleImg: 'title-1', width: 362.5 },
+  { n: 1, title: 'Đăng ký tài khoản OTP', desc: 'Tạo tài khoản doanh nghiệp miễn phí, xác thực bằng mã OTP gửi về email.', titleImg: 'title-1', width: 362.5 },
   { n: 2, title: 'Nạp tiền vào số dư', desc: 'Nạp qua cổng thanh toán Bảo Việt. Số dư cập nhật ngay khi giao dịch được xác nhận.', titleImg: 'title-23', width: 322.5 },
   { n: 3, title: 'Chọn dịch vụ - Trừ số dư', desc: 'Phí trừ thẳng vào số dư, hoặc tạm giữ đến khi hồ sơ được duyệt, tùy dịch vụ.', titleImg: 'title-23', width: 322.5 },
   { n: 4, title: 'Nhận kết quả qua Email - HĐ VAT', desc: 'Kết quả gửi về email kèm hóa đơn VAT điện tử. Trạng thái luôn xem được trong tài khoản.', titleImg: 'title-4', width: 370 },

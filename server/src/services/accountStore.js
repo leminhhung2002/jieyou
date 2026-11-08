@@ -116,7 +116,7 @@ export const accountStore = {
     Object.assign(db, { notifications: [], invoices: [], drafts: new Map(), invoiceSeq: 184 });
     const user = userStore.findByPhone('0912345678');
     if (!user) return;
-    userStore.update(user.id, { email: 'ten@congty.vn', settings: structuredClone(DEFAULT_SETTINGS) });
+    userStore.update(user.id, { email: 'anphat@example.com', settings: structuredClone(DEFAULT_SETTINGS) });
 
     const at = (iso) => new Date(iso).toISOString();
     const today = new Date();

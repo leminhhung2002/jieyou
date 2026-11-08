@@ -19,8 +19,20 @@ export const config = {
   adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || 'admin12345',
   // Địa chỉ website công khai – dùng cho link và ảnh trong email
   publicUrl: (process.env.PUBLIC_URL || process.env.CLIENT_ORIGIN?.split(',')[0] || 'http://localhost:5173').replace(/\/$/, ''),
-  mailFrom: process.env.MAIL_FROM || 'JIEYOU <no-reply@jieyouagency.com>',
+  mailFrom: process.env.MAIL_FROM || 'JIEYOU <agency.jieyou@gmail.com>',
+  mailReplyTo: process.env.MAIL_REPLY_TO || '',
+  // Gửi email (OTP + thông báo) qua Gmail SMTP: SMTP_PASS là "Mật khẩu ứng dụng" 16 ký tự của Google
+  smtp: {
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT) || 465,
+    user: process.env.SMTP_USER || '',
+    pass: (process.env.SMTP_PASS || '').replace(/\s+/g, ''),
+  },
 };
+
+if (config.isProd && (!config.smtp.user || !config.smtp.pass)) {
+  throw new Error('SMTP_USER and SMTP_PASS must be set in production (mã OTP được gửi qua email)');
+}
 
 if (config.isProd && config.adminDefaultPassword === 'admin12345') {
   throw new Error('ADMIN_DEFAULT_PASSWORD must be set in production');

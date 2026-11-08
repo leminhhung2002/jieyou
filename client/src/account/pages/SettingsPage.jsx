@@ -179,7 +179,7 @@ export default function SettingsPage() {
               <li className={styles.row}>
                 <div className={styles.rowText}>
                   <p className={styles.rowTitle}>Đăng nhập bằng mã OTP</p>
-                  <p className={styles.rowSub}>Gửi mã về số điện thoại đã đăng ký</p>
+                  <p className={styles.rowSub}>Gửi mã về email đã đăng ký</p>
                 </div>
                 <Toggle checked={Boolean(settings?.otpLogin)} onChange={setOtp} disabled={!settings} label="Đăng nhập bằng mã OTP" />
               </li>

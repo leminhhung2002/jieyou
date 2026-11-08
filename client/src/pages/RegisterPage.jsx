@@ -106,7 +106,7 @@ export default function RegisterPage() {
   if (step === 'otp') {
     return (
       <AuthLayout wide>
-        <AuthHeader title="Xác thực số điện thoại" subtitle={`Mã OTP đã gửi đến ${prettyPhone(otpMeta.phone)}`} />
+        <AuthHeader title="Xác thực email" subtitle={`Mã OTP đã gửi đến email ${otpMeta.sentTo || prettyPhone(otpMeta.phone)}`} />
         <form className={styles.form} onSubmit={submitOtp} noValidate>
           <div className={styles.otpGroup}>
             <span className={styles.label}>Nhập mã 6 số</span>

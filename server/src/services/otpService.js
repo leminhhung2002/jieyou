@@ -1,6 +1,8 @@
 import crypto from 'node:crypto';
 import { config } from '../config.js';
-import { badRequest, tooMany } from '../utils/httpError.js';
+import { badRequest, tooMany, HttpError } from '../utils/httpError.js';
+import { mailer } from './mailer.js';
+import { renderOtpEmail, maskEmail } from './otpEmail.js';
 
 const MAX_ATTEMPTS = 5;
 const RESEND_COOLDOWN_MS = 60_000;
@@ -14,10 +16,11 @@ const keyOf = (phone, purpose) => `${purpose}:${phone}`;
 export const OTP_PURPOSES = ['register', 'login', 'reset'];
 
 /**
- * Tạo và "gửi" OTP. Ở môi trường dev mã được log ra console và trả về trong response
- * để tiện test; ở production cần nối với nhà cung cấp SMS (eSMS, SpeedSMS, Twilio…).
+ * Tạo OTP và gửi về email của tài khoản (Gmail SMTP). OTP vẫn gắn với số điện thoại (định danh tài khoản).
+ * Ở dev/test mã còn được trả về trong response (devCode) để tiện test.
  */
-export async function requestOtp(phone, purpose) {
+export async function requestOtp(phone, purpose, email) {
+  if (!email) throw badRequest('Tài khoản chưa có email để nhận mã OTP, vui lòng liên hệ hỗ trợ');
   const key = keyOf(phone, purpose);
   const existing = otps.get(key);
   const now = Date.now();
@@ -32,10 +35,17 @@ export async function requestOtp(phone, purpose) {
     attempts: 0,
     sentAt: now,
   });
-  await sendSms(phone, `Ma xac thuc JIEYOU cua ban la ${code}. Hieu luc ${Math.round(config.otpTtlSeconds / 60)} phut.`);
+  try {
+    const { subject, text, html } = renderOtpEmail({ code, purpose, minutes: Math.round(config.otpTtlSeconds / 60) });
+    await mailer.send({ to: email, subject, text, html, tag: `otp.${purpose}`, critical: true });
+  } catch {
+    otps.delete(key); // gửi lỗi thì cho gửi lại ngay, không bắt chờ
+    throw new HttpError(503, 'Không gửi được email chứa mã OTP, vui lòng thử lại sau ít phút');
+  }
   return {
     expiresIn: config.otpTtlSeconds,
     resendIn: RESEND_COOLDOWN_MS / 1000,
+    sentTo: maskEmail(email),
     ...(config.isProd ? {} : { devCode: code }),
   };
 }
@@ -57,11 +67,6 @@ export function verifyOtp(phone, purpose, code) {
   if (!ok) throw badRequest(`Mã OTP không đúng (còn ${MAX_ATTEMPTS - entry.attempts} lần thử)`);
   otps.delete(key);
   return true;
-}
-
-async function sendSms(phone, message) {
-  // TODO: tích hợp nhà cung cấp SMS thật ở đây.
-  if (!config.isProd) console.log(`[SMS -> ${phone}] ${message}`);
 }
 
 export function _resetOtps() {

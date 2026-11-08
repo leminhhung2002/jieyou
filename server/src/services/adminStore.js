@@ -152,7 +152,8 @@ export const adminStore = {
         businessName,
         taxCode,
         phone,
-        email: null,
+        // Email mẫu thuộc tên miền dành riêng example.com: mailer không gửi thật (tránh thư dội lại)
+        email: `kh${phone}@example.com`,
         passwordHash: null, // tài khoản mẫu: đăng nhập bằng OTP
         balance,
         status,

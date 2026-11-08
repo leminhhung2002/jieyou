@@ -95,7 +95,7 @@ export default function LoginPage() {
         <div className={styles.loginHeading}>
           <h1 className={styles.loginTitle}>Đăng nhập</h1>
           <p className={styles.loginSub}>
-            {otpMeta ? `Mã OTP đã gửi đến ${prettyPhone(otpMeta.phone)}` : 'Chào mừng bạn quay lại.'}
+            {otpMeta ? `Mã OTP đã gửi đến email ${otpMeta.sentTo || prettyPhone(otpMeta.phone)}` : 'Chào mừng bạn quay lại.'}
           </p>
         </div>
 

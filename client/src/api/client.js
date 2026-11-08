@@ -49,7 +49,7 @@ export const api = {
   faqs: (opts) => request('/faqs', opts),
   news: (limit = 3, opts) => request(`/news?limit=${limit}`, opts),
 
-  /** B1 đăng ký: gửi thông tin doanh nghiệp, server gửi OTP về số điện thoại */
+  /** B1 đăng ký: gửi thông tin doanh nghiệp, server gửi OTP về email đăng ký */
   register: (payload) => request('/auth/register', { method: 'POST', body: payload }),
   /** B2 đăng ký: xác thực OTP -> tạo tài khoản, trả { token, user } */
   verifyRegistration: (phone, code) => request('/auth/register/verify', { method: 'POST', body: { phone, code } }),

@@ -66,7 +66,7 @@ function findByIdentifier(identifier) {
 }
 
 /* ------------------------------------------------------------------ */
-/* ĐĂNG KÝ: B1 gửi thông tin doanh nghiệp -> OTP, B2 xác thực OTP      */
+/* ĐĂNG KÝ: B1 gửi thông tin doanh nghiệp -> OTP qua email, B2 xác thực OTP      */
 /* ------------------------------------------------------------------ */
 
 router.post(
@@ -96,7 +96,7 @@ router.post(
       passwordHash: await hashPassword(password),
     });
 
-    const otp = await requestOtp(phone, 'register');
+    const otp = await requestOtp(phone, 'register', pendingRegistrations.get(phone).email);
     res.status(202).json({ data: { phone, ...otp } });
   }),
 );
@@ -131,13 +131,19 @@ router.post(
     const purpose = req.body?.purpose || 'login';
     if (!OTP_PURPOSES.includes(purpose)) throw badRequest('purpose không hợp lệ');
 
+    // Mã OTP gửi về email: email đăng ký (đang chờ xác thực) hoặc email của tài khoản
+    let email;
     if (purpose === 'register') {
-      if (!pendingRegistrations.get(phone)) throw badRequest('Phiên đăng ký đã hết hạn, vui lòng điền lại thông tin');
-    } else if (!userStore.findByPhone(phone)) {
-      throw notFound('Số điện thoại chưa đăng ký tài khoản');
+      const pending = pendingRegistrations.get(phone);
+      if (!pending) throw badRequest('Phiên đăng ký đã hết hạn, vui lòng điền lại thông tin');
+      email = pending.email;
+    } else {
+      const user = userStore.findByPhone(phone);
+      if (!user) throw notFound('Số điện thoại chưa đăng ký tài khoản');
+      email = user.email;
     }
 
-    const otp = await requestOtp(phone, purpose);
+    const otp = await requestOtp(phone, purpose, email);
     res.json({ data: { phone, purpose, ...otp } });
   }),
 );

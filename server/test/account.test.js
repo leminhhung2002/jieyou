@@ -199,10 +199,11 @@ test('email: nạp tiền, duyệt hồ sơ, theo công tắc trong Cài đặt'
   const { mailer } = await import('../src/services/mailer.js');
   mailer._reset();
   const token = await loginAnPhat();
+  mailer._reset(); // bỏ qua email chứa mã OTP lúc đăng nhập
   await call('POST', '/account/topups', { amount: 1_000_000 }, token);
   let mails = mailer.list();
   assert.equal(mails.length, 1);
-  assert.equal(mails[0].to, 'ten@congty.vn');
+  assert.equal(mails[0].to, 'anphat@example.com');
   assert.match(mails[0].subject, /Nạp tiền thành công/);
   assert.match(mails[0].html, /Kính gửi quý khách Công ty TNHH An Phát/);
   assert.match(mails[0].html, /assets\/email\/logo@2x\.png/);

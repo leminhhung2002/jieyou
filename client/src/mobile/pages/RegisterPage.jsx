@@ -116,9 +116,9 @@ export default function RegisterPage() {
           )}
         </div>
         <div className={styles.signupHeading}>
-          <h1 className={styles.signupTitle}>{onOtp ? 'Xác thực số điện thoại' : 'Tạo tài khoản'}</h1>
+          <h1 className={styles.signupTitle}>{onOtp ? 'Xác thực email' : 'Tạo tài khoản'}</h1>
           <p className={styles.signupSub}>
-            {onOtp ? `Mã OTP đã gửi đến ${prettyPhone(otpMeta.phone)}` : 'Đăng ký bằng thông tin doanh nghiệp.'}
+            {onOtp ? `Mã OTP đã gửi đến email ${otpMeta.sentTo || prettyPhone(otpMeta.phone)}` : 'Đăng ký bằng thông tin doanh nghiệp.'}
           </p>
         </div>
       </header>

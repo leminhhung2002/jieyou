@@ -110,10 +110,10 @@ export default function LoginPage() {
       ? resetToken
         ? 'Tạo mật khẩu mới cho tài khoản.'
         : otpMeta
-          ? `Mã OTP đã gửi đến ${prettyPhone(otpMeta.phone)}`
-          : 'Nhận mã OTP qua số điện thoại đã đăng ký.'
+          ? `Mã OTP đã gửi đến email ${otpMeta.sentTo || prettyPhone(otpMeta.phone)}`
+          : 'Nhập số điện thoại, mã OTP sẽ được gửi về email đã đăng ký.'
       : otpMeta
-        ? `Mã OTP đã gửi đến ${prettyPhone(otpMeta.phone)}`
+        ? `Mã OTP đã gửi đến email ${otpMeta.sentTo || prettyPhone(otpMeta.phone)}`
         : 'Chào mừng bạn quay lại.';
 
   const otpStep = (
