@@ -1,8 +1,7 @@
 import crypto from 'node:crypto';
 
 /**
- * Kho người dùng trong bộ nhớ. Giao diện (findById/findByPhone/create/update)
- * được giữ nhỏ gọn để có thể thay bằng DB thật (Postgres/Mongo) mà không đổi route.
+ * Kho người dùng trong bộ nhớ, được lưu xuống SQLite sau mỗi request ghi dữ liệu (services/persistence.js).
  */
 const users = new Map();
 
@@ -44,6 +43,11 @@ export const userStore = {
     if (!user) return null;
     const { passwordHash, tokenVersion, ...rest } = user;
     return rest;
+  },
+  /** Nạp lại từ CSDL (services/persistence.js). */
+  _load(list) {
+    users.clear();
+    for (const u of list) users.set(u.id, u);
   },
   _reset() {
     users.clear();

@@ -1,4 +1,8 @@
 import 'dotenv/config';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const serverDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -14,6 +18,8 @@ export const config = {
     .filter(Boolean),
   jwtSecret: process.env.JWT_SECRET || 'dev-secret',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  // File SQLite lưu dữ liệu (mặc định server/storage/jieyou.db; bản sao lưu ở storage/backups)
+  dbFile: path.resolve(serverDir, process.env.DB_FILE || 'storage/jieyou.db'),
   otpTtlSeconds: Number(process.env.OTP_TTL_SECONDS) || 300,
   // Mật khẩu ban đầu của các tài khoản quản trị mẫu (admin, duyetvien01, ketoan02, bientap01)
   adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || 'admin12345',

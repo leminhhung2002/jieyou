@@ -6,3 +6,5 @@ server/.env
 design-ref/
 # Link tải asset Figma tạm thời (hết hạn sau 7 ngày, không chia sẻ)
 scripts/manifest-*.json
+# CSDL SQLite + bản sao lưu (dữ liệu thật, không đưa lên git)
+server/storage/

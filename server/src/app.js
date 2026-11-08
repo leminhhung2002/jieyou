@@ -11,6 +11,7 @@ import adminRoutes from './routes/admin.js';
 import accountRoutes from './routes/account.js';
 import devRoutes from './routes/dev.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { saveSafely } from './services/persistence.js';
 
 export function createApp() {
   const app = express();
@@ -47,6 +48,17 @@ export function createApp() {
   });
   app.use(cors({ origin: config.clientOrigins, credentials: true }));
   app.use(express.json({ limit: '100kb' }));
+  // Request có ghi dữ liệu: lưu xuống SQLite TRƯỚC khi trả kết quả (client nhận "thành công" là dữ liệu đã nằm trên đĩa)
+  app.use('/api', (req, res, next) => {
+    if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return next();
+    const json = res.json.bind(res);
+    res.json = (body) => {
+      saveSafely();
+      return json(body);
+    };
+    res.on('finish', saveSafely);
+    next();
+  });
   // API trả dữ liệu cá nhân: không cho trình duyệt / proxy lưu cache
   app.use('/api', (_req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');

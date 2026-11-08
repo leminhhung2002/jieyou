@@ -97,7 +97,7 @@ npm test -w server
 
 **Môi trường dev:** chưa đặt `SMTP_PASS` thì email chỉ ghi log và lưu ở `GET /api/dev/emails`; mã OTP còn được trả về trong response (`devCode`), giao diện hiển thị dòng `[DEV] Mã OTP: …` để test nhanh.
 
-**Lưu trữ:** dữ liệu người dùng hiện lưu trong bộ nhớ (`server/src/services/userStore.js`), restart server sẽ mất. Giao diện store được tách riêng để thay bằng DB thật (PostgreSQL/MongoDB) mà không phải sửa route. Nội dung dịch vụ/bảng giá nằm trong `server/src/data/`.
+**Lưu trữ:** dữ liệu (khách hàng, hồ sơ, giao dịch, hóa đơn, thông báo, bảng giá, quản trị viên, nhật ký) lưu trong SQLite có sẵn của Node (`node:sqlite`, Node ≥ 22.13), file `server/storage/jieyou.db` (đổi bằng `DB_FILE`). Server làm việc trên bộ nhớ và ghi xuống SQLite trước khi trả kết quả mỗi request ghi dữ liệu (`server/src/services/persistence.js`); lần chạy đầu CSDL trống thì tạo dữ liệu mẫu. Sao lưu tự động khi khởi động và mỗi ngày vào `server/storage/backups/` (giữ 14 bản). Mã OTP và đăng ký chưa xác thực chỉ ở bộ nhớ (sống vài phút). Nội dung dịch vụ/bảng giá mặc định nằm trong `server/src/data/`.
 
 ## Web người dùng
 
@@ -115,7 +115,6 @@ Tài khoản mẫu: **Công ty TNHH An Phát** – đăng nhập tab *Mã OTP* v
 Mẫu email theo Figma *Email Template* (61:3235): `server/src/services/emailTemplates.js` (HTML dạng bảng, style inline, ảnh PNG @2x trong `client/public/assets/email`, link/ảnh dùng `PUBLIC_URL`).
 
 - Gửi khi: nạp tiền thành công, hồ sơ được duyệt / bị từ chối, hóa đơn phát hành – theo các công tắc *Thông báo qua email* ở màn Cài đặt (mặc định: nạp tiền + trạng thái hồ sơ bật, hóa đơn tắt).
-- **Chưa nối nhà cung cấp email:** `server/src/services/mailer.js` → `deliver()` là chỗ gắn SMTP/SES/SendGrid. Hiện email chỉ lưu trong bộ nhớ.
 - **Dev:** xem hộp thư tại http://localhost:4000/api/dev/mailbox (mẫu đúng nội dung Figma ở `/api/dev/emails/preview`). Không có ở production.
 
 ## Admin
@@ -153,7 +152,7 @@ client/
 server/
   src/
     routes/             # content.js, auth.js, admin.js, account.js
-    services/           # otp, password, userStore, pendingRegistrations, adminStore, accountStore
+    services/           # otp, password, userStore, pendingRegistrations, adminStore, accountStore, persistence (SQLite), mailer
     data/               # dịch vụ, bảng giá, FAQ, tin tức, nội dung từng trang dịch vụ
   test/                 # api, admin, account
 scripts/fetch-assets.mjs  # tải asset từ Figma theo manifest
