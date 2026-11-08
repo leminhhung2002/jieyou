@@ -91,6 +91,51 @@
   outline-offset: 2px;
 }
 
+/* Đơn tự động (SmmSocialForm) */
+.span {
+  grid-column: 1 / -1;
+}
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.uidRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: 140px;
+  padding: 14px 16px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 14px;
+  background: #f7f8fa;
+  font: inherit;
+  font-size: 15px;
+  line-height: 22.5px;
+  color: #0b0c0e;
+  resize: vertical;
+  outline: none;
+}
+
+.textarea:focus {
+  border-color: #12909c;
+  background: #fff;
+}
+
+.textareaInvalid {
+  border-color: #b3202a;
+}
+
 @media (max-width: 640px) {
   .header {
     margin-left: 0;

@@ -4,6 +4,7 @@ import { config } from './config.js';
 import { adminStore } from './services/adminStore.js';
 import { accountStore } from './services/accountStore.js';
 import { openDatabase, save, saveSafely, backup, closeDatabase } from './services/persistence.js';
+import { startSmmSync } from './services/smmSync.js';
 
 // Dữ liệu lưu ở SQLite (DB_FILE). Lần chạy đầu CSDL trống: nạp dữ liệu mẫu rồi lưu lại.
 const loaded = openDatabase(config.dbFile);
@@ -32,6 +33,9 @@ const runBackup = () => {
 };
 runBackup();
 setInterval(runBackup, 24 * 60 * 60 * 1000).unref();
+
+// Đơn MXH gửi sang hotrodvfb: đồng bộ trạng thái định kỳ, tự hoàn thành / hoàn tiền
+if (startSmmSync(config.smm.syncSeconds)) console.log(`[SMM] Đã kết nối hotrodvfb, đồng bộ đơn mỗi ${config.smm.syncSeconds} giây`);
 
 const app = createApp();
 const server = app.listen(config.port, config.host, () => {

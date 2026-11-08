@@ -12,6 +12,8 @@ import { emailTopupSuccess } from '../services/accountEmails.js';
 import { hashPassword, verifyPassword } from '../services/password.js';
 import { isEmail, isNonEmptyString, isTaxCode, normalizePhone } from '../utils/validators.js';
 import { badRequest, conflict, notFound, HttpError } from '../utils/httpError.js';
+import { smmEnabled, smmProvider, SmmError } from '../services/smmProvider.js';
+import { getSmmCatalog, publicService, smmAmount, splitLines, SMM_PLATFORMS, SMM_TYPES } from '../services/smmCatalog.js';
 import {
   AD_SLOTS,
   BCT_KINDS,
@@ -162,6 +164,8 @@ function catalog() {
     posBusinessTypes: POS_BUSINESS_TYPES,
     bctKinds: BCT_KINDS,
     topupLimits: TOPUP_LIMITS,
+    // Đơn MXH tự động qua hotrodvfb (danh mục: GET /account/social/services)
+    smm: { enabled: smmEnabled() },
   };
 }
 
@@ -327,6 +331,117 @@ const SERVICES = {
 };
 const DRAFT_TYPES = ['unipay', 'bct', 'pos'];
 
+const parseHttpUrl = (v, max) => {
+  const url = str(v, max);
+  try {
+    const u = new URL(url);
+    return /^https?:$/.test(u.protocol) ? url : null;
+  } catch {
+    return null;
+  }
+};
+
+/** Danh mục hotrodvfb; NCC lỗi và chưa có bản lưu tạm → 503. */
+async function smmCatalog() {
+  try {
+    return await getSmmCatalog();
+  } catch (err) {
+    console.error('[SMM] Không tải được danh mục:', err.message);
+    throw new HttpError(503, 'Dịch vụ tăng tương tác tạm thời gián đoạn, vui lòng thử lại sau');
+  }
+}
+
+/**
+ * Đơn MXH tự động (hotrodvfb). Như SERVICES.* nhưng async và trả thêm `provider` = tham số action `add`.
+ * Body: { service, link, quantity, reaction?, comments?, acceptedWarning }
+ */
+async function socialSmm(body) {
+  const { services } = await smmCatalog();
+  const svc = services.get(Number(body.service));
+  need(svc, 'Vui lòng chọn dịch vụ', 'service');
+  const type = SMM_TYPES[svc.type];
+  const link = parseHttpUrl(body.link, 200);
+  need(link, 'Đường dẫn không hợp lệ (tối đa 200 ký tự)', 'link');
+
+  const provider = { service: svc.id, link };
+  let lines = [];
+  if (type.comments) {
+    lines = splitLines(body.comments).map((l) => l.slice(0, 500));
+    need(type.comments === 'optional' || lines.length > 0, 'Vui lòng nhập nội dung, mỗi dòng một nội dung', 'comments');
+    need(lines.length <= 5000, 'Tối đa 5.000 dòng nội dung', 'comments');
+    if (type.minLine) need(lines.every((l) => l.length >= type.minLine), `Mỗi dòng nội dung dài tối thiểu ${type.minLine} ký tự`, 'comments');
+    if (lines.length) provider.comments = lines.join('\n');
+  }
+  const quantity = type.qtyFromLines ? lines.length : Number(body.quantity);
+  need(
+    Number.isInteger(quantity) && quantity >= svc.min && quantity <= svc.max,
+    `${type.qtyFromLines ? 'Số dòng nội dung' : 'Số lượng'} từ ${svc.min.toLocaleString('de-DE')} đến ${svc.max.toLocaleString('de-DE')}`,
+    type.qtyFromLines ? 'comments' : 'quantity',
+  );
+  provider.quantity = quantity;
+  let reaction = null;
+  if (type.reaction && svc.reactions.length) {
+    reaction = body.reaction ? String(body.reaction) : svc.reactions[0];
+    need(svc.reactions.includes(reaction), 'Cảm xúc không hợp lệ', 'reaction');
+    provider.reaction = reaction;
+  }
+  need(body.acceptedWarning === true, 'Vui lòng xác nhận đã đọc cảnh báo', 'acceptedWarning');
+
+  const platform = SMM_PLATFORMS.find((p) => p.key === svc.platform);
+  return {
+    amount: smmAmount(svc, quantity),
+    title: (code) => `Tương tác ${code}`,
+    details: {
+      'Nền tảng': platform.name,
+      'Dịch vụ': svc.name,
+      'Số lượng': quantity.toLocaleString('de-DE'),
+      ...(reaction ? { 'Cảm xúc': reaction } : {}),
+      'Đường dẫn': link,
+    },
+    meta: { platform: svc.platform, service: svc.id, serviceType: svc.type, quantity, url: link, reaction },
+    provider,
+  };
+}
+
+/**
+ * Gửi đơn sang hotrodvfb SAU khi đã trừ tiền (trừ trước, đồng bộ, để hai request song song không tiêu lố số dư).
+ * - NCC từ chối rõ ràng → huỷ hồ sơ, trả lại tiền, báo lỗi cho khách.
+ * - Lỗi mạng / quá thời gian → không rõ đơn đã tạo chưa: giữ hồ sơ "chờ duyệt" để admin kiểm tra và duyệt tay.
+ */
+async function placeProviderOrder(app, params) {
+  try {
+    const r = await smmProvider.add({ ...params, note: app.code });
+    const order = Number(r?.order);
+    if (!order) throw new SmmError('hotrodvfb không trả mã đơn', 'network');
+    app.meta.provider = { name: 'hotrodvfb', order, status: 'Pending', startCount: r.start_count ?? null, placedAt: new Date().toISOString() };
+    app.details['Mã đơn NCC'] = String(order);
+    app.details['Trạng thái'] = 'Chờ chạy';
+    return true;
+  } catch (err) {
+    if (!(err instanceof SmmError) || err.kind !== 'provider') {
+      console.error(`[SMM] ${app.code}: không rõ kết quả tạo đơn –`, err.message);
+      app.details['Lưu ý'] = 'Chưa xác nhận được đơn với hotrodvfb, cần kiểm tra và duyệt tay';
+      adminStore.log('hotrodvfb', 'Lỗi gửi đơn MXH', app.code, 'failed');
+      return false;
+    }
+    // NCC từ chối: hoàn tác – xoá hồ sơ + giao dịch tạm giữ, trả tiền
+    const list = adminStore.listApplications();
+    list.splice(list.indexOf(app), 1);
+    const txs = adminStore.listTransactions();
+    const hold = txs.findIndex((t) => t.note === app.code && t.type === 'hold');
+    if (hold >= 0) txs.splice(hold, 1);
+    const customer = userStore.findById(app.customerId);
+    if (customer && app.held > 0) userStore.update(customer.id, { balance: (customer.balance || 0) + app.held });
+    adminStore.log('hotrodvfb', 'NCC từ chối đơn MXH', `${app.code}: ${err.message}`.slice(0, 300), 'failed');
+    // Lỗi về số dư / API Key của JIEYOU tại NCC không phải lỗi của khách
+    if (err.code === 401 || /tiền|key/i.test(err.message)) {
+      console.error(`[SMM] Tài khoản hotrodvfb: ${err.message}`);
+      throw new HttpError(503, 'Dịch vụ tăng tương tác tạm thời gián đoạn, vui lòng thử lại sau');
+    }
+    throw badRequest(err.message, { field: 'link' });
+  }
+}
+
 /* ------------------------------ routes ------------------------------ */
 
 router.get('/summary', (req, res) => {
@@ -342,6 +457,41 @@ router.get('/summary', (req, res) => {
 });
 
 router.get('/catalog', (_req, res) => res.json({ data: catalog() }));
+
+/** Danh mục dịch vụ tăng tương tác (giá VND cho 1.000 đơn vị). */
+router.get('/social/services', asyncHandler(async (_req, res) => {
+  if (!smmEnabled()) throw notFound('Chưa kết nối nhà cung cấp dịch vụ tăng tương tác');
+  const { services } = await smmCatalog();
+  res.json({
+    data: {
+      platforms: SMM_PLATFORMS.map(({ key, name }) => ({ key, name })),
+      services: [...services.values()].map(publicService),
+    },
+  });
+}));
+
+const uidLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 20,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  keyGenerator: (req) => req.user.id,
+  message: { error: { message: 'Quá nhiều lần thử, vui lòng thử lại sau' } },
+});
+
+/** Đổi link profile Facebook sang link UID dạng số (dịch vụ profile Facebook bắt buộc). */
+router.post('/social/uid', uidLimiter, asyncHandler(async (req, res) => {
+  if (!smmEnabled()) throw notFound();
+  const link = parseHttpUrl(req.body?.link, 300);
+  if (!link) throw badRequest('Đường dẫn không hợp lệ', { field: 'link' });
+  try {
+    const r = await smmProvider.getNumericUid(link);
+    res.json({ data: { id: String(r.id), link: String(r.link), name: String(r.name || '') } });
+  } catch (err) {
+    if (err instanceof SmmError && err.kind === 'provider') throw badRequest(err.message, { field: 'link' });
+    throw new HttpError(503, 'Không lấy được UID, vui lòng thử lại sau');
+  }
+}));
 
 router.get('/transactions', (req, res) => {
   const all = userTransactions(req.user);
@@ -415,12 +565,13 @@ router.get('/applications/:code', (req, res) => {
   });
 });
 
-router.post('/applications', (req, res) => {
+router.post('/applications', asyncHandler(async (req, res) => {
   const type = req.body?.type;
-  const spec = SERVICES[type];
+  const auto = type === 'social' && smmEnabled();
+  const spec = auto ? socialSmm : SERVICES[type];
   if (!spec) throw badRequest('Loại dịch vụ không hợp lệ', { field: 'type' });
   const user = req.user;
-  const { amount, title, details, meta } = spec(req.body?.details || {});
+  const { amount, title, details, meta, provider } = await spec(req.body?.details || {});
   if (amount > (user.balance || 0)) {
     throw new HttpError(402, `Số dư không đủ, cần thêm ${vnd(amount - (user.balance || 0))}. Vui lòng nạp tiền.`, { field: 'balance' });
   }
@@ -435,14 +586,15 @@ router.post('/applications', (req, res) => {
     adminStore.addTransaction({ customerId: user.id, type: 'hold', amount: -amount, note: code });
   }
   if (DRAFT_TYPES.includes(type)) accountStore.clearDraft(user.id, type);
+  const running = auto && (await placeProviderOrder(app, provider));
   accountStore.notify(user.id, {
     kind: type === 'ads' ? 'ads' : 'pending',
     category: 'application',
-    title: `${app.title} đang chờ duyệt`,
+    title: running ? `${app.title} đang chạy` : `${app.title} đang chờ duyệt`,
     body: amount > 0 ? `${type === 'ads' ? 'Đã tạm giữ' : 'Đã trừ'} ${vnd(amount)}.` : 'Dịch vụ miễn phí.',
   });
-  res.status(201).json({ data: { application: applicationView(app), balance: user.balance } });
-});
+  res.status(201).json({ data: { application: applicationView(app), balance: userStore.findById(user.id)?.balance ?? 0 } });
+}));
 
 router.get('/drafts/:type', (req, res) => {
   if (!DRAFT_TYPES.includes(req.params.type)) throw notFound();

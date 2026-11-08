@@ -6,6 +6,7 @@ import { requireAdmin, signAdminToken } from '../middleware/adminAuth.js';
 import { adminStore, PERMISSIONS, SERVICE_TYPES } from '../services/adminStore.js';
 import { userStore } from '../services/userStore.js';
 import { accountStore } from '../services/accountStore.js';
+import { isProviderOrder } from '../services/smmSync.js';
 import { verifyPassword } from '../services/password.js';
 import { isNonEmptyString } from '../utils/validators.js';
 import { securityLog } from '../utils/securityLog.js';
@@ -150,6 +151,8 @@ function requirePending(code) {
   const app = adminStore.findApplication(code);
   if (!app) throw notFound('Hồ sơ không tồn tại');
   if (app.status !== 'pending') throw conflict('Hồ sơ đã được xử lý');
+  // Đơn đã gửi sang hotrodvfb: trạng thái và hoàn tiền tự đồng bộ theo NCC (services/smmSync.js)
+  if (isProviderOrder(app)) throw conflict('Đơn đang chạy tự động tại hotrodvfb, hệ thống sẽ tự cập nhật khi đơn kết thúc');
   return app;
 }
 

@@ -18,6 +18,7 @@ import {
   TextField,
 } from '../ui.jsx';
 import styles from './SocialPage.module.css';
+import SmmSocialForm from './SmmSocialForm.jsx';
 
 const PLATFORM_ICON = {
   facebook: 'account/social/facebook.svg',
@@ -40,6 +41,12 @@ const groupDigits = (digits) => (digits ? formatVnd(Number(digits)) : '');
 // Figma: Web người dùng: Tăng tương tác MXH (74:3419)
 export default function SocialPage() {
   useDocumentTitle('Tăng tương tác mạng xã hội – JIEYOU');
+  const { catalog } = useAccount();
+  // Đã kết nối hotrodvfb → đặt đơn tự động theo danh mục NCC; chưa kết nối → form cũ, admin duyệt tay
+  return catalog?.smm?.enabled ? <SmmSocialForm /> : <ManualSocialForm />;
+}
+
+function ManualSocialForm() {
   const { summary, catalog } = useAccount();
   const { submit, submitting, error, fieldErrors, insufficient, clearError } = useSubmitApplication('social');
   const [form, setForm] = useState({ platform: 'facebook', kind: 'like', quantity: '1000', url: '', accepted: false });

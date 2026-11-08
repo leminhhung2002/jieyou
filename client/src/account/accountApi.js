@@ -18,6 +18,10 @@ export const accountApi = {
   application: (code, opts) => request(`/account/applications/${encodeURIComponent(code)}`, opts),
   /** type: ads | unipay | bct | misa | pos | social */
   submit: (type, details) => request('/account/applications', { method: 'POST', body: { type, details } }),
+  /** Dịch vụ tăng tương tác (hotrodvfb) → { platforms, services: [{ id, platform, name, category, type, min, max, pricePer1000, reactions, ... }] } */
+  socialServices: (opts) => request('/account/social/services', opts),
+  /** Link profile Facebook → { id, link, name } (link dạng UID số) */
+  socialUid: (link) => request('/account/social/uid', { method: 'POST', body: { link } }),
   draft: (type, opts) => request(`/account/drafts/${type}`, opts),
   saveDraft: (type, details) => request(`/account/drafts/${type}`, { method: 'PUT', body: { details } }),
   adBookings: (slot, opts) => request(`/account/ads/bookings${qs({ slot })}`, opts),

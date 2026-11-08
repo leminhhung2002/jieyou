@@ -34,6 +34,17 @@ export const config = {
     user: process.env.SMTP_USER || '',
     pass: (process.env.SMTP_PASS || '').replace(/\s+/g, ''),
   },
+  // Tăng tương tác MXH qua API hotrodvfb.com. Không có key → đơn MXH quay về duyệt tay như cũ.
+  smm: {
+    apiKey: process.env.HOTRODVFB_API_KEY || '',
+    apiUrl: process.env.HOTRODVFB_API_URL || 'https://hotrodvfb.com/api/v2',
+    // Lãi cộng thêm trên giá NCC (%)
+    markupPercent: Math.max(0, Number(process.env.SMM_MARKUP_PERCENT ?? 30) || 0),
+    // Tỉ giá dự phòng khi API `balance` không trả tỉ giá
+    usdVnd: Number(process.env.SMM_USD_VND) || 26_000,
+    // Chu kỳ đồng bộ trạng thái đơn (giây)
+    syncSeconds: Math.max(30, Number(process.env.SMM_SYNC_SECONDS) || 120),
+  },
 };
 
 if (config.isProd && (!config.smtp.user || !config.smtp.pass)) {
