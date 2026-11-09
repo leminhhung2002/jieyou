@@ -1,0 +1,173 @@
+/* Giá MXH – cùng hệ màu với các trang Admin khác */
+.error {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #b3202a;
+}
+
+.empty {
+  padding: 40px 24px;
+  border-radius: 24px;
+  background: #f7f8fa;
+  font-size: 15px;
+  line-height: 21px;
+  color: #6a6e77;
+  text-align: center;
+}
+
+/* Thẻ % lãi: giống StatCard, thêm nút chỉnh */
+.markupCard {
+  display: flex;
+  flex-direction: column;
+  height: 132.578px;
+  padding: 22px;
+  border-radius: 24px;
+  background: #e6f3f4;
+}
+
+.markupLabel {
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #3a3d44;
+}
+
+.markupValue {
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 36.8px;
+  letter-spacing: -0.96px;
+  color: #0f7a86;
+}
+
+.link {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: 500;
+  font-size: 14px;
+  color: #0f7a86;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link:focus-visible {
+  outline: 2px solid #0f7a86;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.toolbarRight {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.search {
+  width: 300px;
+  max-width: 100%;
+}
+
+.nameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 500;
+  color: #0b0c0e;
+}
+
+.sub,
+.muted {
+  font-size: 13px;
+  color: #6a6e77;
+}
+
+.priceCell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #e6f3f4;
+  font-size: 12px;
+  font-weight: 500;
+  color: #0f7a86;
+}
+
+.profit {
+  color: #1b7a43;
+  white-space: nowrap;
+}
+
+.loss {
+  color: #b3202a !important;
+  white-space: nowrap;
+}
+
+.pct {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.note {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+/* Hộp thoại sửa giá */
+.modalName {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 22px;
+  color: #3a3d44;
+}
+
+.facts {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f7f8fa;
+}
+
+.facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.facts dt {
+  color: #6a6e77;
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 500;
+  color: #0b0c0e;
+  text-align: right;
+}

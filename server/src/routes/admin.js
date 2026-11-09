@@ -7,6 +7,8 @@ import { adminStore, PERMISSIONS, SERVICE_TYPES } from '../services/adminStore.j
 import { userStore } from '../services/userStore.js';
 import { accountStore } from '../services/accountStore.js';
 import { isProviderOrder } from '../services/smmSync.js';
+import { smmEnabled, smmProvider } from '../services/smmProvider.js';
+import { getSmmCatalog, smmMarkup, SMM_PLATFORMS } from '../services/smmCatalog.js';
 import { verifyPassword } from '../services/password.js';
 import { isNonEmptyString } from '../utils/validators.js';
 import { securityLog } from '../utils/securityLog.js';
@@ -313,6 +315,101 @@ router.delete('/price-items/:id', requireAdmin('content'), (req, res) => {
   adminStore.log(req.admin.username, 'Xóa mục giá', existing.name);
   res.json({ data: { ok: true } });
 });
+
+/* ===================== Giá dịch vụ tăng tương tác (hotrodvfb) ===================== */
+
+const smmAdminView = (s) => ({
+  id: s.id,
+  platform: s.platform,
+  category: s.category,
+  name: s.name,
+  type: s.type,
+  min: s.min,
+  max: s.max,
+  refill: s.refill,
+  providerRate: s.providerRate,
+  costPer1000: s.costPer1000,
+  defaultPrice: s.defaultPrice,
+  customPrice: s.customPrice,
+  pricePer1000: s.pricePer1000,
+  disabled: s.disabled,
+});
+
+async function smmAdminCatalog(fresh) {
+  if (!smmEnabled()) throw notFound('Chưa cấu hình HOTRODVFB_API_KEY');
+  try {
+    return await getSmmCatalog({ fresh });
+  } catch (err) {
+    throw new HttpError(503, `Không tải được danh mục hotrodvfb: ${err.message}`);
+  }
+}
+
+router.get('/smm', requireAdmin('content'), asyncHandler(async (req, res) => {
+  if (!smmEnabled()) return res.json({ data: { enabled: false } });
+  const [catalog, balance] = await Promise.all([
+    smmAdminCatalog(req.query.fresh === '1'),
+    smmProvider.balance().catch(() => null),
+  ]);
+  res.json({
+    data: {
+      enabled: true,
+      markupPercent: smmMarkup(),
+      defaultMarkupPercent: config.smm.markupPercent,
+      vndRate: catalog.vndRate,
+      balance: balance && { usd: balance.balance, vnd: balance.balance !== null ? Math.floor(balance.balance * (balance.rate || catalog.vndRate)) : null },
+      loadedAt: new Date(catalog.at).toISOString(),
+      platforms: SMM_PLATFORMS.map(({ key, name }) => ({ key, name })),
+      services: catalog.all.map(smmAdminView),
+    },
+  });
+}));
+
+router.patch('/smm/settings', requireAdmin('content'), (req, res) => {
+  const v = req.body?.markupPercent;
+  const markup = v === null ? null : Number(v);
+  if (markup !== null && !(Number.isFinite(markup) && markup >= 0 && markup <= 1000)) {
+    throw badRequest('% lãi từ 0 đến 1000', { field: 'markupPercent' });
+  }
+  adminStore.db.smmSettings.markupPercent = markup === null ? null : Math.round(markup * 100) / 100;
+  adminStore.log(req.admin.username, 'Cập nhật % lãi dịch vụ MXH', `${smmMarkup()}%`);
+  res.json({ data: { markupPercent: smmMarkup() } });
+});
+
+router.patch('/smm/services/:id', requireAdmin('content'), asyncHandler(async (req, res) => {
+  const catalog = await smmAdminCatalog(false);
+  const id = Number(req.params.id);
+  const svc = catalog.all.find((s) => s.id === id);
+  if (!svc) throw notFound('Dịch vụ không tồn tại');
+  const body = req.body || {};
+  const overrides = adminStore.db.smmSettings.overrides;
+  const ov = { ...(overrides[id] || {}) };
+  const changes = [];
+  if ('price' in body) {
+    if (body.price === null || body.price === '') {
+      delete ov.price;
+      changes.push('giá mặc định');
+    } else {
+      const price = Number(body.price);
+      if (!Number.isInteger(price) || price < 1 || price > 1_000_000_000) {
+        throw badRequest('Giá phải là số nguyên dương (VND cho 1.000)', { field: 'price' });
+      }
+      ov.price = price;
+      changes.push(`giá ${price.toLocaleString('de-DE')} đ/1000`);
+    }
+  }
+  if ('disabled' in body) {
+    if (typeof body.disabled !== 'boolean') throw badRequest('Trạng thái không hợp lệ', { field: 'disabled' });
+    if (body.disabled) ov.disabled = true;
+    else delete ov.disabled;
+    changes.push(body.disabled ? 'ẩn' : 'hiện');
+  }
+  if (!changes.length) throw badRequest('Không có thay đổi');
+  if (Object.keys(ov).length) overrides[id] = ov;
+  else delete overrides[id];
+  adminStore.log(req.admin.username, 'Cập nhật giá dịch vụ MXH', `#${id} ${svc.name}: ${changes.join(', ')}`.slice(0, 300));
+  const updated = (await getSmmCatalog()).all.find((s) => s.id === id);
+  res.json({ data: smmAdminView(updated) });
+}));
 
 /* ============================ Phân quyền ============================ */
 

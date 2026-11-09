@@ -1,10 +1,13 @@
 import { config } from '../config.js';
 import { smmProvider } from './smmProvider.js';
+import { adminStore } from './adminStore.js';
 
 /**
  * Danh mục dịch vụ tăng tương tác lấy từ hotrodvfb, quy đổi sang VND cho khách JIEYOU.
- * Giá khách = rate (USD / 1000) × tỉ giá NCC × (1 + SMM_MARKUP_PERCENT %), làm tròn lên.
- * Lưu tạm 10 phút; NCC lỗi thì dùng bản cũ (nếu có).
+ * Giá gốc = rate (USD / 1000) × tỉ giá NCC. Giá khách = giá admin đặt riêng cho dịch vụ, nếu không thì
+ * giá gốc × (1 + % lãi), làm tròn lên. % lãi do admin chỉnh (mặc định SMM_MARKUP_PERCENT).
+ * Admin có thể ẩn từng dịch vụ. Danh mục NCC lưu tạm 10 phút; NCC lỗi thì dùng bản cũ (nếu có).
+ * Cài đặt giá ở adminStore.db.smmSettings = { markupPercent: number | null, overrides: { [id]: { price?, disabled? } } }.
  */
 
 /** Nền tảng hiện trên web (khoá trùng icon ở client) ↔ tên `platform` của NCC. */
@@ -32,18 +35,16 @@ export const SMM_TYPES = {
 export const REACTIONS = ['like', 'love', 'care', 'wow', 'haha', 'sad', 'angry'];
 
 const TTL = 10 * 60_000;
-let cache = null; // { at, services: Map(id → service), vndRate }
+let cache = null; // { at, services: Map(id → dịch vụ chưa tính giá), vndRate }
 let loading = null;
 
-function toService(s, vndRate) {
+function toService(s) {
   const platform = SMM_PLATFORMS.find((p) => p.provider === s.platform);
   const type = SMM_TYPES[s.type];
   const rate = Number(s.rate);
   const min = Number(s.min);
   const max = Number(s.max);
   if (!platform || !type || s.is_vip || !(rate > 0) || !(min > 0) || !(max >= min)) return null;
-  // Giá khách cho 1000 đơn vị (VND)
-  const pricePer1000 = Math.ceil(rate * vndRate * (1 + config.smm.markupPercent / 100));
   return {
     id: Number(s.service),
     platform: platform.key,
@@ -53,7 +54,6 @@ function toService(s, vndRate) {
     type: s.type,
     min,
     max,
-    pricePer1000,
     refill: Boolean(s.refill),
     refillDays: Number(s.refill_days) || 0,
     cancel: Boolean(s.cancel),
@@ -62,6 +62,20 @@ function toService(s, vndRate) {
       : [],
     providerRate: rate,
   };
+}
+
+const settings = () => adminStore.db.smmSettings || { markupPercent: null, overrides: {} };
+
+/** % lãi đang áp dụng. */
+export const smmMarkup = () => settings().markupPercent ?? config.smm.markupPercent;
+
+/** Tính giá cho một dịch vụ theo cài đặt hiện tại (VND cho 1.000 đơn vị). */
+function priced(svc, vndRate) {
+  const ov = settings().overrides?.[svc.id] || {};
+  const costPer1000 = Math.ceil(svc.providerRate * vndRate);
+  const defaultPrice = Math.ceil(svc.providerRate * vndRate * (1 + smmMarkup() / 100));
+  const customPrice = Number.isInteger(ov.price) && ov.price > 0 ? ov.price : null;
+  return { ...svc, costPer1000, defaultPrice, customPrice, pricePer1000: customPrice ?? defaultPrice, disabled: Boolean(ov.disabled) };
 }
 
 async function load() {
@@ -73,14 +87,14 @@ async function load() {
   const vndRate = bal.rate > 0 ? bal.rate : config.smm.usdVnd;
   const services = new Map();
   for (const s of list) {
-    const svc = toService(s, vndRate);
+    const svc = toService(s);
     if (svc) services.set(svc.id, svc);
   }
   cache = { at: Date.now(), services, vndRate };
   return cache;
 }
 
-export async function getSmmCatalog({ fresh = false } = {}) {
+async function loadCached(fresh) {
   if (!fresh && cache && Date.now() - cache.at < TTL) return cache;
   loading ??= load().finally(() => {
     loading = null;
@@ -93,8 +107,18 @@ export async function getSmmCatalog({ fresh = false } = {}) {
   }
 }
 
-/** Dạng gửi cho client (bỏ giá gốc của NCC). */
-export const publicService = ({ providerRate, ...s }) => s;
+/**
+ * Danh mục đã tính giá theo cài đặt hiện tại.
+ * `services`: dịch vụ khách đặt được (đã bỏ dịch vụ admin ẩn); `all`: mọi dịch vụ (cho trang admin).
+ */
+export async function getSmmCatalog({ fresh = false } = {}) {
+  const c = await loadCached(fresh);
+  const all = [...c.services.values()].map((svc) => priced(svc, c.vndRate));
+  return { at: c.at, vndRate: c.vndRate, all, services: new Map(all.filter((s) => !s.disabled).map((s) => [s.id, s])) };
+}
+
+/** Dạng gửi cho khách (bỏ giá gốc và cài đặt nội bộ). */
+export const publicService = ({ providerRate, costPer1000, defaultPrice, customPrice, disabled, ...s }) => s;
 
 /** Tiền khách trả cho `quantity` đơn vị (VND, làm tròn lên). */
 export const smmAmount = (svc, quantity) => Math.ceil((svc.pricePer1000 * quantity) / 1000);

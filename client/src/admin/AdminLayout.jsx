@@ -12,6 +12,7 @@ export const NAV = [
   { key: 'customers', label: 'Khách hàng', to: '/admin/khach-hang', perm: 'customers' },
   { key: 'transactions', label: 'Giao dịch', to: '/admin/giao-dich', perm: 'transactions' },
   { key: 'content', label: 'Nội dung', to: '/admin/noi-dung', perm: 'content' },
+  { key: 'smm', label: 'Giá MXH', to: '/admin/gia-mxh', perm: 'content' },
   { key: 'roles', label: 'Phân quyền', to: '/admin/phan-quyen', perm: 'roles' },
   { key: 'logs', label: 'Nhật ký', to: '/admin/nhat-ky', perm: 'roles' },
 ];

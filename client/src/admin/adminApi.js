@@ -58,6 +58,11 @@ export const adminApi = {
   updatePriceItem: (id, patch) => request(`/price-items/${id}`, { method: 'PATCH', body: patch }),
   deletePriceItem: (id) => request(`/price-items/${id}`, { method: 'DELETE' }),
 
+  // Giá dịch vụ tăng tương tác (hotrodvfb)
+  smm: (params = {}, o) => request(`/smm${qs(params)}`, o),
+  setSmmMarkup: (markupPercent) => request('/smm/settings', { method: 'PATCH', body: { markupPercent } }),
+  updateSmmService: (id, patch) => request(`/smm/services/${id}`, { method: 'PATCH', body: patch }),
+
   roles: (o) => request('/roles', o),
   createRole: (name, permissions) => request('/roles', { method: 'POST', body: { name, permissions } }),
   updateRole: (id, permissions) => request(`/roles/${id}`, { method: 'PATCH', body: { permissions } }),

@@ -28,6 +28,7 @@ const COLLECTIONS = {
   logs: [() => A.logs, (rows) => (A.logs = rows)],
   notifications: [() => C.notifications, (rows) => (C.notifications = rows)],
   invoices: [() => C.invoices, (rows) => (C.invoices = rows)],
+  smmSettings: [() => [A.smmSettings], ([s]) => s && (A.smmSettings = s)],
   drafts: [() => [...C.drafts.entries()], (rows) => (C.drafts = new Map(rows))],
   meta: [
     () => [{ invoicesPending: A.invoicesPending, invoiceSeq: C.invoiceSeq }],

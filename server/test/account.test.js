@@ -5,6 +5,10 @@ import { adminStore } from '../src/services/adminStore.js';
 import { accountStore } from '../src/services/accountStore.js';
 import { userStore } from '../src/services/userStore.js';
 import { _resetOtps } from '../src/services/otpService.js';
+import { config } from '../src/config.js';
+
+// Test luồng duyệt tay: không gọi hotrodvfb thật dù .env có HOTRODVFB_API_KEY (luồng tự động: smm.test.js)
+config.smm.apiKey = '';
 
 let server;
 let base;

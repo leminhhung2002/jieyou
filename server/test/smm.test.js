@@ -202,3 +202,40 @@ test('đổi link Facebook sang UID số', async () => {
   assert.equal(r.body.data.link, 'https://www.facebook.com/100000000001');
   assert.equal((await call('POST', '/account/social/uid', { link: 'abc' }, token)).status, 400);
 });
+
+test('admin: xem giá gốc / giá bán, chỉnh % lãi, đặt giá riêng, ẩn dịch vụ', async () => {
+  const adminToken = (await call('POST', '/admin/auth/login', { username: 'admin', password: config.adminDefaultPassword })).body.data.token;
+  const editor = (await call('POST', '/admin/auth/login', { username: 'bientap01', password: config.adminDefaultPassword })).body.data.token;
+  const token = await loginAnPhat();
+  const price = async (id) => (await call('GET', '/account/social/services', undefined, token)).body.data.services.find((s) => s.id === id)?.pricePer1000;
+
+  const r = await call('GET', '/admin/smm', undefined, editor);
+  assert.equal(r.status, 200);
+  assert.equal(r.body.data.markupPercent, 20);
+  assert.equal(r.body.data.balance.usd, 100);
+  const like = r.body.data.services.find((s) => s.id === 63);
+  assert.equal(like.costPer1000, 25_000);
+  assert.equal(like.pricePer1000, 30_000);
+
+  // % lãi chung
+  assert.equal((await call('PATCH', '/admin/smm/settings', { markupPercent: -5 }, adminToken)).status, 400);
+  assert.equal((await call('PATCH', '/admin/smm/settings', { markupPercent: 50 }, adminToken)).status, 200);
+  assert.equal(await price(63), 37_500);
+
+  // Giá riêng cho một dịch vụ, áp dụng khi đặt đơn
+  assert.equal((await call('PATCH', '/admin/smm/services/63', { price: 1.5 }, adminToken)).status, 400);
+  const p = await call('PATCH', '/admin/smm/services/63', { price: 28_000 }, adminToken);
+  assert.equal(p.body.data.customPrice, 28_000);
+  assert.equal(await price(63), 28_000);
+  const o = await call('POST', '/account/applications', likeOrder(), token);
+  assert.equal(o.body.data.balance, START - 28_000);
+
+  // Về giá mặc định; ẩn dịch vụ → khách không thấy, không đặt được
+  await call('PATCH', '/admin/smm/services/63', { price: null }, adminToken);
+  assert.equal(await price(63), 37_500);
+  await call('PATCH', '/admin/smm/services/63', { disabled: true }, adminToken);
+  assert.equal(await price(63), undefined);
+  assert.equal((await call('POST', '/account/applications', likeOrder(), token)).body.error.details.field, 'service');
+  assert.equal((await call('GET', '/admin/smm', undefined, adminToken)).body.data.services.find((s) => s.id === 63).disabled, true);
+  assert.equal((await call('PATCH', '/admin/smm/services/999', { price: 1000 }, adminToken)).status, 404);
+});

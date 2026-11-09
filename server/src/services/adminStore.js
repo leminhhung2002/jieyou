@@ -34,6 +34,8 @@ const db = {
   priceItems: [],
   logs: [],
   invoicesPending: 2,
+  // Giá dịch vụ tăng tương tác (services/smmCatalog.js)
+  smmSettings: { markupPercent: null, overrides: {} },
 };
 
 
@@ -124,7 +126,7 @@ export const adminStore = {
   listLogs: () => db.logs,
 
   async seed() {
-    Object.assign(db, { roles: [], admins: [], applications: [], transactions: [], priceItems: [], logs: [], invoicesPending: 2 });
+    Object.assign(db, { roles: [], admins: [], applications: [], transactions: [], priceItems: [], logs: [], invoicesPending: 2, smmSettings: { markupPercent: null, overrides: {} } });
 
     // Vai trò – đúng ma trận trong màn "Phân quyền"
     const R = (name, permissions, locked = false) => {
