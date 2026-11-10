@@ -27,12 +27,20 @@ const PLATFORM_ICON = {
   tiktok: 'account/social/tiktok.svg',
   youtube: 'account/social/youtube.svg',
   instagram: 'account/social/instagram.svg',
+  threads: 'account/social/threads.svg',
+  twitter: 'account/social/twitter.svg',
+  shopee: 'account/social/shopee.svg',
+  lazada: 'account/social/lazada.svg',
 };
 const URL_HINT = {
   facebook: 'https://www.facebook.com/100000000001/posts/…',
   tiktok: 'https://www.tiktok.com/@ten-kenh/video/…',
   youtube: 'https://www.youtube.com/watch?v=…',
   instagram: 'https://www.instagram.com/p/…',
+  threads: 'https://www.threads.net/@ten-tai-khoan/post/…',
+  twitter: 'https://x.com/ten-tai-khoan/status/…',
+  shopee: 'https://shopee.vn/ten-shop',
+  lazada: 'https://www.lazada.vn/shop/ten-shop',
 };
 const REACTION_LABEL = { like: 'Thích', love: 'Yêu thích', care: 'Thương thương', wow: 'Wow', haha: 'Haha', sad: 'Buồn', angry: 'Phẫn nộ' };
 /** Khớp server/src/services/smmCatalog.js – SMM_TYPES */

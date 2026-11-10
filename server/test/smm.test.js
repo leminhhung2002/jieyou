@@ -18,6 +18,8 @@ const SERVICES = [
   { service: 523, name: 'Vip Like', type: 'Vip Default', category: 'VIP', rate: '87.5', min: '50', max: '1000', platform: 'Facebook', data: {}, is_vip: true },
   { service: 80, name: 'Live', type: 'Custom Livestream', category: 'Live', rate: '5', min: '10', max: '1000', platform: 'Facebook', data: {} },
   { service: 90, name: 'Shopee like', type: 'Default', category: 'Like', rate: '1', min: '10', max: '1000', platform: 'Shopee', data: {} },
+  { service: 95, name: 'Lazada follow', type: 'Default', category: 'Follow', rate: '1', min: '10', max: '1000', platform: 'Lazada', data: {} },
+  { service: 96, name: 'Weibo like', type: 'Default', category: 'Like', rate: '1', min: '10', max: '1000', platform: 'Weibo', data: {} },
 ];
 const fake = { requests: [], orders: new Map(), nextOrder: 1000, addError: null };
 
@@ -101,13 +103,14 @@ const likeOrder = (extra = {}) => ({
 
 /* ------------------------------------ tests ------------------------------------ */
 
-test('danh mục: bỏ VIP / livestream / nền tảng không hỗ trợ, giá VND = rate × tỉ giá × (1 + lãi)', async () => {
+test('danh mục: có Shopee/Lazada, bỏ VIP / livestream / nền tảng chưa hỗ trợ, giá VND = rate × tỉ giá × (1 + lãi)', async () => {
   const token = await loginAnPhat();
   assert.equal((await call('GET', '/account/catalog', undefined, token)).body.data.smm.enabled, true);
   const r = await call('GET', '/account/social/services', undefined, token);
   assert.equal(r.status, 200);
   const ids = r.body.data.services.map((s) => s.id).sort();
-  assert.deepEqual(ids, [63, 70]);
+  assert.deepEqual(ids, [63, 70, 90, 95]);
+  assert.ok(r.body.data.platforms.some((p) => p.key === 'shopee'));
   const like = r.body.data.services.find((s) => s.id === 63);
   assert.equal(like.pricePer1000, 30_000); // 1 USD × 25.000 × 1,2
   assert.deepEqual(like.reactions, ['like', 'love']);

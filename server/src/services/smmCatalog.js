@@ -16,6 +16,10 @@ export const SMM_PLATFORMS = [
   { key: 'tiktok', name: 'TikTok', provider: 'Tiktok' },
   { key: 'youtube', name: 'YouTube', provider: 'Youtube' },
   { key: 'instagram', name: 'Instagram', provider: 'Instagram' },
+  { key: 'threads', name: 'Threads', provider: 'Threads' },
+  { key: 'twitter', name: 'X (Twitter)', provider: 'Twitter' },
+  { key: 'shopee', name: 'Shopee', provider: 'Shopee' },
+  { key: 'lazada', name: 'Lazada', provider: 'Lazada' },
 ];
 
 /**
