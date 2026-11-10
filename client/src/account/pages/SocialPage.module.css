@@ -136,7 +136,157 @@
   border-color: #b3202a;
 }
 
+/* Danh sách dịch vụ dạng cây: danh mục → các gói, luôn hiển thị để chọn trực tiếp */
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 520px;
+  overflow-y: auto;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
+
+.treeHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 12px;
+  background: #f7f8fa;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 21px;
+  color: #0b0c0e;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.treeHead:hover {
+  border-color: #12909c;
+}
+
+.treeHeadOn {
+  border-color: #0f7a86;
+  background: #e8fbfb;
+}
+
+.treeHeadText {
+  flex: 1;
+  min-width: 0;
+}
+
+.treeCount {
+  flex-shrink: 0;
+  min-width: 24px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6a6e77;
+  text-align: center;
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #6a6e77;
+  border-bottom: 2px solid #6a6e77;
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+
+.chevronOpen {
+  transform: rotate(45deg);
+}
+
+.treeList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 6px 0 4px 14px;
+  padding-left: 12px;
+  border-left: 2px solid #cfeff1;
+}
+
+.treeItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  color: #33363d;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.treeItem:hover {
+  background: #f2f4f6;
+}
+
+.treeItem:focus-visible,
+.treeHead:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.treeItemOn,
+.treeItemOn:hover {
+  border-color: #0f7a86;
+  background: #e8fbfb;
+  color: #0b0c0e;
+  font-weight: 600;
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c8cbd1;
+}
+
+.treeItemOn .dot {
+  background: #0f7a86;
+  box-shadow: 0 0 0 4px #bfe9ec;
+}
+
+.treeItemName {
+  flex: 1;
+  min-width: 0;
+}
+
+.treeItemPrice {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b3202a;
+  white-space: nowrap;
+}
+
 @media (max-width: 640px) {
+  .treeItem {
+    flex-wrap: wrap;
+  }
+
+  .treeItemPrice {
+    width: 100%;
+    padding-left: 18px;
+  }
+
   .header {
     margin-left: 0;
   }

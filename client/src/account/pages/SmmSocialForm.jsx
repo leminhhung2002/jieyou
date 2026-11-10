@@ -68,6 +68,17 @@ export default function SmmSocialForm() {
   const svc = inCategory.find((s) => String(s.id) === form.service) ?? inCategory[0] ?? null;
   const commentType = svc ? COMMENT_TYPES[svc.type] : null;
 
+  // Danh sách dạng cây: mặc định chỉ mở danh mục đang chọn; bấm tiêu đề để mở/đóng từng danh mục
+  const [openCats, setOpenCats] = useState(null);
+  const open = openCats ?? new Set([category]);
+  const toggleCategory = (c) =>
+    setOpenCats((prev) => {
+      const s = new Set(prev ?? [category]);
+      if (s.has(c)) s.delete(c);
+      else s.add(c);
+      return s;
+    });
+
   // Đổi gói → số lượng mặc định = tối thiểu, cảm xúc mặc định = cái đầu tiên
   useEffect(() => {
     if (!svc) return;
@@ -121,7 +132,10 @@ export default function SmmSocialForm() {
                   <ChoiceCard
                     key={p.key}
                     selected={form.platform === p.key}
-                    onSelect={() => update({ platform: p.key, category: '', service: '' })}
+                    onSelect={() => {
+                      update({ platform: p.key, category: '', service: '' });
+                      setOpenCats(null);
+                    }}
                     className={`${styles.platform} ${form.platform === p.key ? styles.platformOn : ''}`}
                     icon={<img src={asset(PLATFORM_ICON[p.key])} width="32" height="32" alt="" />}
                     title={p.name}
@@ -132,24 +146,57 @@ export default function SmmSocialForm() {
               {loadError && <p className={styles.error}>{loadError.message}</p>}
             </Card>
 
+            {categories.length > 0 && (
+              <Card title="Dịch vụ">
+                <div className={styles.tree}>
+                  {categories.map((c) => {
+                    const isOpen = open.has(c);
+                    const items = inPlatform.filter((s) => s.category === c);
+                    return (
+                      <div key={c} className={styles.treeGroup}>
+                        <button
+                          type="button"
+                          className={`${styles.treeHead} ${c === category ? styles.treeHeadOn : ''}`}
+                          aria-expanded={isOpen}
+                          onClick={() => toggleCategory(c)}
+                        >
+                          <span className={styles.treeHeadText}>{c}</span>
+                          <span className={styles.treeCount}>{items.length}</span>
+                          <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`} aria-hidden="true" />
+                        </button>
+                        {isOpen && (
+                          <ChoiceGroup label={c} className={styles.treeList}>
+                            {items.map((s) => {
+                              const on = svc?.id === s.id;
+                              return (
+                                <button
+                                  key={s.id}
+                                  type="button"
+                                  role="radio"
+                                  aria-checked={on}
+                                  tabIndex={on || (!items.some((x) => x.id === svc?.id) && s === items[0]) ? 0 : -1}
+                                  className={`${styles.treeItem} ${on ? styles.treeItemOn : ''}`}
+                                  onClick={() => update({ category: c, service: String(s.id) })}
+                                >
+                                  <span className={styles.dot} aria-hidden="true" />
+                                  <span className={styles.treeItemName}>{s.name}</span>
+                                  <span className={styles.treeItemPrice}>{vnd(s.pricePer1000)}/1.000</span>
+                                </button>
+                              );
+                            })}
+                          </ChoiceGroup>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                {fieldErrors.service && <p className={styles.error}>{fieldErrors.service}</p>}
+              </Card>
+            )}
+
             {svc && (
-              <Card aria-label="Chi tiết đơn">
+              <Card title={svc.name}>
                 <FormGrid className={styles.grid}>
-                  <SelectField
-                    label="Danh mục"
-                    name="category"
-                    options={categories}
-                    value={category}
-                    onChange={(e) => update({ category: e.target.value, service: '' })}
-                  />
-                  <SelectField
-                    label="Dịch vụ"
-                    name="service"
-                    options={inCategory.map((s) => ({ value: String(s.id), label: `${s.name} · ${vnd(s.pricePer1000)}/1.000` }))}
-                    value={String(svc.id)}
-                    onChange={(e) => update({ service: e.target.value })}
-                    error={fieldErrors.service}
-                  />
                   {(svc.description || svc.refill || svc.cancel) && (
                     <p className={`${styles.hint} ${styles.span}`}>
                       {svc.description}
