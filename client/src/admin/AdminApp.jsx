@@ -10,6 +10,7 @@ const CustomersPage = lazy(() => import('./pages/CustomersPage.jsx'));
 const TransactionsPage = lazy(() => import('./pages/TransactionsPage.jsx'));
 const ContentPage = lazy(() => import('./pages/ContentPage.jsx'));
 const SmmPricesPage = lazy(() => import('./pages/SmmPricesPage.jsx'));
+const FeesPage = lazy(() => import('./pages/FeesPage.jsx'));
 const LicensesPage = lazy(() => import('./pages/LicensesPage.jsx'));
 const RolesPage = lazy(() => import('./pages/RolesPage.jsx'));
 const LogsPage = lazy(() => import('./pages/LogsPage.jsx'));
@@ -28,6 +29,7 @@ export default function AdminApp() {
             <Route path="giao-dich" element={<TransactionsPage />} />
             <Route path="noi-dung" element={<ContentPage />} />
             <Route path="gia-mxh" element={<SmmPricesPage />} />
+            <Route path="phi-misa-pos" element={<FeesPage />} />
             <Route path="key-ban-quyen" element={<LicensesPage />} />
             <Route path="phan-quyen" element={<RolesPage />} />
             <Route path="nhat-ky" element={<LogsPage />} />

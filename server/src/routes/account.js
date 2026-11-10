@@ -7,6 +7,7 @@ import { credentialVersion } from '../utils/jwt.js';
 import { securityLog } from '../utils/securityLog.js';
 import { adminStore, SERVICE_TYPES } from '../services/adminStore.js';
 import { accountStore, priceOf } from '../services/accountStore.js';
+import { misaDevicePrice, posFee, vatRates } from '../services/feeSettings.js';
 import { userStore } from '../services/userStore.js';
 import { emailTopupSuccess } from '../services/accountEmails.js';
 import { hashPassword, verifyPassword } from '../services/password.js';
@@ -159,14 +160,13 @@ function catalog() {
     adSlots: AD_SLOTS.map(({ key, name, note, priceName, defaultPrice }) => ({
       key, name, note, price: priceOf(priceName, defaultPrice, 'quang-cao-tren-san'),
     })),
-    misaDevices: MISA_DEVICES.map(({ key, name, priceName, defaultPrice }) => ({
-      key, name, price: priceOf(priceName, defaultPrice, 'may-ban-hang-misa'),
-    })),
-    vatRates: VAT_RATES,
+    // Giá máy, VAT, phí POS: chỉnh ở Admin › Phí MISA & POS (services/feeSettings.js)
+    misaDevices: MISA_DEVICES.map((d) => ({ key: d.key, name: d.name, price: misaDevicePrice(d) })),
+    vatRates: vatRates(),
     socialPlatforms: SOCIAL_PLATFORMS,
     socialKinds: SOCIAL_KINDS.map(({ key, name, defaultPrice }) => ({ key, name, price: defaultPrice })),
     fees: Object.fromEntries(
-      Object.entries(FLAT_FEES).map(([k, f]) => [k, priceOf(f.priceName, f.defaultPrice, f.serviceSlug)]),
+      Object.entries(FLAT_FEES).map(([k, f]) => [k, k === 'pos' ? posFee() : priceOf(f.priceName, f.defaultPrice, f.serviceSlug)]),
     ),
     posBusinessTypes: POS_BUSINESS_TYPES,
     bctKinds: BCT_KINDS,
@@ -275,7 +275,7 @@ const SERVICES = {
     const address = requireText(body.address, 'địa chỉ lắp đặt', 'address');
     const einvoice = body.einvoice !== false;
     const vat = Number(body.vat);
-    need(VAT_RATES.includes(vat), 'Thuế VAT không hợp lệ', 'vat');
+    need(c.vatRates.includes(vat), 'Thuế VAT không hợp lệ', 'vat');
     let invoiceTaxCode = null;
     if (einvoice) {
       need(isTaxCode(body.invoiceTaxCode), 'Mã số thuế xuất hóa đơn gồm 10 hoặc 13 chữ số', 'invoiceTaxCode');

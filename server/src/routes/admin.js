@@ -10,6 +10,7 @@ import { isProviderOrder } from '../services/smmSync.js';
 import { smmEnabled, smmProvider } from '../services/smmProvider.js';
 import { getSmmCatalog, smmMarkup, SMM_PLATFORMS } from '../services/smmCatalog.js';
 import { licenseStore } from '../services/licenseStore.js';
+import { applyFeeSettings, feeSettingsView } from '../services/feeSettings.js';
 import { verifyPassword } from '../services/password.js';
 import { isNonEmptyString } from '../utils/validators.js';
 import { securityLog } from '../utils/securityLog.js';
@@ -322,6 +323,23 @@ router.delete('/price-items/:id', requireAdmin('content'), (req, res) => {
   adminStore.removePriceItem(existing.id);
   adminStore.log(req.admin.username, 'Xóa mục giá', existing.name);
   res.json({ data: { ok: true } });
+});
+
+/* ===================== Phí Máy bán hàng + MISA và hồ sơ POS ===================== */
+
+router.get('/fees', requireAdmin('content'), (_req, res) => {
+  res.json({ data: feeSettingsView() });
+});
+
+router.patch('/fees', requireAdmin('content'), (req, res) => {
+  let changes;
+  try {
+    changes = applyFeeSettings(req.body || {});
+  } catch (err) {
+    throw badRequest(err.message, err.field ? { field: err.field } : undefined);
+  }
+  adminStore.log(req.admin.username, 'Cập nhật phí MISA & POS', changes.join('; ').slice(0, 300));
+  res.json({ data: feeSettingsView() });
 });
 
 /* ===================== Giá dịch vụ tăng tương tác (hotrodvfb) ===================== */

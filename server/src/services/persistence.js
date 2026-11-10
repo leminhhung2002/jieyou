@@ -29,6 +29,7 @@ const COLLECTIONS = {
   notifications: [() => C.notifications, (rows) => (C.notifications = rows)],
   invoices: [() => C.invoices, (rows) => (C.invoices = rows)],
   smmSettings: [() => [A.smmSettings], ([s]) => s && (A.smmSettings = s)],
+  feeSettings: [() => [A.feeSettings], ([s]) => s && (A.feeSettings = s)],
   licenseProducts: [() => A.licenseProducts, (rows) => (A.licenseProducts = rows)],
   licenseKeys: [() => A.licenseKeys, (rows) => (A.licenseKeys = rows)],
   drafts: [() => [...C.drafts.entries()], (rows) => (C.drafts = new Map(rows))],

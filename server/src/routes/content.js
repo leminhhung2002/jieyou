@@ -6,6 +6,8 @@ import { news } from '../data/news.js';
 import { serviceContent } from '../data/serviceContent/index.js';
 import { adminStore } from '../services/adminStore.js';
 import { licenseStore } from '../services/licenseStore.js';
+import { misaDevicePrice, misaServiceContent } from '../services/feeSettings.js';
+import { MISA_DEVICES } from '../data/accountCatalog.js';
 
 /** Giá thấp nhất đã xuất bản của một dịch vụ trong Bảng giá Admin (null nếu chưa có). */
 function publishedFromPrice(serviceSlug) {
@@ -16,7 +18,15 @@ function publishedFromPrice(serviceSlug) {
   return prices.length ? Math.min(...prices) : null;
 }
 
-const withLivePrice = (p) => ({ ...p, fromPrice: publishedFromPrice(p.serviceSlug) ?? p.fromPrice });
+/** Giá "Từ ..." của máy bán hàng / gói hóa đơn MISA lấy theo Admin › Phí MISA & POS. */
+function feeFromPrice(id) {
+  const min = (arr) => (arr.length ? Math.min(...arr) : null);
+  if (id === 'pos-machine') return min(MISA_DEVICES.map(misaDevicePrice).filter((n) => n > 0));
+  if (id === 'misa') return min(misaServiceContent().invoicePlans.plans.map((p) => p.price).filter((n) => n > 0));
+  return null;
+}
+
+const withLivePrice = (p) => ({ ...p, fromPrice: feeFromPrice(p.id) ?? publishedFromPrice(p.serviceSlug) ?? p.fromPrice });
 import { notFound } from '../utils/httpError.js';
 
 const router = Router();
@@ -36,7 +46,7 @@ router.get('/services/:slug', (req, res, next) => {
       priceItems: adminStore
         .listPriceItems()
         .filter((p) => p.serviceSlug === service.slug && p.status === 'published'),
-      content: serviceContent[service.slug] || null,
+      content: service.slug === 'may-ban-hang-misa' ? misaServiceContent() : serviceContent[service.slug] || null,
       // Trang Key bản quyền: danh sách sản phẩm đang bán (giá + còn hàng hay không)
       ...(service.slug === 'key-ban-quyen'
         ? {

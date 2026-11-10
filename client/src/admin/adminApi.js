@@ -65,6 +65,9 @@ export const adminApi = {
   updateSmmService: (id, patch) => request(`/smm/services/${id}`, { method: 'PATCH', body: patch }),
 
   // Key phần mềm bản quyền
+  fees: (o) => request('/fees', o),
+  updateFees: (patch) => request('/fees', { method: 'PATCH', body: patch }),
+
   licenses: (o) => request('/licenses', o),
   createLicense: (body) => request('/licenses', { method: 'POST', body }),
   updateLicense: (id, patch) => request(`/licenses/${id}`, { method: 'PATCH', body: patch }),

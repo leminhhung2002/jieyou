@@ -41,6 +41,8 @@ const db = {
   // Key phần mềm bản quyền (services/licenseStore.js)
   licenseProducts: [],
   licenseKeys: [],
+  // Phí Máy bán hàng + MISA và hồ sơ POS (services/feeSettings.js)
+  feeSettings: { misaDevices: {}, vatRates: null, posFee: null, machines: {}, invoicePlans: null },
 };
 
 
@@ -131,7 +133,7 @@ export const adminStore = {
   listLogs: () => db.logs,
 
   async seed() {
-    Object.assign(db, { roles: [], admins: [], applications: [], transactions: [], priceItems: [], logs: [], invoicesPending: 2, smmSettings: { markupPercent: null, overrides: {} }, licenseProducts: [], licenseKeys: [] });
+    Object.assign(db, { roles: [], admins: [], applications: [], transactions: [], priceItems: [], logs: [], invoicesPending: 2, smmSettings: { markupPercent: null, overrides: {} }, licenseProducts: [], licenseKeys: [], feeSettings: { misaDevices: {}, vatRates: null, posFee: null, machines: {}, invoicePlans: null } });
 
     // Vai trò – đúng ma trận trong màn "Phân quyền"
     const R = (name, permissions, locked = false) => {
