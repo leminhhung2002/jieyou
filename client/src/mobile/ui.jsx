@@ -27,6 +27,8 @@ export const SERVICE_PAGES = {
   misa: '/tai-khoan/may-ban-hang',
   pos: '/tai-khoan/pos',
   social: '/tai-khoan/tuong-tac-mxh',
+  webapp: '/tai-khoan/lam-app-web',
+  license: '/tai-khoan/key-ban-quyen',
 };
 
 /** Trạng thái hồ sơ → nhãn + màu chữ (Figma 121:16014 / 121:16026 / 121:16038) + badge trên icon. */
@@ -47,6 +49,8 @@ const TYPE_ICON = {
   pos: { src: 'mobile/ho-so/pos.svg', size: 20, bg: '#00a2c7' },
   unipay: { src: 'account/nav/unipay.svg', size: 22, bg: '#3e63dd', tint: true },
   social: { src: 'account/nav/social.svg', size: 22, bg: '#e93d82', tint: true },
+  webapp: { src: 'account/nav/webapp.svg', size: 22, bg: '#8e4ec6', tint: true },
+  license: { src: 'account/nav/license.svg', size: 22, bg: '#f76b15', tint: true },
 };
 
 export function AppTypeIcon({ type, status, badge = true }) {

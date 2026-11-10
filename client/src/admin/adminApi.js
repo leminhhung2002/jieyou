@@ -45,7 +45,8 @@ export const adminApi = {
 
   applications: (params = {}, o) => request(`/applications${qs(params)}`, o),
   application: (code, o) => request(`/applications/${encodeURIComponent(code)}`, o),
-  approve: (code) => request(`/applications/${encodeURIComponent(code)}/approve`, { method: 'POST', body: {} }),
+  /** note: ghi chú gửi khách (vd. báo giá yêu cầu làm app/web), không bắt buộc */
+  approve: (code, note) => request(`/applications/${encodeURIComponent(code)}/approve`, { method: 'POST', body: note ? { note } : {} }),
   reject: (code, reason) => request(`/applications/${encodeURIComponent(code)}/reject`, { method: 'POST', body: { reason } }),
 
   customers: (params = {}, o) => request(`/customers${qs(params)}`, o),
@@ -62,6 +63,16 @@ export const adminApi = {
   smm: (params = {}, o) => request(`/smm${qs(params)}`, o),
   setSmmMarkup: (markupPercent) => request('/smm/settings', { method: 'PATCH', body: { markupPercent } }),
   updateSmmService: (id, patch) => request(`/smm/services/${id}`, { method: 'PATCH', body: patch }),
+
+  // Key phần mềm bản quyền
+  licenses: (o) => request('/licenses', o),
+  createLicense: (body) => request('/licenses', { method: 'POST', body }),
+  updateLicense: (id, patch) => request(`/licenses/${id}`, { method: 'PATCH', body: patch }),
+  deleteLicense: (id) => request(`/licenses/${id}`, { method: 'DELETE' }),
+  /** → { data: keys, meta: { product } } */
+  licenseKeys: (id, o) => request(`/licenses/${id}/keys`, o),
+  addLicenseKeys: (id, keys) => request(`/licenses/${id}/keys`, { method: 'POST', body: { keys } }),
+  deleteLicenseKey: (id, keyId) => request(`/licenses/${id}/keys/${keyId}`, { method: 'DELETE' }),
 
   roles: (o) => request('/roles', o),
   createRole: (name, permissions) => request('/roles', { method: 'POST', body: { name, permissions } }),

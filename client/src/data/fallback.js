@@ -7,8 +7,8 @@ export const fallbackServices = [
   { slug: 'cong-thanh-toan-pos', name: 'Hồ sơ cổng thanh toán POS', icon: 'terminal', description: 'Đăng ký cổng thanh toán POS, miễn phí.' },
   { slug: 'tang-tuong-tac-mxh', name: 'Tăng tương tác MXH', icon: 'social', description: 'Tăng lượt thích, theo dõi, xem cho trang mạng xã hội.' },
   { slug: 'may-ban-hang-misa', name: 'Máy bán hàng + Hóa đơn MISA', icon: 'card', description: 'Trang bị máy bán hàng kèm hóa đơn điện tử MISA.' },
-  { slug: null, name: 'Dịch vụ ....', icon: 'terminal', description: 'Đăng ký cổng thanh toán POS, miễn phí.', comingSoon: true },
-  { slug: null, name: 'Dịch vụ ....', icon: 'terminal', description: 'Đăng ký cổng thanh toán POS, miễn phí.', comingSoon: true },
+  { slug: 'lam-app-web-theo-yeu-cau', name: 'Làm app/web theo yêu cầu', icon: 'code', description: 'Thiết kế website, landing page, app điện thoại, phần mềm quản lý theo nhu cầu.' },
+  { slug: 'key-ban-quyen', name: 'Key phần mềm bản quyền', icon: 'key', description: 'Mua key bản quyền chính hãng, thanh toán bằng số dư, nhận key ngay.' },
 ];
 
 export const fallbackPricing = [

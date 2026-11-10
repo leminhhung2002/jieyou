@@ -95,7 +95,7 @@ export default function OverviewPage() {
           {ACCOUNT_SERVICES.map((svc) => (
             <li key={svc.key}>
               <Link to={svc.to} className={styles.service}>
-                <img src={asset(`account/sticker/${svc.key}.png`)} width="80" height="80" alt="" />
+                <img src={asset(svc.sticker || `account/sticker/${svc.key}.png`)} width="80" height="80" alt="" />
                 <span>{svc.cardLabel}</span>
               </Link>
             </li>

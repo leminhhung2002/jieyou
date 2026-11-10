@@ -16,6 +16,9 @@ const TYPE_FILTERS = [
   { value: 'bct', label: 'BCT' },
   { value: 'misa', label: 'Máy bán hàng' },
   { value: 'pos', label: 'POS' },
+  { value: 'unipay', label: 'UniPay' },
+  { value: 'social', label: 'MXH' },
+  { value: 'webapp', label: 'App/Web' },
 ];
 
 const MIN_REASON = 5;
@@ -110,7 +113,7 @@ export default function ApplicationsPage() {
   const approve = async () => {
     setBusy('approve');
     try {
-      await adminApi.approve(selected.code);
+      await adminApi.approve(selected.code, reason.trim());
       afterAction(selected.code, `Đã duyệt hồ sơ ${selected.code}`);
     } catch (e) {
       setToast({ message: e.message, tone: 'error' });
@@ -266,6 +269,7 @@ function ReviewPanel({ app, reason, onReason, busy, onApprove, onReject }) {
   const status = APP_STATUS[app.status] || APP_STATUS.pending;
   const pending = isPending(app);
   const rows = [['Khách hàng', app.customer.name], ...Object.entries(app.details || {}), ['Tạm giữ', vnd(app.held)]];
+  const isWebapp = app.type === 'webapp';
 
   return (
     <aside className={styles.panel} aria-labelledby="review-code">
@@ -299,14 +303,14 @@ function ReviewPanel({ app, reason, onReason, busy, onApprove, onReject }) {
       {pending ? (
         <>
           <label className={styles.reasonLabel} htmlFor={reasonId}>
-            Lý do từ chối (bắt buộc khi từ chối)
+            {isWebapp ? 'Báo giá / phản hồi gửi khách khi duyệt, hoặc lý do khi từ chối' : 'Ghi chú gửi khách khi duyệt, hoặc lý do từ chối (bắt buộc khi từ chối)'}
           </label>
           <textarea
             id={reasonId}
             className={styles.textarea}
             value={reason}
-            maxLength={500}
-            placeholder="Nhập lý do…"
+            maxLength={isWebapp ? 2000 : 500}
+            placeholder={isWebapp ? 'VD: Báo giá 18.000.000 đ, hoàn thành trong 3 tuần. Chúng tôi sẽ gọi để trao đổi chi tiết.' : 'Nhập ghi chú hoặc lý do…'}
             onChange={(e) => onReason(e.target.value)}
           />
           <div className={styles.actions}>
@@ -317,7 +321,7 @@ function ReviewPanel({ app, reason, onReason, busy, onApprove, onReject }) {
               onClick={onApprove}
               disabled={Boolean(busy)}
             >
-              {busy === 'approve' ? 'Đang duyệt…' : 'Duyệt'}
+              {busy === 'approve' ? 'Đang duyệt…' : isWebapp ? 'Gửi báo giá' : 'Duyệt'}
             </Button>
             <Button variant="outline" size="lg" onClick={onReject} disabled={Boolean(busy)}>
               Từ chối
@@ -326,7 +330,7 @@ function ReviewPanel({ app, reason, onReason, busy, onApprove, onReject }) {
         </>
       ) : (
         <p className={styles.processed}>
-          {app.status === 'rejected' ? `Đã từ chối: ${app.rejectReason}` : 'Hồ sơ đã được duyệt.'}
+          {app.status === 'rejected' ? `Đã từ chối: ${app.rejectReason}` : app.reviewNote ? `Đã duyệt: ${app.reviewNote}` : 'Hồ sơ đã được duyệt.'}
           {app.reviewedBy && ` (${app.reviewedBy})`}
         </p>
       )}

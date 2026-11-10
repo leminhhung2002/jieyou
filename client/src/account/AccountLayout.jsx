@@ -23,6 +23,8 @@ export const NAV_GROUPS = [
       { icon: 'misa', label: 'Máy bán hàng + MISA', to: '/tai-khoan/may-ban-hang' },
       { icon: 'pos', label: 'Cổng thanh toán POS', to: '/tai-khoan/pos' },
       { icon: 'social', label: 'Tăng tương tác MXH', to: '/tai-khoan/tuong-tac-mxh' },
+      { icon: 'webapp', label: 'Làm app/web', to: '/tai-khoan/lam-app-web' },
+      { icon: 'license', label: 'Key bản quyền', to: '/tai-khoan/key-ban-quyen' },
     ],
   },
   {

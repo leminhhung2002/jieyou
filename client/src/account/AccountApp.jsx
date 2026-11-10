@@ -11,6 +11,8 @@ const BctPage = lazy(() => import('./pages/BctPage.jsx'));
 const MisaPage = lazy(() => import('./pages/MisaPage.jsx'));
 const PosPage = lazy(() => import('./pages/PosPage.jsx'));
 const SocialPage = lazy(() => import('./pages/SocialPage.jsx'));
+const WebappPage = lazy(() => import('./pages/WebappPage.jsx'));
+const LicensePage = lazy(() => import('./pages/LicensePage.jsx'));
 const InvoicesPage = lazy(() => import('./pages/InvoicesPage.jsx'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage.jsx'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'));
@@ -38,6 +40,8 @@ function AccountRoutes() {
       <Route path="may-ban-hang" element={<MisaPage />} />
       <Route path="pos" element={<PosPage />} />
       <Route path="tuong-tac-mxh" element={<SocialPage />} />
+      <Route path="lam-app-web" element={<WebappPage />} />
+      <Route path="key-ban-quyen" element={<LicensePage />} />
       <Route path="hoa-don" element={<InvoicesPage />} />
       <Route path="thong-bao" element={<NotificationsPage />} />
       <Route path="cai-dat" element={<SettingsPage />} />

@@ -16,12 +16,16 @@ export const accountApi = {
   applications: (limit, opts) => request(`/account/applications${qs({ limit })}`, opts),
   /** → { ...application, timeline: [{key,label,at,done,current?,rejected?}], payment: { charged, kind, refund: {amount,at,done}|null }, invoiceNo } */
   application: (code, opts) => request(`/account/applications/${encodeURIComponent(code)}`, opts),
-  /** type: ads | unipay | bct | misa | pos | social */
+  /** type: ads | unipay | bct | misa | pos | social | webapp | license */
   submit: (type, details) => request('/account/applications', { method: 'POST', body: { type, details } }),
   /** Dịch vụ tăng tương tác (hotrodvfb) → { platforms, services: [{ id, platform, name, category, type, min, max, pricePer1000, reactions, ... }] } */
   socialServices: (opts) => request('/account/social/services', opts),
   /** Link profile Facebook → { id, link, name } (link dạng UID số) */
   socialUid: (link) => request('/account/social/uid', { method: 'POST', body: { link } }),
+  /** Sản phẩm key bản quyền đang bán → [{ id, name, category, description, price, stock }] */
+  licenses: (opts) => request('/account/licenses', opts),
+  /** Đơn key đã mua → [{ code, submittedAt, product, quantity, amount, keys }] */
+  licenseOrders: (opts) => request('/account/licenses/orders', opts),
   draft: (type, opts) => request(`/account/drafts/${type}`, opts),
   saveDraft: (type, details) => request(`/account/drafts/${type}`, { method: 'PUT', body: { details } }),
   adBookings: (slot, opts) => request(`/account/ads/bookings${qs({ slot })}`, opts),

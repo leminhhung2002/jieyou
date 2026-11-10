@@ -5,6 +5,7 @@ import { faqs } from '../data/faqs.js';
 import { news } from '../data/news.js';
 import { serviceContent } from '../data/serviceContent/index.js';
 import { adminStore } from '../services/adminStore.js';
+import { licenseStore } from '../services/licenseStore.js';
 
 /** Giá thấp nhất đã xuất bản của một dịch vụ trong Bảng giá Admin (null nếu chưa có). */
 function publishedFromPrice(serviceSlug) {
@@ -36,6 +37,15 @@ router.get('/services/:slug', (req, res, next) => {
         .listPriceItems()
         .filter((p) => p.serviceSlug === service.slug && p.status === 'published'),
       content: serviceContent[service.slug] || null,
+      // Trang Key bản quyền: danh sách sản phẩm đang bán (giá + còn hàng hay không)
+      ...(service.slug === 'key-ban-quyen'
+        ? {
+            licenseProducts: licenseStore
+              .listProducts()
+              .filter((p) => p.status === 'active')
+              .map((p) => ({ id: p.id, name: p.name, category: p.category || '', price: p.price, inStock: licenseStore.stock(p.id).available > 0 })),
+          }
+        : {}),
     },
   });
 });

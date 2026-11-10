@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="435" height="468" viewBox="0 0 435 468" fill="none">
+<defs><filter id="s" x="-20%" y="-40%" width="140%" height="200%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#0B0C0E" flood-opacity="0.12"/></filter></defs>
+<g transform="translate(52 70) scale(1.85)"><g transform="rotate(-10 90 92)" stroke="#0B0C0E" stroke-width="2" stroke-linejoin="round">
+<rect x="26" y="52" width="128" height="92" rx="13" fill="#0F7A86"/>
+<rect x="26" y="42" width="128" height="92" rx="13" fill="#16A9B3"/>
+<path d="M26 64h128" />
+<circle cx="40" cy="53" r="3.6" fill="#fff"/><circle cx="51" cy="53" r="3.6" fill="#5EE6EA"/><circle cx="62" cy="53" r="3.6" fill="#CDF6F7"/>
+<rect x="76" y="48" width="64" height="10" rx="5" fill="#CDF6F7"/>
+<g stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none"><path d="M70 84l-14 13 14 13"/><path d="M110 84l14 13-14 13"/><path d="M96 80l-12 34"/></g>
+</g>
+<path d="M140 30c-1.6 4.6-1.2 9 1.2 13.2-4.6-1.6-9-1.2-13.2 1.2 1.6-4.6 1.2-9-1.2-13.2 4.6 1.6 9 1.2 13.2-1.2z" fill="#fff" stroke="#0B0C0E" stroke-width="1.6" stroke-linejoin="round"/>
+</g>
+<g filter="url(#s)"><rect x="176" y="372" width="276" height="58" rx="22" fill="#fff"/></g>
+<circle cx="208" cy="401" r="16" fill="#0F7A86"/><path d="M201 401l5 5 9-10" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="234" y="407" font-family="Inter, system-ui, sans-serif" font-size="17" fill="#0B0C0E">Báo giá trong 24 giờ</text>
+</svg>

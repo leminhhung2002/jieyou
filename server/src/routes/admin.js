@@ -9,6 +9,7 @@ import { accountStore } from '../services/accountStore.js';
 import { isProviderOrder } from '../services/smmSync.js';
 import { smmEnabled, smmProvider } from '../services/smmProvider.js';
 import { getSmmCatalog, smmMarkup, SMM_PLATFORMS } from '../services/smmCatalog.js';
+import { licenseStore } from '../services/licenseStore.js';
 import { verifyPassword } from '../services/password.js';
 import { isNonEmptyString } from '../utils/validators.js';
 import { securityLog } from '../utils/securityLog.js';
@@ -41,6 +42,7 @@ function applicationView(app) {
     held: app.held,
     details: app.details,
     rejectReason: app.rejectReason || null,
+    reviewNote: app.reviewNote || null,
     reviewedBy: app.reviewedBy || null,
     reviewedAt: app.reviewedAt || null,
   };
@@ -159,8 +161,12 @@ function requirePending(code) {
 }
 
 router.post('/applications/:code/approve', requireAdmin('applications'), (req, res) => {
+  // Ghi chú gửi khách khi duyệt (vd. báo giá cho yêu cầu làm app / web) – không bắt buộc
+  const note = String(req.body?.note || '').trim();
+  if (note.length > 2000) throw badRequest('Ghi chú tối đa 2.000 ký tự', { field: 'note' });
   const app = requirePending(req.params.code);
   Object.assign(app, { status: 'approved', reviewedBy: req.admin.username, reviewedAt: new Date().toISOString() });
+  if (note) app.reviewNote = note;
   // Tiền tạm giữ chuyển thành phí dịch vụ
   if (app.held > 0) adminStore.addTransaction({ customerId: app.customerId, type: 'fee', amount: -app.held, note: app.code });
   adminStore.log(req.admin.username, 'Duyệt hồ sơ', app.code);
@@ -284,6 +290,8 @@ const SERVICE_NAMES = {
   'tang-tuong-tac-mxh': 'Tăng tương tác MXH',
   'cong-thanh-toan-pos': 'Hồ sơ cổng thanh toán POS',
   'tai-khoan-unipay': 'Tài khoản UniPay',
+  'lam-app-web-theo-yeu-cau': 'Làm app/web theo yêu cầu',
+  'key-ban-quyen': 'Key phần mềm bản quyền',
 };
 
 router.get('/price-items', requireAdmin('content'), (_req, res) => {
@@ -410,6 +418,104 @@ router.patch('/smm/services/:id', requireAdmin('content'), asyncHandler(async (r
   const updated = (await getSmmCatalog()).all.find((s) => s.id === id);
   res.json({ data: smmAdminView(updated) });
 }));
+
+/* ===================== Key phần mềm bản quyền ===================== */
+
+function licenseView(p) {
+  return { ...p, ...licenseStore.stock(p.id) };
+}
+
+function validateLicenseProduct(body, partial = false) {
+  const out = {};
+  if (!partial || body.name !== undefined) {
+    if (!isNonEmptyString(body.name, 120)) throw badRequest('Vui lòng nhập tên sản phẩm (tối đa 120 ký tự)', { field: 'name' });
+    out.name = body.name.trim();
+  }
+  if (!partial || body.category !== undefined) {
+    out.category = typeof body.category === 'string' ? body.category.trim().slice(0, 60) : '';
+  }
+  if (!partial || body.description !== undefined) {
+    out.description = typeof body.description === 'string' ? body.description.trim().slice(0, 500) : '';
+  }
+  if (!partial || body.price !== undefined) {
+    const n = Number(body.price);
+    if (!Number.isInteger(n) || n < 1000 || n > 1_000_000_000) throw badRequest('Giá bán từ 1.000 đ, số nguyên', { field: 'price' });
+    out.price = n;
+  }
+  if (!partial || body.status !== undefined) {
+    const st = body.status ?? 'active';
+    if (!['active', 'hidden'].includes(st)) throw badRequest('Trạng thái không hợp lệ', { field: 'status' });
+    out.status = st;
+  }
+  return out;
+}
+
+const findLicense = (id) => {
+  const p = licenseStore.findProduct(id);
+  if (!p) throw notFound('Sản phẩm không tồn tại');
+  return p;
+};
+
+router.get('/licenses', requireAdmin('content'), (_req, res) => {
+  res.json({ data: licenseStore.listProducts().map(licenseView) });
+});
+
+router.post('/licenses', requireAdmin('content'), (req, res) => {
+  const fields = validateLicenseProduct(req.body || {});
+  if (licenseStore.listProducts().some((p) => p.name.toLowerCase() === fields.name.toLowerCase())) throw conflict('Đã có sản phẩm cùng tên');
+  const p = licenseStore.createProduct(fields);
+  adminStore.log(req.admin.username, 'Thêm sản phẩm key', p.name);
+  res.status(201).json({ data: licenseView(p) });
+});
+
+router.patch('/licenses/:id', requireAdmin('content'), (req, res) => {
+  const p = findLicense(req.params.id);
+  const patch = validateLicenseProduct(req.body || {}, true);
+  if (patch.name && licenseStore.listProducts().some((x) => x.id !== p.id && x.name.toLowerCase() === patch.name.toLowerCase())) {
+    throw conflict('Đã có sản phẩm cùng tên');
+  }
+  licenseStore.updateProduct(p.id, patch);
+  adminStore.log(req.admin.username, 'Cập nhật sản phẩm key', p.name);
+  res.json({ data: licenseView(p) });
+});
+
+router.delete('/licenses/:id', requireAdmin('content'), (req, res) => {
+  const p = findLicense(req.params.id);
+  if (licenseStore.stock(p.id).sold > 0) throw conflict('Sản phẩm đã có key được bán, hãy chuyển sang Ẩn thay vì xóa');
+  licenseStore.removeProduct(p.id);
+  adminStore.log(req.admin.username, 'Xóa sản phẩm key', p.name);
+  res.json({ data: { ok: true } });
+});
+
+router.get('/licenses/:id/keys', requireAdmin('content'), (req, res) => {
+  const p = findLicense(req.params.id);
+  const list = [...licenseStore.listKeys(p.id)]
+    .sort((a, b) => (a.status === b.status ? (b.soldAt || b.addedAt).localeCompare(a.soldAt || a.addedAt) : a.status === 'available' ? -1 : 1))
+    .map((k) => {
+      const c = k.customerId ? userStore.findById(k.customerId) : null;
+      return { id: k.id, key: k.key, status: k.status, addedAt: k.addedAt, soldAt: k.soldAt, applicationCode: k.applicationCode, customer: c?.businessName || null };
+    });
+  res.json({ data: list, meta: { product: licenseView(p) } });
+});
+
+router.post('/licenses/:id/keys', requireAdmin('content'), (req, res) => {
+  const p = findLicense(req.params.id);
+  const text = req.body?.keys;
+  if (typeof text !== 'string' || !text.trim()) throw badRequest('Vui lòng dán key, mỗi dòng một key', { field: 'keys' });
+  if (text.length > 500_000) throw badRequest('Mỗi lần nhập tối đa 500.000 ký tự', { field: 'keys' });
+  const r = licenseStore.addKeys(p.id, text);
+  if (r.added) adminStore.log(req.admin.username, 'Nhập key bản quyền', `${p.name}: +${r.added} key`);
+  res.status(201).json({ data: { ...r, product: licenseView(p) } });
+});
+
+router.delete('/licenses/:id/keys/:keyId', requireAdmin('content'), (req, res) => {
+  const p = findLicense(req.params.id);
+  const r = licenseStore.removeKey(p.id, req.params.keyId);
+  if (r === 'missing') throw notFound('Key không tồn tại');
+  if (r === 'sold') throw conflict('Key đã bán cho khách, không thể xóa');
+  adminStore.log(req.admin.username, 'Xóa key bản quyền', p.name);
+  res.json({ data: { ok: true, product: licenseView(p) } });
+});
 
 /* ============================ Phân quyền ============================ */
 

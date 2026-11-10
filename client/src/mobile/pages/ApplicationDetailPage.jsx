@@ -52,6 +52,24 @@ export default function ApplicationDetailPage() {
               </div>
             )}
 
+            {app.reviewNote && (
+              <div className={`${styles.reason} ${styles.info}`} role="note">
+                <p className={styles.reasonTitle}>{app.type === 'webapp' ? 'Phản hồi / báo giá' : 'Ghi chú'}</p>
+                <p className={styles.reasonText} style={{ whiteSpace: 'pre-line' }}>{app.reviewNote}</p>
+              </div>
+            )}
+
+            {app.keys?.length > 0 && (
+              <div className={`${styles.reason} ${styles.info}`} role="note">
+                <p className={styles.reasonTitle}>Key bản quyền</p>
+                {app.keys.map((k, i) => (
+                  <p key={`${i}-${k}`} className={styles.reasonText} style={{ fontFamily: 'ui-monospace, Menlo, Consolas, monospace', userSelect: 'all', overflowWrap: 'anywhere' }}>
+                    {k}
+                  </p>
+                ))}
+              </div>
+            )}
+
             {app.timeline?.length > 0 && (
               <ol className={styles.timeline} aria-label="Tiến trình hồ sơ">
                 {app.timeline.map((s, i) => {

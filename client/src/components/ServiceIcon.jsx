@@ -75,6 +75,10 @@ const ICONS = {
   ],
 };
 
+// Hai dịch vụ thêm sau (App/Web, Key bản quyền): một lớp SVG duy nhất cùng phong cách
+ICONS.code = [['icon', '0', '0']];
+ICONS.key = [['icon', '0', '0']];
+
 const wrap = { position: 'relative', width: 64, height: 64, overflow: 'hidden', flexShrink: 0 };
 
 export default function ServiceIcon({ name, size = 64 }) {

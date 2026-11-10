@@ -23,6 +23,9 @@
 }
 .reasonTitle { font-size: 14px; font-weight: 500; line-height: 18px; color: #b3202a; }
 .reasonText { padding-top: 2px; font-size: 15px; line-height: 23.25px; color: #0b0c0e; }
+/* Khối thông tin (báo giá, key bản quyền) – cùng bố cục, tông xanh */
+.info { background: #e8fbfb; }
+.info .reasonTitle { color: #0f7a86; }
 
 /* Tiến trình 3 bước (121:16065) */
 .timeline {

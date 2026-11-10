@@ -13,6 +13,8 @@ const PAGES = {
   'cong-thanh-toan-pos': lazy(() => import('./services/PosPage.jsx')),
   'tang-tuong-tac-mxh': lazy(() => import('./services/SocialPage.jsx')),
   'may-ban-hang-misa': lazy(() => import('./services/MisaPage.jsx')),
+  'lam-app-web-theo-yeu-cau': lazy(() => import('./services/WebappPage.jsx')),
+  'key-ban-quyen': lazy(() => import('./services/LicensePage.jsx')),
 };
 
 const Blank = () => <div style={{ minHeight: '100vh', background: '#0f0f13' }} />;

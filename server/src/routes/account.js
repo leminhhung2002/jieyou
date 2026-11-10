@@ -14,6 +14,7 @@ import { isEmail, isNonEmptyString, isTaxCode, normalizePhone } from '../utils/v
 import { badRequest, conflict, notFound, HttpError } from '../utils/httpError.js';
 import { smmEnabled, smmProvider, SmmError } from '../services/smmProvider.js';
 import { getSmmCatalog, publicService, smmAmount, splitLines, SMM_PLATFORMS, SMM_TYPES } from '../services/smmCatalog.js';
+import { licenseStore, LICENSE_MAX_PER_ORDER } from '../services/licenseStore.js';
 import {
   AD_SLOTS,
   BCT_KINDS,
@@ -24,6 +25,9 @@ import {
   SOCIAL_PLATFORMS,
   TOPUP_LIMITS,
   VAT_RATES,
+  WEBAPP_BUDGETS,
+  WEBAPP_DEADLINES,
+  WEBAPP_KINDS,
 } from '../data/accountCatalog.js';
 
 /**
@@ -87,7 +91,10 @@ function applicationView(app) {
     submittedAt: app.submittedAt,
     reviewedAt: app.reviewedAt || null,
     rejectReason: app.rejectReason || null,
+    reviewNote: app.reviewNote || null,
     details: app.details,
+    // Key bản quyền đã giao (chỉ chủ đơn xem được – các route đã lọc theo khách)
+    ...(app.type === 'license' ? { keys: app.meta?.keys || [] } : {}),
   };
 }
 
@@ -164,6 +171,8 @@ function catalog() {
     posBusinessTypes: POS_BUSINESS_TYPES,
     bctKinds: BCT_KINDS,
     topupLimits: TOPUP_LIMITS,
+    webapp: { kinds: WEBAPP_KINDS, budgets: WEBAPP_BUDGETS, deadlines: WEBAPP_DEADLINES },
+    licenseMaxPerOrder: LICENSE_MAX_PER_ORDER,
     // Đơn MXH tự động qua hotrodvfb (danh mục: GET /account/social/services)
     smm: { enabled: smmEnabled() },
   };
@@ -328,6 +337,54 @@ const SERVICES = {
       meta: { platform: platform.key, kind: kind.key, quantity, url },
     };
   },
+  /** Yêu cầu làm app / web: miễn phí, admin xem rồi báo giá (ghi chú khi duyệt). */
+  webapp(body) {
+    need(WEBAPP_KINDS.includes(body.kind), 'Vui lòng chọn loại sản phẩm', 'kind');
+    const projectName = requireText(body.projectName, 'tên dự án', 'projectName', 120);
+    const description = str(body.description, 3000);
+    need(description.length >= 20, 'Vui lòng mô tả yêu cầu (tối thiểu 20 ký tự)', 'description');
+    need(WEBAPP_BUDGETS.includes(body.budget), 'Vui lòng chọn ngân sách dự kiến', 'budget');
+    need(WEBAPP_DEADLINES.includes(body.deadline), 'Vui lòng chọn thời gian mong muốn', 'deadline');
+    const contactName = requireText(body.contactName, 'tên người liên hệ', 'contactName', 120);
+    const phone = requirePhoneField(body.phone);
+    const email = requireEmail(body.email);
+    const references = str(body.references, 500);
+    return {
+      amount: 0,
+      title: (code) => `Yêu cầu ${code}`,
+      details: {
+        'Loại sản phẩm': body.kind,
+        'Tên dự án': projectName,
+        'Mô tả': description,
+        'Ngân sách': body.budget,
+        'Thời gian': body.deadline,
+        ...(references ? { 'Tham khảo': references } : {}),
+        'Liên hệ': `${contactName} · ${phone} · ${email}`,
+      },
+      meta: { kind: body.kind, projectName, description, budget: body.budget, deadline: body.deadline, contactName, phone, email, references },
+    };
+  },
+  /** Mua key bản quyền: trừ số dư, giao key ngay (xem POST /applications). */
+  license(body) {
+    const product = licenseStore.findProduct(String(body.product || ''));
+    need(product && product.status === 'active', 'Vui lòng chọn sản phẩm', 'product');
+    const quantity = Number(body.quantity);
+    need(
+      Number.isInteger(quantity) && quantity >= 1 && quantity <= LICENSE_MAX_PER_ORDER,
+      `Số lượng từ 1 đến ${LICENSE_MAX_PER_ORDER}`,
+      'quantity',
+    );
+    const { available } = licenseStore.stock(product.id);
+    if (available < quantity) {
+      throw new HttpError(409, available ? `Sản phẩm chỉ còn ${available} key` : 'Sản phẩm tạm hết hàng', { field: 'quantity' });
+    }
+    return {
+      amount: product.price * quantity,
+      title: (code) => `Key bản quyền ${code}`,
+      details: { 'Sản phẩm': product.name, 'Số lượng': String(quantity), 'Đơn giá': vnd(product.price) },
+      meta: { productId: product.id, productName: product.name, quantity, unitPrice: product.price },
+    };
+  },
 };
 const DRAFT_TYPES = ['unipay', 'bct', 'pos'];
 
@@ -458,6 +515,30 @@ router.get('/summary', (req, res) => {
 
 router.get('/catalog', (_req, res) => res.json({ data: catalog() }));
 
+/** Sản phẩm key bản quyền đang bán (kèm số key còn trong kho). */
+router.get('/licenses', (_req, res) => {
+  const products = licenseStore
+    .listProducts()
+    .filter((p) => p.status === 'active')
+    .map((p) => ({ id: p.id, name: p.name, category: p.category || '', description: p.description || '', price: p.price, stock: licenseStore.stock(p.id).available }));
+  res.json({ data: products });
+});
+
+/** Các đơn key đã mua của khách, kèm key. */
+router.get('/licenses/orders', (req, res) => {
+  const orders = userApps(req.user.id)
+    .filter((a) => a.type === 'license' && a.status === 'approved')
+    .map((a) => ({
+      code: a.code,
+      submittedAt: a.submittedAt,
+      product: a.meta?.productName || a.details?.['Sản phẩm'] || '',
+      quantity: a.meta?.quantity || a.meta?.keys?.length || 0,
+      amount: a.amount || 0,
+      keys: a.meta?.keys || [],
+    }));
+  res.json({ data: orders });
+});
+
 /** Danh mục dịch vụ tăng tương tác (giá VND cho 1.000 đơn vị). */
 router.get('/social/services', asyncHandler(async (_req, res) => {
   if (!smmEnabled()) throw notFound('Chưa kết nối nhà cung cấp dịch vụ tăng tương tác');
@@ -577,21 +658,37 @@ router.post('/applications', asyncHandler(async (req, res) => {
   }
 
   const code = nextCode(SERVICE_TYPES[type].prefix);
+  // Key bản quyền: giữ key trước khi trừ tiền (đồng bộ → hai đơn song song không nhận trùng key)
+  let keys = null;
+  if (type === 'license') {
+    keys = licenseStore.takeKeys(meta.productId, meta.quantity, code, user.id);
+    if (!keys) throw new HttpError(409, 'Sản phẩm vừa hết hàng, vui lòng giảm số lượng hoặc chọn sản phẩm khác', { field: 'quantity' });
+  }
   const app = adminStore.addApplication({
     code, customerId: user.id, type, status: 'pending', submittedAt: new Date().toISOString(),
-    title: title(code), details, meta, amount, held: amount, history: [],
+    title: title(code), details, meta: keys ? { ...meta, keys } : meta, amount, held: amount, history: [],
   });
   if (amount > 0) {
     userStore.update(user.id, { balance: (user.balance || 0) - amount });
     adminStore.addTransaction({ customerId: user.id, type: 'hold', amount: -amount, note: code });
   }
   if (DRAFT_TYPES.includes(type)) accountStore.clearDraft(user.id, type);
+  if (type === 'license') {
+    // Giao ngay: hoàn thành đơn, tiền đã trừ thành phí, phát hành hóa đơn, báo + email key cho khách
+    Object.assign(app, { status: 'approved', reviewedBy: 'Hệ thống', reviewedAt: new Date().toISOString() });
+    if (amount > 0) adminStore.addTransaction({ customerId: user.id, type: 'fee', amount: -amount, note: code });
+    adminStore.log('Hệ thống', 'Giao key bản quyền', `${code}: ${meta.quantity} × ${meta.productName}`.slice(0, 300));
+    accountStore.onApplicationReviewed(app);
+    return res.status(201).json({ data: { application: applicationView(app), balance: userStore.findById(user.id)?.balance ?? 0 } });
+  }
   const running = auto && (await placeProviderOrder(app, provider));
+  let body = amount > 0 ? `${type === 'ads' ? 'Đã tạm giữ' : 'Đã trừ'} ${vnd(amount)}.` : 'Dịch vụ miễn phí.';
+  if (type === 'webapp') body = 'Chúng tôi sẽ liên hệ tư vấn và báo giá trong 24 giờ làm việc.';
   accountStore.notify(user.id, {
     kind: type === 'ads' ? 'ads' : 'pending',
     category: 'application',
-    title: running ? `${app.title} đang chạy` : `${app.title} đang chờ duyệt`,
-    body: amount > 0 ? `${type === 'ads' ? 'Đã tạm giữ' : 'Đã trừ'} ${vnd(amount)}.` : 'Dịch vụ miễn phí.',
+    title: running ? `${app.title} đang chạy` : type === 'webapp' ? `${app.title} đã được tiếp nhận` : `${app.title} đang chờ duyệt`,
+    body,
   });
   res.status(201).json({ data: { application: applicationView(app), balance: userStore.findById(user.id)?.balance ?? 0 } });
 }));

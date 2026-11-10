@@ -10,7 +10,7 @@ import { AppTypeIcon, ErrorText, Muted, vnd } from '../ui.jsx';
 import styles from './HomePage.module.css';
 
 /** Icon 44px của 6 dịch vụ (bộ "JIEYOU-Dich-vu-*-line2.5", trùng ServiceIcon của website, scale 44/64). */
-const SERVICE_ICON = { ads: 'megaphone', unipay: 'wallet', bct: 'dossier', misa: 'terminal', pos: 'card', social: 'social' };
+const SERVICE_ICON = { ads: 'megaphone', unipay: 'wallet', bct: 'dossier', misa: 'terminal', pos: 'card', social: 'social', webapp: 'code', license: 'key' };
 /** Nhãn ô dịch vụ – ngắt dòng như Figma (121:17321 … 121:17517). */
 const SERVICE_LABEL = {
   ads: 'Quảng cáo\ntrên sàn',
@@ -18,6 +18,8 @@ const SERVICE_LABEL = {
   bct: 'Hồ sơ\nBộ Công Thương',
   misa: 'Máy bán hàng +\nHóa đơn MISA',
   pos: 'Hồ sơ cổng\nthanh toán POS',
+  webapp: 'Làm app/web\ntheo yêu cầu',
+  license: 'Key phần mềm\nbản quyền',
   social: 'Tăng tương\ntác MXH',
 };
 

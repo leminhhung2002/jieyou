@@ -94,11 +94,14 @@ export const accountStore = {
         const inv = this.issueInvoice(app.customerId, app.code, app.amount);
         emailInvoiceIssued(app.customerId, inv, name);
       }
+      let body = app.amount > 0 ? 'Hồ sơ đã được duyệt. Hóa đơn đã phát hành.' : 'Hồ sơ đã được duyệt.';
+      if (app.type === 'license') body = `Đã giao ${app.meta?.keys?.length || 0} key. Xem key trong mục Key bản quyền.`;
+      else if (app.reviewNote) body = app.reviewNote.slice(0, 300);
       this.notify(app.customerId, {
         kind: 'done',
         category: 'application',
-        title: `${name} đã hoàn thành`,
-        body: app.amount > 0 ? 'Hồ sơ đã được duyệt. Hóa đơn đã phát hành.' : 'Hồ sơ đã được duyệt.',
+        title: app.type === 'license' ? `${name} đã giao key` : app.type === 'webapp' ? `${name} đã có phản hồi` : `${name} đã hoàn thành`,
+        body,
       });
     } else if (app.status === 'rejected') {
       this.notify(app.customerId, {

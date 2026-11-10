@@ -24,6 +24,8 @@ export const SERVICE_TYPES = {
   pos: { label: 'POS', name: 'Hồ sơ cổng thanh toán POS', prefix: 'POS' },
   unipay: { label: 'UniPay', name: 'Tài khoản UniPay', prefix: 'UP' },
   social: { label: 'MXH', name: 'Tăng tương tác MXH', prefix: 'MXH' },
+  webapp: { label: 'App/Web', name: 'Làm app/web theo yêu cầu', prefix: 'WEB' },
+  license: { label: 'Key bản quyền', name: 'Key phần mềm bản quyền', prefix: 'KEY' },
 };
 
 const db = {
@@ -36,6 +38,9 @@ const db = {
   invoicesPending: 2,
   // Giá dịch vụ tăng tương tác (services/smmCatalog.js)
   smmSettings: { markupPercent: null, overrides: {} },
+  // Key phần mềm bản quyền (services/licenseStore.js)
+  licenseProducts: [],
+  licenseKeys: [],
 };
 
 
@@ -126,7 +131,7 @@ export const adminStore = {
   listLogs: () => db.logs,
 
   async seed() {
-    Object.assign(db, { roles: [], admins: [], applications: [], transactions: [], priceItems: [], logs: [], invoicesPending: 2, smmSettings: { markupPercent: null, overrides: {} } });
+    Object.assign(db, { roles: [], admins: [], applications: [], transactions: [], priceItems: [], logs: [], invoicesPending: 2, smmSettings: { markupPercent: null, overrides: {} }, licenseProducts: [], licenseKeys: [] });
 
     // Vai trò – đúng ma trận trong màn "Phân quyền"
     const R = (name, permissions, locked = false) => {

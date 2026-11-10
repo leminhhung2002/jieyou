@@ -4,6 +4,8 @@ import bct from './ho-so-bo-cong-thuong.js';
 import pos from './cong-thanh-toan-pos.js';
 import mxh from './tang-tuong-tac-mxh.js';
 import misa from './may-ban-hang-misa.js';
+import webapp from './lam-app-web-theo-yeu-cau.js';
+import license from './key-ban-quyen.js';
 
 /** Nội dung chi tiết của từng trang dịch vụ, theo slug. */
 export const serviceContent = {
@@ -13,4 +15,6 @@ export const serviceContent = {
   'cong-thanh-toan-pos': pos,
   'tang-tuong-tac-mxh': mxh,
   'may-ban-hang-misa': misa,
+  'lam-app-web-theo-yeu-cau': webapp,
+  'key-ban-quyen': license,
 };

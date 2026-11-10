@@ -7,6 +7,8 @@ const SERVICE_LINKS = [
   ['Tài khoản UniPay', '/dich-vu/tai-khoan-unipay'],
   ['Hồ sơ Bộ Công Thương', '/dich-vu/ho-so-bo-cong-thuong'],
   ['Máy bán hàng + MISA', '/dich-vu/may-ban-hang-misa'],
+  ['Làm app/web theo yêu cầu', '/dich-vu/lam-app-web-theo-yeu-cau'],
+  ['Key phần mềm bản quyền', '/dich-vu/key-ban-quyen'],
 ];
 const POLICY_LINKS = [
   ['Quy chế hoạt động sàn', '/chinh-sach/quy-che-hoat-dong'],

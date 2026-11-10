@@ -12,7 +12,8 @@ export const services = [
     description: 'Tăng lượt thích, theo dõi, xem cho trang mạng xã hội.', order: 5 },
   { slug: 'may-ban-hang-misa', name: 'Máy bán hàng + Hóa đơn MISA', icon: 'card',
     description: 'Trang bị máy bán hàng kèm hóa đơn điện tử MISA.', order: 6 },
-  // Hai ô "Dịch vụ ...." là chỗ trống dành cho dịch vụ sắp ra mắt (đúng theo thiết kế).
-  { slug: null, name: 'Dịch vụ ....', icon: 'terminal', description: 'Đăng ký cổng thanh toán POS, miễn phí.', order: 7, comingSoon: true },
-  { slug: null, name: 'Dịch vụ ....', icon: 'terminal', description: 'Đăng ký cổng thanh toán POS, miễn phí.', order: 8, comingSoon: true },
+  { slug: 'lam-app-web-theo-yeu-cau', name: 'Làm app/web theo yêu cầu', shortName: 'App/Web', icon: 'code',
+    description: 'Thiết kế website, landing page, app điện thoại, phần mềm quản lý theo nhu cầu.', order: 7 },
+  { slug: 'key-ban-quyen', name: 'Key phần mềm bản quyền', shortName: 'Key bản quyền', icon: 'key',
+    description: 'Mua key bản quyền chính hãng, thanh toán bằng số dư, nhận key ngay.', order: 8 },
 ];

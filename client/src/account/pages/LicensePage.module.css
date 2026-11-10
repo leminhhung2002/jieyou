@@ -1,0 +1,266 @@
+.hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.error {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #b3202a;
+}
+
+/* Danh sách sản phẩm: chọn trực tiếp, mỗi dòng một sản phẩm */
+.products {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 14px;
+  background: #fff;
+  font: inherit;
+  color: #0b0c0e;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.product:hover:not(:disabled) {
+  border-color: #12909c;
+}
+
+.product:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.product:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.productOn,
+.productOn:hover:not(:disabled) {
+  border: 2px solid #0f7a86;
+  background: #e8fbfb;
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #c8cbd1;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.productOn .dot {
+  border: 5px solid #0f7a86;
+}
+
+.productText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.productName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 21px;
+}
+
+.category {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #f2f4f6;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6a6e77;
+}
+
+.productDesc {
+  font-size: 13px;
+  line-height: 18.2px;
+  color: #6a6e77;
+}
+
+.productSide {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.price {
+  font-size: 15px;
+  font-weight: 700;
+  color: #b3202a;
+  white-space: nowrap;
+}
+
+.stock,
+.stockOut {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.stock {
+  color: #18794e;
+}
+
+.stockOut {
+  color: #b3202a;
+}
+
+/* Key */
+.keys {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.key {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 14px;
+  border: 1px dashed #b6dfe2;
+  border-radius: 10px;
+  background: #f4fbfb;
+}
+
+.keyText {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  color: #0b0c0e;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.copy {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid #0f7a86;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f7a86;
+  cursor: pointer;
+}
+
+.copy:hover {
+  background: #e8fbfb;
+}
+
+.copy:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Thẻ "Mua thành công" ở đầu trang */
+.bought {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  border: 2px solid #0f7a86;
+}
+
+.boughtHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.boughtEyebrow {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #18794e;
+}
+
+.boughtTitle {
+  margin: 2px 0 0;
+  font-size: 18px;
+  line-height: 25px;
+}
+
+/* Key đã mua */
+.orders {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order + .order {
+  padding-top: 16px;
+  border-top: 1px solid #eef0f2;
+}
+
+.orderHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.orderName {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.orderMeta {
+  font-size: 12px;
+  color: #6a6e77;
+}
+
+@media (max-width: 640px) {
+  .product {
+    flex-wrap: wrap;
+  }
+
+  .productSide {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    width: 100%;
+    padding-left: 30px;
+  }
+}

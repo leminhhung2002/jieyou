@@ -21,6 +21,8 @@ const SERVICE_PAGE = {
   misa: '/tai-khoan/may-ban-hang',
   pos: '/tai-khoan/pos',
   social: '/tai-khoan/tuong-tac-mxh',
+  webapp: '/tai-khoan/lam-app-web',
+  license: '/tai-khoan/key-ban-quyen',
 };
 
 function recipient(userId, pref) {
@@ -41,7 +43,23 @@ export function emailApplicationResult(app, serviceName) {
   if (!user) return null;
   const name = `${app.code} - ${serviceName}`;
   const details = Object.entries(app.details || {}).map(([k, v]) => [k, String(v)]);
+  if (app.status === 'approved' && app.type === 'license') {
+    const keys = app.meta?.keys || [];
+    return send(user, 'license.delivered', {
+      subject: `Key bản quyền đơn ${app.code}`,
+      preheader: `${keys.length} key ${app.meta?.productName || ''} đã được giao.`,
+      greetingName: user.businessName,
+      heading: ['Đơn ', { bold: name }, ' đã giao key thành công!'],
+      table: {
+        title: 'Key của bạn',
+        rows: [...details, ...keys.map((k, i) => [`Key ${i + 1}`, k])],
+      },
+      paragraphs: ['Vui lòng lưu lại key và không chia sẻ cho người khác. Quý khách luôn xem lại được key trong mục Key bản quyền trên sàn.'],
+      cta: { label: 'Xem key trên sàn', url: link(SERVICE_PAGE.license) },
+    });
+  }
   if (app.status === 'approved') {
+    if (app.reviewNote) details.push([app.type === 'webapp' ? 'Phản hồi / báo giá' : 'Ghi chú', app.reviewNote]);
     return send(user, 'application.approved', {
       subject: `Hồ sơ ${app.code} đã được phê duyệt`,
       preheader: `${serviceName}: hồ sơ của bạn đã được phê duyệt.`,

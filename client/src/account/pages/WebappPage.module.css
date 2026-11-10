@@ -1,0 +1,28 @@
+.grid {
+  gap: 16px;
+}
+
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: 160px;
+  padding: 14px 16px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 14px;
+  background: #f7f8fa;
+  font: inherit;
+  font-size: 15px;
+  line-height: 22.5px;
+  color: #0b0c0e;
+  resize: vertical;
+  outline: none;
+}
+
+.textarea:focus {
+  border-color: #12909c;
+  background: #fff;
+}
+
+.textareaInvalid {
+  border-color: #b3202a;
+}
