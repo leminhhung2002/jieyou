@@ -23,7 +23,7 @@ export default function MisaPage({ service, content }) {
         ...content.hero,
         art: `${BASE}/hero.png`,
         artSize: [434.571, 468],
-        artAlt: 'Minh hoạ máy bán hàng in hóa đơn MISA meInvoice',
+        artAlt: 'Minh hoạ máy bán hàng in hóa đơn 1INVOICE meInvoice',
       }}
     >
       <MachineCards machines={content.machines} serviceName={service.name} imageBase={BASE} />

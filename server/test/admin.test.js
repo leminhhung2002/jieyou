@@ -168,5 +168,5 @@ test('fee settings: MISA device prices, VAT, POS fee and MISA page prices are ed
   assert.equal(reset.body.data.invoicePlans.length, 3);
 
   const logs = await call('GET', '/admin/logs', null, await login('admin'));
-  assert.ok(logs.body.data.some((l) => l.action === 'Cập nhật phí MISA & POS'));
+  assert.ok(logs.body.data.some((l) => l.action === 'Cập nhật phí 1INVOICE & POS'));
 });

@@ -22,9 +22,9 @@ import styles from './MisaPage.module.css';
 const DEVICE_ICON = { basic: 'account/misa/device-basic.svg', printer: 'account/misa/device-printer.svg' };
 const MAX_QTY = 50;
 
-// Figma: Web người dùng: Máy bán hàng + MISA (74:3086)
+// Figma: Web người dùng: Máy bán hàng + 1INVOICE (74:3086)
 export default function MisaPage() {
-  useDocumentTitle('Đặt máy bán hàng + MISA – JIEYOU');
+  useDocumentTitle('Đặt máy bán hàng + 1INVOICE – JIEYOU');
   const { summary, catalog } = useAccount();
   const { submit, submitting, error, fieldErrors, insufficient, clearError } = useSubmitApplication('misa');
   const [form, setForm] = useState({ device: 'basic', quantity: '1', address: '', einvoice: true, vat: 10, invoiceTaxCode: '' });
@@ -70,9 +70,9 @@ export default function MisaPage() {
     <form onSubmit={onSubmit} noValidate>
       <PageHeader
         sticker="account/sticker/misa.png"
-        eyebrow="Máy bán hàng + Hóa đơn MISA"
+        eyebrow="Máy bán hàng + Hóa đơn 1INVOICE"
         title="Đặt máy bán hàng"
-        subtitle="Chọn thiết bị và cấu hình hóa đơn điện tử MISA."
+        subtitle="Chọn thiết bị và cấu hình hóa đơn điện tử từ 1INVOICE."
       />
       <FormLayout
         main={
@@ -120,14 +120,14 @@ export default function MisaPage() {
               </div>
             </Card>
 
-            <Card className={styles.invoiceCard} aria-label="Hóa đơn điện tử MISA">
+            <Card className={styles.invoiceCard} aria-label="Hóa đơn điện tử 1INVOICE">
               <div className={styles.invoiceHead}>
                 <span className={styles.invoiceIcon}>
                   <img src={asset('account/misa/einvoice.svg')} width="20" height="20" alt="" />
                 </span>
                 <div className={styles.invoiceText}>
                   <p className={styles.invoiceTitle}>
-                    Xuất hóa đơn điện tử MISA meInvoice
+                    Xuất hóa đơn điện tử 1INVOICE meInvoice
                   </p>
                   <p className={styles.invoiceSub}>
                     {form.einvoice ? 'Hóa đơn phát hành theo hồ sơ' : 'Không xuất hóa đơn điện tử'}
@@ -139,7 +139,7 @@ export default function MisaPage() {
                     update('einvoice', v);
                     clearError('invoiceTaxCode');
                   }}
-                  label="Xuất hóa đơn điện tử MISA meInvoice"
+                  label="Xuất hóa đơn điện tử 1INVOICE meInvoice"
                 />
               </div>
               <div className={styles.row}>

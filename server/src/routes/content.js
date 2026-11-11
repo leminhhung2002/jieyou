@@ -18,7 +18,7 @@ function publishedFromPrice(serviceSlug) {
   return prices.length ? Math.min(...prices) : null;
 }
 
-/** Giá "Từ ..." của máy bán hàng / gói hóa đơn MISA lấy theo Admin › Phí MISA & POS. */
+/** Giá "Từ ..." của máy bán hàng / gói hóa đơn 1INVOICE lấy theo Admin › Phí 1INVOICE & POS. */
 function feeFromPrice(id) {
   const min = (arr) => (arr.length ? Math.min(...arr) : null);
   if (id === 'pos-machine') return min(MISA_DEVICES.map(misaDevicePrice).filter((n) => n > 0));

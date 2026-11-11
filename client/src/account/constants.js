@@ -3,7 +3,7 @@ export const ACCOUNT_SERVICES = [
   { key: 'ads', type: 'ads', cardLabel: 'Quảng cáo trên sàn', to: '/tai-khoan/quang-cao' },
   { key: 'unipay', type: 'unipay', cardLabel: 'Tài khoản UniPay', to: '/tai-khoan/unipay' },
   { key: 'bct', type: 'bct', cardLabel: 'Hồ sơ Bộ Công Thương', to: '/tai-khoan/bo-cong-thuong' },
-  { key: 'misa', type: 'misa', cardLabel: 'Máy bán hàng + Hóa đơn MISA', to: '/tai-khoan/may-ban-hang' },
+  { key: 'misa', type: 'misa', cardLabel: 'Máy bán hàng + Hóa đơn 1INVOICE', to: '/tai-khoan/may-ban-hang' },
   { key: 'pos', type: 'pos', cardLabel: 'Hồ sơ cổng thanh toán POS', to: '/tai-khoan/pos' },
   { key: 'social', type: 'social', cardLabel: 'Tăng tương tác MXH', to: '/tai-khoan/tuong-tac-mxh' },
   { key: 'webapp', type: 'webapp', cardLabel: 'Làm app/web theo yêu cầu', to: '/tai-khoan/lam-app-web', sticker: 'account/sticker/webapp.svg' },

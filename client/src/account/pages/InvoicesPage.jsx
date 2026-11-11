@@ -116,7 +116,7 @@ export default function InvoicesPage() {
         sticker="account/sticker/invoices.png"
         eyebrow="Hóa đơn"
         title="Hóa đơn điện tử"
-        subtitle="Hóa đơn MISA meInvoice của các hồ sơ đã duyệt."
+        subtitle="Hóa đơn 1INVOICE meInvoice của các hồ sơ đã duyệt."
       />
 
       <div className={styles.toolbar}>

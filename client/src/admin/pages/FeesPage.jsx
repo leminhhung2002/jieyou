@@ -7,7 +7,7 @@ import form from '../components/form.module.css';
 import styles from './FeesPage.module.css';
 
 /**
- * Phí Máy bán hàng + MISA và Hồ sơ cổng thanh toán POS.
+ * Phí Máy bán hàng + 1INVOICE và Hồ sơ cổng thanh toán POS.
  * Lưu là áp dụng ngay cho Web người dùng, app điện thoại và trang dịch vụ (server/src/services/feeSettings.js).
  */
 
@@ -23,7 +23,7 @@ const moneyInput = (v) => {
 };
 
 export default function FeesPage() {
-  useDocumentTitle('Phí MISA & POS – JIEYOU Admin');
+  useDocumentTitle('Phí 1INVOICE & POS – JIEYOU Admin');
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
@@ -53,7 +53,7 @@ export default function FeesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Admin › Phí MISA & POS"
+        eyebrow="Admin › Phí 1INVOICE & POS"
         title="Phí máy bán hàng & POS"
         subtitle={
           data?.updatedAt
@@ -149,7 +149,7 @@ function DevicesCard({ data, save }) {
   return (
     <Panel
       eyebrow="Web người dùng · Đặt máy bán hàng"
-      title="Giá máy bán hàng + MISA"
+      title="Giá máy bán hàng + 1INVOICE"
       onSubmit={onSubmit}
       onReset={onReset}
       saving={saving}
@@ -265,7 +265,7 @@ function MachinesCard({ data, save }) {
   );
 }
 
-/* ---------- Trang dịch vụ: Gói hóa đơn MISA ---------- */
+/* ---------- Trang dịch vụ: Gói hóa đơn 1INVOICE ---------- */
 function PlansCard({ data, save }) {
   const init = () => data.invoicePlans.map((p) => ({ id: p.id, invoices: num(p.invoices), price: num(p.price) }));
   const [rows, setRows] = useState(init);
@@ -282,20 +282,20 @@ function PlansCard({ data, save }) {
     if (!parsed.length) return setErr('Cần ít nhất 1 gói hóa đơn');
     const bad = parsed.findIndex((p) => !p.id || !(p.invoices > 0) || Number.isNaN(p.price));
     if (bad >= 0) return setErr(`Gói #${bad + 1}: nhập đủ tên gói, số hóa đơn và giá`);
-    return run({ invoicePlans: parsed }, 'Đã lưu gói hóa đơn MISA.');
+    return run({ invoicePlans: parsed }, 'Đã lưu gói hóa đơn 1INVOICE.');
   };
 
   return (
     <Panel
       eyebrow="Trang dịch vụ · Máy bán hàng hóa đơn"
-      title="Gói hóa đơn MISA"
+      title="Gói hóa đơn 1INVOICE"
       onSubmit={onSubmit}
       onReset={() => run({ invoicePlans: null }, 'Đã khôi phục gói hóa đơn mặc định.')}
       saving={saving}
       err={err}
       dirty={dirty}
     >
-      <div className={styles.plans} role="table" aria-label="Gói hóa đơn MISA">
+      <div className={styles.plans} role="table" aria-label="Gói hóa đơn 1INVOICE">
         <div className={styles.planHead} role="row">
           <span role="columnheader">Gói</span>
           <span role="columnheader">Số hóa đơn</span>

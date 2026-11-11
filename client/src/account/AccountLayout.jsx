@@ -20,7 +20,7 @@ export const NAV_GROUPS = [
       { icon: 'ads', label: 'Quảng cáo trên sàn', to: '/tai-khoan/quang-cao' },
       { icon: 'unipay', label: 'Tài khoản UniPay', to: '/tai-khoan/unipay' },
       { icon: 'bct', label: 'Hồ sơ Bộ Công Thương', to: '/tai-khoan/bo-cong-thuong' },
-      { icon: 'misa', label: 'Máy bán hàng + MISA', to: '/tai-khoan/may-ban-hang' },
+      { icon: 'misa', label: 'Máy bán hàng + 1INVOICE', to: '/tai-khoan/may-ban-hang' },
       { icon: 'pos', label: 'Cổng thanh toán POS', to: '/tai-khoan/pos' },
       { icon: 'social', label: 'Tăng tương tác MXH', to: '/tai-khoan/tuong-tac-mxh' },
       { icon: 'webapp', label: 'Làm app/web', to: '/tai-khoan/lam-app-web' },

@@ -13,7 +13,7 @@ export const NAV = [
   { key: 'transactions', label: 'Giao dịch', to: '/admin/giao-dich', perm: 'transactions' },
   { key: 'content', label: 'Nội dung', to: '/admin/noi-dung', perm: 'content' },
   { key: 'smm', label: 'Giá MXH', to: '/admin/gia-mxh', perm: 'content' },
-  { key: 'fees', label: 'Phí MISA & POS', to: '/admin/phi-misa-pos', perm: 'content' },
+  { key: 'fees', label: 'Phí 1INVOICE & POS', to: '/admin/phi-misa-pos', perm: 'content' },
   { key: 'licenses', label: 'Key bản quyền', to: '/admin/key-ban-quyen', perm: 'content' },
   { key: 'roles', label: 'Phân quyền', to: '/admin/phan-quyen', perm: 'roles' },
   { key: 'logs', label: 'Nhật ký', to: '/admin/nhat-ky', perm: 'roles' },

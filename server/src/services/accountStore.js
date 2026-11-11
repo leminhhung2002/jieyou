@@ -176,7 +176,7 @@ export const accountStore = {
     addApp({
       code: 'MB-2410-0029', type: 'misa', title: 'Máy bán hàng MB-2410-0029', status: 'approved', amount: 2_640_000,
       submittedAt: at('2026-10-13T03:00:00Z'), reviewedAt: at('2026-10-14T03:00:00Z'), reviewedBy: 'duyetvien01',
-      details: { 'Mẫu máy': 'Máy bán hàng cơ bản', 'Số lượng': '1', 'Hóa đơn MISA': 'Có, VAT 10%' },
+      details: { 'Mẫu máy': 'Máy bán hàng cơ bản', 'Số lượng': '1', 'Hóa đơn 1INVOICE': 'Có, VAT 10%' },
     });
     addTx('GD-20261013-0030', 'hold', -2_640_000, 'MB-2410-0029', at('2026-10-13T03:00:00Z'));
     addTx('GD-20261012-0021', 'topup', 10_000_000, null, at('2026-10-12T02:00:00Z'));
