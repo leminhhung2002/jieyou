@@ -12,7 +12,10 @@ export const accountApi = {
   catalog: (opts) => request('/account/catalog', opts),
   /** → { data: rows, meta: { months, stats } } */
   transactions: (params, opts) => request(`/account/transactions${qs(params)}`, { ...opts, full: true }),
-  topup: (amount) => request('/account/topups', { method: 'POST', body: { amount, method: 'baoviet' } }),
+  /** method: qr | card → { transaction, payment: { id, orderId, status, qrImage, qrContent, checkoutUrl, paymentUrl, bank }, balance } */
+  topup: (amount, method = 'qr') => request('/account/topups', { method: 'POST', body: { amount, method } }),
+  /** Trạng thái lệnh nạp → { id, status: pending|success|failed, ..., balance } */
+  topupStatus: (id, opts) => request(`/account/topups/${encodeURIComponent(id)}`, opts),
   applications: (limit, opts) => request(`/account/applications${qs({ limit })}`, opts),
   /** → { ...application, timeline: [{key,label,at,done,current?,rejected?}], payment: { charged, kind, refund: {amount,at,done}|null }, invoiceNo } */
   application: (code, opts) => request(`/account/applications/${encodeURIComponent(code)}`, opts),

@@ -45,7 +45,29 @@ export const config = {
     // Chu kỳ đồng bộ trạng thái đơn (giây)
     syncSeconds: Math.max(30, Number(process.env.SMM_SYNC_SECONDS) || 120),
   },
+  // Nạp tiền qua UniPay Open API (https://docs.unipay.net.vn/technical/openapi). Thiếu thông tin → tắt.
+  unipay: {
+    baseUrl: (process.env.UNIPAY_BASE_URL || 'https://unipay-open-api-staging.atomsolution.vn').replace(/\/$/, ''),
+    partnerCode: process.env.UNIPAY_PARTNER_CODE || '',
+    username: process.env.UNIPAY_USERNAME || '',
+    password: process.env.UNIPAY_PASSWORD || '',
+    clientId: process.env.UNIPAY_CLIENT_ID || '',
+    clientSecret: process.env.UNIPAY_CLIENT_SECRET || '',
+    // Khóa AES-256 dạng hex (64 ký tự)
+    aesKey: (process.env.UNIPAY_AES_KEY || '').replace(/\s+/g, ''),
+    // Tài khoản nhận tiền (VA) + mã ngân hàng dùng khi tạo QR
+    bankAccountNo: process.env.UNIPAY_BANK_ACCOUNT_NO || '',
+    bincode: process.env.UNIPAY_BINCODE || '970454',
+    qrServiceCode: process.env.UNIPAY_QR_SERVICE_CODE || 'vccb-qr',
+    ecomServiceCode: process.env.UNIPAY_ECOM_SERVICE_CODE || 'ecom',
+    // Chu kỳ đối soát giao dịch đang chờ qua API tra cứu (giây) – dự phòng khi IPN không tới
+    syncSeconds: Math.max(15, Number(process.env.UNIPAY_SYNC_SECONDS) || 60),
+  },
 };
+
+if (config.unipay.aesKey && !/^[0-9a-fA-F]{64}$/.test(config.unipay.aesKey)) {
+  throw new Error('UNIPAY_AES_KEY phải là chuỗi hex 64 ký tự (AES-256)');
+}
 
 if (config.isProd && (!config.smtp.user || !config.smtp.pass)) {
   throw new Error('SMTP_USER and SMTP_PASS must be set in production (mã OTP được gửi qua email)');

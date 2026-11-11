@@ -8,6 +8,10 @@ import { adminStore } from '../src/services/adminStore.js';
 import { accountStore } from '../src/services/accountStore.js';
 import { userStore } from '../src/services/userStore.js';
 import { openDatabase, save, backup, closeDatabase } from '../src/services/persistence.js';
+import { config } from '../src/config.js';
+
+// Nạp tiền ở đây dùng chế độ dev cộng tiền ngay (luồng UniPay: unipay.test.js)
+config.unipay.partnerCode = '';
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'jieyou-db-'));
 const file = path.join(dir, 'test.db');

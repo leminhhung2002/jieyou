@@ -182,6 +182,43 @@
   color: #6a6e77;
 }
 
+.methods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.method {
+  padding: 10px;
+  margin: -10px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+}
+
+.methods .method {
+  margin: 0;
+  border-color: #e3e5e9;
+  background: #fff;
+}
+
+.methods .method.methodOn {
+  border-color: #0f7a86;
+}
+
+.method:focus-visible {
+  outline: 2px solid #14a9b3;
+  outline-offset: 2px;
+}
+
+.radioOff {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #c8cbd1;
+  border-radius: 11px;
+  background: #fff;
+}
+
 .radio {
   flex-shrink: 0;
   width: 22px;

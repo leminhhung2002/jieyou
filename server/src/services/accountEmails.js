@@ -100,7 +100,7 @@ export function emailTopupSuccess(userId, tx, balance) {
         ['Số tiền', vnd(tx.amount)],
         ['Số dư mới', vnd(balance)],
         ['Thời gian', dateTime(tx.createdAt)],
-        ['Phương thức', 'Cổng thanh toán Bảo Việt'],
+        ['Phương thức', tx.source === 'unipay' ? (tx.method === 'card' ? 'Thẻ qua UniPay' : 'Chuyển khoản QR qua UniPay') : 'Cổng thanh toán Bảo Việt'],
       ],
     },
     cta: { label: 'Xem lịch sử giao dịch', url: link('/tai-khoan/tra-truoc') },

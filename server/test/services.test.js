@@ -9,6 +9,8 @@ import { config } from '../src/config.js';
 
 // Làm app/web theo yêu cầu + Key phần mềm bản quyền
 config.smm.apiKey = '';
+// Luồng nạp tiền thật qua UniPay: unipay.test.js (ở đây dùng chế độ dev cộng tiền ngay)
+config.unipay.partnerCode = '';
 
 let server;
 let base;

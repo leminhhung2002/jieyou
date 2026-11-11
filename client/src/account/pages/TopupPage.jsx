@@ -1,15 +1,20 @@
-import { useId, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useId, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle.js';
 import { asset, formatVnd } from '../../utils/format.js';
 import { vnd } from '../../admin/format.js';
 import { accountApi } from '../accountApi.js';
 import { useAccount } from '../AccountLayout.jsx';
+import TopupPayment from '../TopupPayment.jsx';
 import { Card, CostCard, FormError, FormLayout, PageHeader, PrimaryButton } from '../ui.jsx';
 import styles from './TopupPage.module.css';
 
 const PRESETS = [500000, 1000000, 5000000, 10000000, 20000000];
 const DEFAULT_LIMITS = { min: 50000, max: 50000000 };
+const METHODS = [
+  { key: 'qr', title: 'Chuyển khoản QR', sub: 'Quét mã bằng app ngân hàng bất kỳ – vào tiền tự động' },
+  { key: 'card', title: 'Thẻ ATM / Visa / Master / JCB', sub: 'Thanh toán thẻ qua cổng UniPay' },
+];
 
 /** Kiểm tra hạn mức nạp, trả về câu báo lỗi tiếng Việt hoặc null. */
 function validate(amount, { min, max }) {
@@ -31,6 +36,11 @@ export default function TopupPage() {
   const [touched, setTouched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [method, setMethod] = useState('qr');
+  const [params, setParams] = useSearchParams();
+  // Lệnh nạp đang chờ thanh toán: vừa tạo, hoặc quay lại từ trang thẻ UniPay (?tx=...)
+  const [pending, setPending] = useState(null);
+  const pendingId = pending?.id || params.get('tx');
 
   const limits = catalog?.topupLimits || DEFAULT_LIMITS;
   const balance = summary?.stats.balance ?? 0;
@@ -58,7 +68,19 @@ export default function TopupPage() {
     setSubmitting(true);
     setSubmitError('');
     try {
-      await accountApi.topup(amount);
+      const res = await accountApi.topup(amount, method);
+      const payment = res.payment;
+      if (payment?.status === 'pending') {
+        if (payment.method === 'card' && payment.paymentUrl) {
+          window.location.assign(payment.paymentUrl);
+          return;
+        }
+        setPending(payment);
+        setParams({ tx: payment.id }, { replace: true });
+        setSubmitting(false);
+        return;
+      }
+      // Môi trường chưa cấu hình cổng thanh toán: tiền vào ngay
       await refresh();
       toast(`Đã nạp ${vnd(amount)} vào tài khoản trả trước.`);
       navigate('/tai-khoan/tra-truoc');
@@ -68,6 +90,19 @@ export default function TopupPage() {
     }
   };
 
+  const onPaid = useCallback(
+    async (p) => {
+      await refresh();
+      toast(`Đã nạp ${vnd(p.amount)} vào tài khoản trả trước.`);
+      navigate('/tai-khoan/tra-truoc');
+    },
+    [refresh, toast, navigate],
+  );
+  const onCancel = () => {
+    setPending(null);
+    setParams({}, { replace: true });
+  };
+
   return (
     <div className={styles.page}>
       <PageHeader
@@ -75,11 +110,14 @@ export default function TopupPage() {
         sticker="account/sticker/topup.png"
         eyebrow="Tài khoản trả trước"
         title="Nạp tiền"
-        subtitle="Tiền vào tài khoản ngay khi Bảo Việt xác nhận. Phí nạp do nền tảng chịu."
+        subtitle="Tiền vào tài khoản ngay khi UniPay xác nhận thanh toán. Phí nạp do nền tảng chịu."
       />
 
       <FormLayout
         main={
+          pendingId ? (
+            <TopupPayment key={pendingId} id={pendingId} initial={pending} onDone={onPaid} onCancel={onCancel} />
+          ) : (
           <form className={styles.form} onSubmit={onSubmit} noValidate>
             <div className={styles.amountCard}>
               <label htmlFor={inputId} className={styles.amountLabel}>
@@ -131,17 +169,26 @@ export default function TopupPage() {
             </div>
 
             <Card title="Phương thức thanh toán" className={styles.methodCard}>
-              <div role="radiogroup" aria-label="Phương thức thanh toán">
-                <button type="button" role="radio" aria-checked="true" className={styles.method}>
-                  <span className={styles.methodIcon}>
-                    <img src={asset('account/topup/bank.svg')} width="26" height="26" alt="" />
-                  </span>
-                  <span className={styles.methodText}>
-                    <span className={styles.methodTitle}>Cổng thanh toán Bảo Việt</span>
-                    <span className={styles.methodSub}>Thẻ nội địa, QR, thẻ quốc tế</span>
-                  </span>
-                  <span className={styles.radio} aria-hidden="true" />
-                </button>
+              <div role="radiogroup" aria-label="Phương thức thanh toán" className={styles.methods}>
+                {METHODS.map((m) => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    role="radio"
+                    aria-checked={method === m.key}
+                    className={`${styles.method} ${method === m.key ? styles.methodOn : ''}`}
+                    onClick={() => setMethod(m.key)}
+                  >
+                    <span className={styles.methodIcon}>
+                      <img src={asset('account/topup/bank.svg')} width="26" height="26" alt="" />
+                    </span>
+                    <span className={styles.methodText}>
+                      <span className={styles.methodTitle}>{m.title}</span>
+                      <span className={styles.methodSub}>{m.sub}</span>
+                    </span>
+                    <span className={method === m.key ? styles.radio : styles.radioOff} aria-hidden="true" />
+                  </button>
+                ))}
               </div>
             </Card>
 
@@ -152,6 +199,7 @@ export default function TopupPage() {
               <FormError>{submitError}</FormError>
             </div>
           </form>
+          )
         }
         aside={
           <>

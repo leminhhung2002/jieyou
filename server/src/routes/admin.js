@@ -69,7 +69,8 @@ function customerView(u) {
 
 function transactionView(t) {
   const c = userStore.findById(t.customerId);
-  return { ...t, customer: { id: c?.id, name: c?.businessName, shortName: shortName(c?.businessName) } };
+  const { payment: _payment, ...rest } = t; // ảnh QR / link thanh toán: không gửi cho admin
+  return { ...rest, customer: { id: c?.id, name: c?.businessName, shortName: shortName(c?.businessName) } };
 }
 
 /* ======================= Đăng nhập quản trị ======================= */
@@ -102,7 +103,10 @@ router.get('/overview', requireAdmin(), (req, res) => {
   const overdue = pending.filter((a) => a.status === 'overdue');
   const customers = userStore.list();
   const topupsToday = adminStore.listTransactions().filter((t) => t.type === 'topup' && t.status === 'success' && isToday(t.createdAt));
-  const stuck = adminStore.listTransactions().filter((t) => t.type === 'topup' && t.status === 'pending' && !t.reconciled);
+  // Lệnh nạp chờ quá 30 phút chưa nhận được kết quả từ cổng thanh toán
+  const stuck = adminStore
+    .listTransactions()
+    .filter((t) => t.type === 'topup' && t.status === 'pending' && !t.reconciled && Date.now() - Date.parse(t.createdAt) > 30 * 60_000);
 
   const queue = [...pending].sort((a, b) => b.submittedAt.localeCompare(a.submittedAt));
   // Hàng đợi: hồ sơ mới nhất trước, luôn kèm các hồ sơ quá hạn
@@ -287,7 +291,7 @@ function validatePriceItem(body, partial = false) {
 const SERVICE_NAMES = {
   'quang-cao-tren-san': 'Quảng cáo trên sàn',
   'ho-so-bo-cong-thuong': 'Hồ sơ Bộ Công Thương',
-  'may-ban-hang-misa': 'Máy bán hàng + MISA',
+  'may-ban-hang-misa': 'Máy bán hàng + 1INVOICE',
   'tang-tuong-tac-mxh': 'Tăng tương tác MXH',
   'cong-thanh-toan-pos': 'Hồ sơ cổng thanh toán POS',
   'tai-khoan-unipay': 'Tài khoản UniPay',
@@ -325,7 +329,7 @@ router.delete('/price-items/:id', requireAdmin('content'), (req, res) => {
   res.json({ data: { ok: true } });
 });
 
-/* ===================== Phí Máy bán hàng + MISA và hồ sơ POS ===================== */
+/* ===================== Phí Máy bán hàng + 1INVOICE và hồ sơ POS ===================== */
 
 router.get('/fees', requireAdmin('content'), (_req, res) => {
   res.json({ data: feeSettingsView() });
@@ -338,7 +342,7 @@ router.patch('/fees', requireAdmin('content'), (req, res) => {
   } catch (err) {
     throw badRequest(err.message, err.field ? { field: err.field } : undefined);
   }
-  adminStore.log(req.admin.username, 'Cập nhật phí MISA & POS', changes.join('; ').slice(0, 300));
+  adminStore.log(req.admin.username, 'Cập nhật phí 1INVOICE & POS', changes.join('; ').slice(0, 300));
   res.json({ data: feeSettingsView() });
 });
 

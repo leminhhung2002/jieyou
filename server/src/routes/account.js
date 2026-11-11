@@ -10,6 +10,8 @@ import { accountStore, priceOf } from '../services/accountStore.js';
 import { misaDevicePrice, posFee, vatRates } from '../services/feeSettings.js';
 import { userStore } from '../services/userStore.js';
 import { emailTopupSuccess } from '../services/accountEmails.js';
+import { unipayEnabled, UnipayError } from '../services/unipay.js';
+import { methodLabel, paymentView, reconcilePending, startTopup, TOPUP_METHODS } from '../services/topupPayments.js';
 import { hashPassword, verifyPassword } from '../services/password.js';
 import { isEmail, isNonEmptyString, isTaxCode, normalizePhone } from '../utils/validators.js';
 import { badRequest, conflict, notFound, HttpError } from '../utils/httpError.js';
@@ -111,7 +113,7 @@ function userTransactions(user) {
     const app = t.note ? apps.get(t.note) : null;
     let kind = t.type;
     if (t.type === 'hold') kind = isHolding(app) ? 'held' : 'charged';
-    let description = 'Nạp tiền qua Bảo Việt';
+    let description = t.source === 'unipay' ? `Nạp tiền qua ${methodLabel(t)}` : 'Nạp tiền qua Bảo Việt';
     if (app) description = `${app.title || app.code}${t.type === 'refund' ? ' (từ chối)' : ''}`;
     else if (t.type !== 'topup') description = t.note || 'Giao dịch';
     const row = { id: t.id, createdAt: t.createdAt, description, kind, amount: t.amount, balanceAfter: running, applicationCode: app?.code || null };
@@ -160,7 +162,7 @@ function catalog() {
     adSlots: AD_SLOTS.map(({ key, name, note, priceName, defaultPrice }) => ({
       key, name, note, price: priceOf(priceName, defaultPrice, 'quang-cao-tren-san'),
     })),
-    // Giá máy, VAT, phí POS: chỉnh ở Admin › Phí MISA & POS (services/feeSettings.js)
+    // Giá máy, VAT, phí POS: chỉnh ở Admin › Phí 1INVOICE & POS (services/feeSettings.js)
     misaDevices: MISA_DEVICES.map((d) => ({ key: d.key, name: d.name, price: misaDevicePrice(d) })),
     vatRates: vatRates(),
     socialPlatforms: SOCIAL_PLATFORMS,
@@ -290,7 +292,7 @@ const SERVICES = {
         'Mẫu máy': device.name,
         'Số lượng': String(quantity),
         'Địa chỉ lắp đặt': address,
-        'Hóa đơn MISA': einvoice ? `Có, VAT ${vat}%, MST ${invoiceTaxCode}` : 'Không',
+        'Hóa đơn 1INVOICE': einvoice ? `Có, VAT ${vat}%, MST ${invoiceTaxCode}` : 'Không',
       },
       meta: { device: device.key, quantity, address, einvoice, vat, invoiceTaxCode, subtotal },
     };
@@ -584,14 +586,52 @@ router.get('/transactions', (req, res) => {
   res.json({ data: items, meta: { months: months.sort().reverse(), stats: stats(req.user) } });
 });
 
-router.post('/topups', (req, res) => {
+/** Trạng thái lệnh nạp (trang chờ thanh toán hỏi định kỳ). Đơn QR đang chờ: tra cứu UniPay tối đa 1 lần / 10 giây. */
+const lastCheck = new Map();
+router.get('/topups/:id', asyncHandler(async (req, res) => {
+  const tx = adminStore.listTransactions().find((t) => t.id === req.params.id && t.customerId === req.user.id && t.type === 'topup');
+  if (!tx) throw notFound('Không tìm thấy giao dịch nạp');
+  if (tx.status === 'pending' && tx.source === 'unipay' && unipayEnabled()) {
+    const last = lastCheck.get(tx.id) || 0;
+    if (Date.now() - last > 10_000) {
+      lastCheck.set(tx.id, Date.now());
+      if (lastCheck.size > 5000) lastCheck.clear();
+      await reconcilePending({ only: tx.id }).catch((err) => console.error('[UniPay] Tra cứu thất bại:', err.message));
+    }
+  }
+  res.json({ data: { ...paymentView(tx), balance: userStore.findById(req.user.id)?.balance || 0 } });
+}));
+
+router.post('/topups', asyncHandler(async (req, res) => {
   const amount = Number(req.body?.amount);
   if (!Number.isInteger(amount) || amount < TOPUP_LIMITS.min || amount > TOPUP_LIMITS.max) {
     throw badRequest(`Số tiền nạp từ ${vnd(TOPUP_LIMITS.min)} đến ${vnd(TOPUP_LIMITS.max)}`, { field: 'amount' });
   }
-  if (req.body?.method && req.body.method !== 'baoviet') throw badRequest('Phương thức thanh toán không hợp lệ', { field: 'method' });
-  // Production cần chuyển hướng sang cổng Bảo Việt và chỉ cộng tiền khi nhận webhook đã xác thực.
-  if (config.isProd) throw new HttpError(501, 'Cổng thanh toán Bảo Việt chưa được kết nối');
+  const method = req.body?.method || 'qr';
+
+  // UniPay đã cấu hình: tạo giao dịch chờ + QR / link thẻ; chỉ cộng tiền khi UniPay báo đã thanh toán (IPN / đối soát)
+  if (unipayEnabled()) {
+    if (!TOPUP_METHODS[method]) throw badRequest('Phương thức thanh toán không hợp lệ', { field: 'method' });
+    const open = adminStore
+      .listTransactions()
+      .filter((t) => t.customerId === req.user.id && t.type === 'topup' && t.status === 'pending' && Date.now() - Date.parse(t.createdAt) < DAY);
+    if (open.length >= 5) throw new HttpError(429, 'Bạn có quá nhiều lệnh nạp đang chờ thanh toán, vui lòng hoàn tất hoặc thử lại sau');
+    try {
+      const tx = await startTopup(req.user, amount, method);
+      return res.status(201).json({ data: { transaction: paymentView(tx), payment: paymentView(tx), balance: req.user.balance || 0 } });
+    } catch (err) {
+      if (err instanceof UnipayError) {
+        console.error('[UniPay] Tạo thanh toán thất bại:', err.message);
+        const hint = method === 'card' ? ' Vui lòng thử chuyển khoản QR.' : ' Vui lòng thử lại sau.';
+        throw new HttpError(502, `Cổng thanh toán UniPay đang gặp sự cố.${hint}`);
+      }
+      throw err;
+    }
+  }
+
+  if (!['qr', 'card', 'baoviet'].includes(method)) throw badRequest('Phương thức thanh toán không hợp lệ', { field: 'method' });
+  // Chưa cấu hình cổng thanh toán: production từ chối; môi trường dev cộng tiền ngay để thử giao diện
+  if (config.isProd) throw new HttpError(501, 'Cổng thanh toán chưa được kết nối');
 
   const user = req.user;
   const balance = (user.balance || 0) + amount;
@@ -606,7 +646,7 @@ router.post('/topups', (req, res) => {
   });
   emailTopupSuccess(user.id, tx, balance);
   res.status(201).json({ data: { transaction: tx, balance } });
-});
+}));
 
 router.get('/applications', (req, res) => {
   const limit = Math.min(Number(req.query.limit) || 50, 200);
@@ -763,7 +803,7 @@ router.get('/invoices/:no/document', (req, res) => {
 p{margin:4px 0;color:#3a3d44}table{width:100%;border-collapse:collapse;margin-top:24px}td{padding:10px 0;border-top:1px solid #e3e5e9}
 td:last-child{text-align:right}.total td{font-weight:600;font-size:18px}</style></head><body>
 <h1>HÓA ĐƠN ĐIỆN TỬ</h1><p>Số: <b>${escapeHtml(inv.no)}</b> · Ngày phát hành: ${escapeHtml(date)}</p>
-<p>Đơn vị bán: JIEYOU – Sàn Dịch vụ Doanh nghiệp (phát hành qua MISA meInvoice)</p>
+<p>Đơn vị bán: JIEYOU – Sàn Dịch vụ Doanh nghiệp (phát hành qua 1INVOICE meInvoice)</p>
 <p>Người mua: ${escapeHtml(u.businessName)} · MST ${escapeHtml(u.taxCode)}</p>
 <table><tr><td>Hồ sơ</td><td>${escapeHtml(app?.title || inv.applicationCode)}</td></tr>${rows}
 <tr class="total"><td>Tổng tiền</td><td>${escapeHtml(vnd(inv.total))}</td></tr></table>

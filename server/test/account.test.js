@@ -9,6 +9,8 @@ import { config } from '../src/config.js';
 
 // Test luồng duyệt tay: không gọi hotrodvfb thật dù .env có HOTRODVFB_API_KEY (luồng tự động: smm.test.js)
 config.smm.apiKey = '';
+// Luồng nạp tiền thật qua UniPay: unipay.test.js (ở đây dùng chế độ dev cộng tiền ngay)
+config.unipay.partnerCode = '';
 
 let server;
 let base;

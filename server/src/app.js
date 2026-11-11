@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 import accountRoutes from './routes/account.js';
 import devRoutes from './routes/dev.js';
+import paymentRoutes from './routes/payments.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { saveSafely } from './services/persistence.js';
 
@@ -69,6 +70,7 @@ export function createApp() {
   app.use('/api/auth', authRoutes);
   app.use('/api/admin', adminRoutes);
   app.use('/api/account', accountRoutes);
+  app.use('/api/payments', paymentRoutes);
   // Hộp thư email dev: /api/dev/mailbox (không có ở production)
   if (!config.isProd) app.use('/api/dev', devRoutes);
   app.use('/api', contentRoutes);

@@ -92,12 +92,34 @@
 .preset:focus-visible { outline: 2px solid #0f7a86; outline-offset: 2px; }
 
 /* Phương thức (121:15865) */
+.methodList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .method {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
   padding: 16px 20px;
+  border: 1.5px solid transparent;
   border-radius: 20px;
+  background: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.methodActive {
+  border-color: #0f7a86;
+}
+.method:focus-visible { outline: 2px solid #0f7a86; outline-offset: 2px; }
+.radioOff {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #c8cbd1;
+  border-radius: 10px;
   background: #fff;
 }
 .methodIcon {

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { accountApi } from '../../account/accountApi.js';
+import TopupPayment from '../../account/TopupPayment.jsx';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle.js';
 import { asset, formatVnd } from '../../utils/format.js';
 import { BottomBar, ErrorText, PrimaryButton, Screen, TopBar, vnd } from '../ui.jsx';
@@ -8,6 +9,10 @@ import styles from './Topup.module.css';
 
 const PRESETS = [500_000, 1_000_000, 5_000_000, 10_000_000, 20_000_000];
 const DEFAULT_LIMITS = { min: 50_000, max: 50_000_000 };
+const METHODS = [
+  { key: 'qr', name: 'Chuyển khoản QR', sub: 'Quét mã bằng app ngân hàng – vào tiền tự động' },
+  { key: 'card', name: 'Thẻ ATM / Visa / Master / JCB', sub: 'Thanh toán thẻ qua cổng UniPay' },
+];
 
 // Figma: "Nạp tiền" (121:15832)
 export default function TopupPage() {
@@ -19,6 +24,10 @@ export default function TopupPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [method, setMethod] = useState('qr');
+  const [params, setParams] = useSearchParams();
+  const [pending, setPending] = useState(null);
+  const pendingId = pending?.id || params.get('tx');
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -47,7 +56,17 @@ export default function TopupPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await accountApi.topup(amount);
+      const res = await accountApi.topup(amount, method);
+      if (res.payment?.status === 'pending') {
+        if (res.payment.method === 'card' && res.payment.paymentUrl) {
+          window.location.assign(res.payment.paymentUrl);
+          return undefined;
+        }
+        setPending(res.payment);
+        setParams({ tx: res.payment.id }, { replace: true });
+        setLoading(false);
+        return undefined;
+      }
       navigate('/app/nap-tien/thanh-cong', {
         replace: true,
         state: { amount, txId: res.transaction?.id, balance: res.balance },
@@ -60,6 +79,31 @@ export default function TopupPage() {
   }
 
   const shown = amount ? formatVnd(amount) : '';
+
+  const onPaid = useCallback(
+    (p) => navigate('/app/nap-tien/thanh-cong', { replace: true, state: { amount: p.amount, txId: p.id, balance: p.balance } }),
+    [navigate],
+  );
+
+  if (pendingId) {
+    return (
+      <Screen>
+        <TopBar title="Thanh toán" backTo="/app" />
+        <div className={styles.body}>
+          <TopupPayment
+            key={pendingId}
+            id={pendingId}
+            initial={pending}
+            onDone={onPaid}
+            onCancel={() => {
+              setPending(null);
+              setParams({}, { replace: true });
+            }}
+          />
+        </div>
+      </Screen>
+    );
+  }
 
   return (
     <Screen className={styles.withBar}>
@@ -111,15 +155,26 @@ export default function TopupPage() {
           {error && <div id="m-amount-err"><ErrorText>{error}</ErrorText></div>}
         </div>
 
-        <div className={styles.method} role="radiogroup" aria-label="Phương thức nạp">
-          <span className={styles.methodIcon}>
-            <img src={asset('mobile/nap-tien/bank.svg')} width="22" height="22" alt="" />
-          </span>
-          <span className={styles.methodText}>
-            <span className={styles.methodName}>Cổng thanh toán Bảo Việt</span>
-            <span className={styles.methodSub}>Thẻ nội địa, QR, thẻ quốc tế</span>
-          </span>
-          <span className={styles.radio} role="radio" aria-checked="true" aria-label="Cổng thanh toán Bảo Việt" tabIndex={0} />
+        <div role="radiogroup" aria-label="Phương thức nạp" className={styles.methodList}>
+          {METHODS.map((m) => (
+            <button
+              key={m.key}
+              type="button"
+              role="radio"
+              aria-checked={method === m.key}
+              className={`${styles.method} ${method === m.key ? styles.methodActive : ''}`}
+              onClick={() => setMethod(m.key)}
+            >
+              <span className={styles.methodIcon}>
+                <img src={asset('mobile/nap-tien/bank.svg')} width="22" height="22" alt="" />
+              </span>
+              <span className={styles.methodText}>
+                <span className={styles.methodName}>{m.name}</span>
+                <span className={styles.methodSub}>{m.sub}</span>
+              </span>
+              <span className={method === m.key ? styles.radio : styles.radioOff} aria-hidden="true" />
+            </button>
+          ))}
         </div>
 
         <div className={styles.summary}>
