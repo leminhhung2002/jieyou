@@ -272,6 +272,76 @@
   color: #6a6e77;
 }
 
+/* Khối xám đầu thẻ Chi phí (286:11099, 323:3233) */
+.costLead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #f7f8fa;
+}
+
+.costLeadTitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 23.4px;
+  letter-spacing: -0.18px;
+  color: #0b0c0e;
+}
+
+/* ===== Nút tăng / giảm số lượng (287:9872) ===== */
+.stepper {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 0.5px solid rgba(0, 9, 50, 0.12);
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.stepBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #0f7a86;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.stepBtn:hover:not(:disabled) {
+  background: #0c626c;
+}
+
+.stepBtn:focus-visible {
+  outline: 2px solid #0f7a86;
+  outline-offset: 2px;
+}
+
+.stepBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.stepValue {
+  min-width: 22px;
+  padding: 0 6px;
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ===== Nút (74:2906, 74:2909) ===== */
 .btn {
   position: relative;

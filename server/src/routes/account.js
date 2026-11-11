@@ -23,10 +23,13 @@ import {
   BCT_KINDS,
   FLAT_FEES,
   MISA_DEVICES,
+  MISA_MAX_QTY,
   POS_BUSINESS_TYPES,
   SOCIAL_KINDS,
   SOCIAL_PLATFORMS,
   TOPUP_LIMITS,
+  UNIPAY_INVOICE_PLAN,
+  UNIPAY_MODELS,
   VAT_RATES,
   WEBAPP_BUDGETS,
   WEBAPP_DEADLINES,
@@ -164,7 +167,14 @@ function catalog() {
     })),
     // Giá máy, VAT, phí POS: chỉnh ở Admin › Phí MISA & POS (services/feeSettings.js)
     misaDevices: MISA_DEVICES.map((d) => ({ key: d.key, name: d.name, price: misaDevicePrice(d) })),
+    misaMaxQty: MISA_MAX_QTY,
     vatRates: vatRates(),
+    unipayModels: UNIPAY_MODELS,
+    unipayInvoicePlan: {
+      name: UNIPAY_INVOICE_PLAN.name,
+      price: priceOf(UNIPAY_INVOICE_PLAN.priceName, UNIPAY_INVOICE_PLAN.defaultPrice, UNIPAY_INVOICE_PLAN.serviceSlug),
+      maxQty: UNIPAY_INVOICE_PLAN.maxQty,
+    },
     socialPlatforms: SOCIAL_PLATFORMS,
     socialKinds: SOCIAL_KINDS.map(({ key, name, defaultPrice }) => ({ key, name, price: defaultPrice })),
     fees: Object.fromEntries(
@@ -232,6 +242,12 @@ const SERVICES = {
     };
   },
   unipay(body) {
+    const c = catalog();
+    const model = UNIPAY_MODELS.find((m) => m.key === (body.model ?? 'starter'));
+    need(model, 'Vui lòng chọn mô hình kinh doanh', 'model');
+    const plan = c.unipayInvoicePlan;
+    const invoiceQty = body.invoiceQty === undefined ? 0 : Number(body.invoiceQty);
+    need(Number.isInteger(invoiceQty) && invoiceQty >= 0 && invoiceQty <= plan.maxQty, `Số gói hóa đơn từ 0 đến ${plan.maxQty}`, 'invoiceQty');
     const d = {
       repName: requireText(body.repName, 'họ tên người đại diện', 'repName', 120),
       phone: requirePhoneField(body.phone),
@@ -241,11 +257,19 @@ const SERVICES = {
       taxCode: (need(isTaxCode(body.taxCode), 'Mã số thuế gồm 10 hoặc 13 chữ số', 'taxCode'), String(body.taxCode).trim()),
       address: requireText(body.address, 'địa chỉ kinh doanh', 'address'),
     };
+    const invoiceAmount = plan.price * invoiceQty;
     return {
-      amount: catalog().fees.unipay,
+      amount: c.fees.unipay + invoiceAmount,
       title: (code) => `Hồ sơ ${code}`,
-      details: { 'Người đại diện': `${d.repName} · ${d.position}`, 'Doanh nghiệp': d.businessName, 'MST': d.taxCode, 'Liên hệ': `${d.phone} · ${d.email}` },
-      meta: d,
+      details: {
+        'Mô hình kinh doanh': model.name,
+        ...(invoiceQty > 0 ? { 'Gói hóa đơn': `${plan.name} × ${invoiceQty}` } : {}),
+        'Người đại diện': `${d.repName} · ${d.position}`,
+        'Doanh nghiệp': d.businessName,
+        'MST': d.taxCode,
+        'Liên hệ': `${d.phone} · ${d.email}`,
+      },
+      meta: { ...d, model: model.key, invoiceQty, invoicePlanPrice: plan.price, serviceFee: c.fees.unipay },
     };
   },
   bct(body) {
@@ -270,10 +294,18 @@ const SERVICES = {
   },
   misa(body) {
     const c = catalog();
-    const device = c.misaDevices.find((x) => x.key === body.device);
-    need(device, 'Vui lòng chọn thiết bị', 'device');
-    const quantity = Number(body.quantity);
-    need(Number.isInteger(quantity) && quantity >= 1 && quantity <= 50, 'Số lượng từ 1 đến 50', 'quantity');
+    // Nhiều thiết bị: items = [{ device, quantity }]; vẫn nhận dạng cũ { device, quantity } (1 thiết bị)
+    const rawItems = Array.isArray(body.items) ? body.items : [{ device: body.device, quantity: body.quantity }];
+    need(rawItems.length > 0 && rawItems.length <= c.misaDevices.length, 'Vui lòng chọn thiết bị', 'device');
+    const items = [];
+    for (const it of rawItems) {
+      const device = c.misaDevices.find((x) => x.key === it?.device);
+      need(device, 'Vui lòng chọn thiết bị', 'device');
+      need(!items.some((x) => x.device.key === device.key), 'Thiết bị bị trùng', 'device');
+      const quantity = Number(it.quantity);
+      need(Number.isInteger(quantity) && quantity >= 1 && quantity <= MISA_MAX_QTY, `Số lượng từ 1 đến ${MISA_MAX_QTY}`, 'quantity');
+      items.push({ device, quantity });
+    }
     const address = requireText(body.address, 'địa chỉ lắp đặt', 'address');
     const einvoice = body.einvoice !== false;
     const vat = Number(body.vat);
@@ -283,18 +315,28 @@ const SERVICES = {
       need(isTaxCode(body.invoiceTaxCode), 'Mã số thuế xuất hóa đơn gồm 10 hoặc 13 chữ số', 'invoiceTaxCode');
       invoiceTaxCode = String(body.invoiceTaxCode).trim();
     }
-    const subtotal = device.price * quantity;
-    const amount = Math.round(subtotal * (1 + vat / 100));
+    const subtotal = items.reduce((sum, it) => sum + it.device.price * it.quantity, 0);
+    const amount = subtotal + Math.round((subtotal * vat) / 100);
+    const quantity = items.reduce((sum, it) => sum + it.quantity, 0);
     return {
       amount,
       title: (code) => `Máy bán hàng ${code}`,
       details: {
-        'Mẫu máy': device.name,
+        'Mẫu máy': items.map((it) => `${it.device.name} × ${it.quantity}`).join('; '),
         'Số lượng': String(quantity),
         'Địa chỉ lắp đặt': address,
         'Hóa đơn MISA': einvoice ? `Có, VAT ${vat}%, MST ${invoiceTaxCode}` : 'Không',
       },
-      meta: { device: device.key, quantity, address, einvoice, vat, invoiceTaxCode, subtotal },
+      meta: {
+        items: items.map((it) => ({ device: it.device.key, quantity: it.quantity, price: it.device.price })),
+        device: items[0].device.key,
+        quantity,
+        address,
+        einvoice,
+        vat,
+        invoiceTaxCode,
+        subtotal,
+      },
     };
   },
   pos(body) {

@@ -140,9 +140,10 @@ const SIGN_LABEL = { minus: 'trừ', equals: 'bằng', plus: 'cộng', times: 'n
  * rows: [{ label, value, sign?: 'minus'|'plus'|'times'|'equals', total?: true }]
  * Dòng `total` có đường kẻ phía trên, chữ đậm và số 22px.
  */
-export function CostCard({ title = 'Chi phí', rows, note, className = '' }) {
+export function CostCard({ title = 'Chi phí', lead, rows, note, className = '', ...props }) {
   return (
-    <Card title={title} className={`${styles.costCard} ${className}`}>
+    <Card title={title} className={`${styles.costCard} ${className}`} {...props}>
+      {lead}
       <dl className={styles.costRows}>
         {rows.map((r) => (
           <div key={r.label} className={`${styles.costRow} ${r.total ? styles.costTotal : ''} ${r.sign ? styles.costSigned : ''}`}>
@@ -160,6 +161,50 @@ export function CostCard({ title = 'Chi phí', rows, note, className = '' }) {
       </dl>
       {note && <p className={styles.costNote}>{note}</p>}
     </Card>
+  );
+}
+
+/**
+ * Khối xám bo 14px đầu thẻ Chi phí, có tiêu đề 16px – Figma "Thiết bị" (286:11099) / "Gói hóa đơn" (323:3233).
+ */
+export function CostLead({ title, children, className = '' }) {
+  return (
+    <div className={`${styles.costLead} ${className}`}>
+      <p className={styles.costLeadTitle}>{title}</p>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Nút giảm / số lượng / tăng – Figma "Container" (287:9872). `min`–`max` giới hạn giá trị,
+ * nút tương ứng bị vô hiệu khi chạm giới hạn. `label` dùng cho trình đọc màn hình.
+ */
+export function QtyStepper({ value, onChange, min = 0, max = 99, label, className = '' }) {
+  return (
+    <div className={`${styles.stepper} ${className}`} role="group" aria-label={label}>
+      <button
+        type="button"
+        className={styles.stepBtn}
+        onClick={() => onChange(Math.max(min, value - 1))}
+        disabled={value <= min}
+        aria-label={`Giảm số lượng${label ? ` ${label}` : ''}`}
+      >
+        <img src={asset('account/ui/stepper-minus.svg')} width="16" height="16" alt="" />
+      </button>
+      <output className={styles.stepValue} aria-live="polite">
+        {value}
+      </output>
+      <button
+        type="button"
+        className={styles.stepBtn}
+        onClick={() => onChange(Math.min(max, value + 1))}
+        disabled={value >= max}
+        aria-label={`Tăng số lượng${label ? ` ${label}` : ''}`}
+      >
+        <img src={asset('account/ui/stepper-plus.svg')} width="16" height="16" alt="" />
+      </button>
+    </div>
   );
 }
 

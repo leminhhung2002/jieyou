@@ -9,10 +9,29 @@ export const AD_SLOTS = [
   { key: 'mid-page', name: 'Banner giữa trang', note: 'Vị trí 3', priceName: 'Banner giữa trang / ngày', defaultPrice: 300_000 },
 ];
 
+/**
+ * Thiết bị của màn "Đặt máy bán hàng" – danh sách & giá theo Figma (74:3086).
+ * Khách chọn nhiều thiết bị, mỗi thiết bị một số lượng. Giá chỉnh ở Admin › Phí MISA & POS.
+ */
 export const MISA_DEVICES = [
-  { key: 'basic', name: 'Máy bán hàng cơ bản', priceName: 'Máy bán hàng cơ bản', defaultPrice: 2_400_000 },
-  { key: 'printer', name: 'Máy kèm máy in hóa đơn', priceName: 'Máy kèm máy in hóa đơn', defaultPrice: 3_600_000 },
+  { key: 'q190-static', name: 'Loa thông báo tiền Q190 - QR Tĩnh', defaultPrice: 880_000 },
+  { key: 'q190-dynamic', name: 'Loa thông báo tiền Q190 - QR Động', defaultPrice: 1_090_000 },
+  { key: 'sunmi-v3', name: 'Máy bán hàng cầm tay Sunmi V3', defaultPrice: 7_500_000 },
+  { key: 'a90-pro', name: 'SmartPOS A90 Pro', defaultPrice: 10_000_000 },
+  { key: 'c20-lite', name: 'Máy bán hàng để bàn C20 Lite 15”6', defaultPrice: 14_800_000 },
+  { key: 'sunmi-desktop', name: 'Máy bán hàng cầm tay Sunmi V3', defaultPrice: 21_000_000 },
+  { key: 'cpad', name: 'Máy tính bảng CPad', defaultPrice: 18_300_000 },
+].map((d) => ({ ...d, priceName: d.name }));
+
+export const MISA_MAX_QTY = 50;
+
+/** Đăng ký tài khoản UniPay – mô hình kinh doanh & gói hóa đơn (Figma 286:9419). */
+export const UNIPAY_MODELS = [
+  { key: 'starter', name: 'Gói khởi đầu' },
+  { key: 'pro', name: 'Gói chuyên nghiệp' },
+  { key: 'growth', name: 'Gói tăng trưởng' },
 ];
+export const UNIPAY_INVOICE_PLAN = { name: 'Gói MTT 200', priceName: 'Gói hóa đơn MTT 200', serviceSlug: 'tai-khoan-unipay', defaultPrice: 880_000, maxQty: 50 };
 
 export const VAT_RATES = [0, 5, 8, 10];
 

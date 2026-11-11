@@ -126,7 +126,7 @@ test('fee settings: MISA device prices, VAT, POS fee and MISA page prices are ed
   const editor = await login('bientap01');
   const view = await call('GET', '/admin/fees', null, editor);
   assert.equal(view.status, 200);
-  assert.deepEqual(view.body.data.misaDevices.map((d) => [d.key, d.price]), [['basic', 2_400_000], ['printer', 3_600_000]]);
+  assert.deepEqual(view.body.data.misaDevices.map((d) => [d.key, d.price]), [['q190-static', 880_000], ['q190-dynamic', 1_090_000], ['sunmi-v3', 7_500_000], ['a90-pro', 10_000_000], ['c20-lite', 14_800_000], ['sunmi-desktop', 21_000_000], ['cpad', 18_300_000]]);
   assert.deepEqual(view.body.data.vatRates, [0, 5, 8, 10]);
   assert.equal(view.body.data.posFee, 0);
 
@@ -136,7 +136,7 @@ test('fee settings: MISA device prices, VAT, POS fee and MISA page prices are ed
   assert.equal((await call('PATCH', '/admin/fees', {}, editor)).status, 400);
 
   const saved = await call('PATCH', '/admin/fees', {
-    misaDevices: { basic: 2_000_000 },
+    misaDevices: { 'q190-static': 800_000 },
     vatRates: [10, 8, 8],
     posFee: 150_000,
     machines: { 'may-b': 900_000 },
@@ -149,8 +149,8 @@ test('fee settings: MISA device prices, VAT, POS fee and MISA page prices are ed
   const otp = await call('POST', '/auth/otp/request', { phone: '0912345678', purpose: 'login' });
   const user = (await call('POST', '/auth/otp/verify', { phone: '0912345678', purpose: 'login', code: otp.body.data.devCode })).body.data.token;
   const cat = (await call('GET', '/account/catalog', null, user)).body.data;
-  assert.equal(cat.misaDevices.find((d) => d.key === 'basic').price, 2_000_000);
-  assert.equal(cat.misaDevices.find((d) => d.key === 'printer').price, 3_600_000);
+  assert.equal(cat.misaDevices.find((d) => d.key === 'q190-static').price, 800_000);
+  assert.equal(cat.misaDevices.find((d) => d.key === 'q190-dynamic').price, 1_090_000);
   assert.deepEqual(cat.vatRates, [8, 10]);
   assert.equal(cat.fees.pos, 150_000);
 
@@ -158,12 +158,12 @@ test('fee settings: MISA device prices, VAT, POS fee and MISA page prices are ed
   const page = (await call('GET', '/services/may-ban-hang-misa')).body.data;
   assert.equal(page.content.machines.find((m) => m.id === 'may-b').price, 900_000);
   assert.deepEqual(page.content.invoicePlans.plans.map((p) => p.price), [300_000, 700_000]);
-  assert.equal(page.pricing.find((p) => p.id === 'pos-machine').fromPrice, 2_000_000);
+  assert.equal(page.pricing.find((p) => p.id === 'pos-machine').fromPrice, 800_000);
   assert.equal(page.pricing.find((p) => p.id === 'misa').fromPrice, 300_000);
 
   // Khôi phục mặc định
-  const reset = await call('PATCH', '/admin/fees', { misaDevices: { basic: null }, vatRates: null, posFee: null, machines: { 'may-b': null }, invoicePlans: null }, editor);
-  assert.equal(reset.body.data.misaDevices[0].price, 2_400_000);
+  const reset = await call('PATCH', '/admin/fees', { misaDevices: { 'q190-static': null }, vatRates: null, posFee: null, machines: { 'may-b': null }, invoicePlans: null }, editor);
+  assert.equal(reset.body.data.misaDevices[0].price, 880_000);
   assert.equal(reset.body.data.posFee, 0);
   assert.equal(reset.body.data.invoicePlans.length, 3);
 

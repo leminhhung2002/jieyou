@@ -121,10 +121,10 @@ test('admin duyệt hồ sơ có phí → phát hành hóa đơn', async () => {
   const token = await loginAnPhat();
   const r = await call('POST', '/account/applications', {
     type: 'misa',
-    details: { device: 'basic', quantity: 1, address: '12 Nguyễn Huệ', einvoice: true, vat: 10, invoiceTaxCode: '0123456789' },
+    details: { items: [{ device: 'q190-static', quantity: 1 }, { device: 'q190-dynamic', quantity: 1 }], address: '12 Nguyễn Huệ', einvoice: true, vat: 10, invoiceTaxCode: '0123456789' },
   }, token);
   assert.equal(r.status, 201);
-  assert.equal(r.body.data.application.amount, 2_640_000);
+  assert.equal(r.body.data.application.amount, 2_167_000); // (880.000 + 1.090.000) × 1,1
   const a = await call('POST', '/admin/auth/login', { username: 'admin', password: 'admin12345' });
   await call('POST', `/admin/applications/${r.body.data.application.code}/approve`, {}, a.body.data.token);
   const inv = await call('GET', '/account/invoices', undefined, token);
@@ -139,6 +139,16 @@ test('các dịch vụ khác: kiểm tra dữ liệu, số dư không đủ, POS
   const token = await loginAnPhat();
   const bad = await call('POST', '/account/applications', { type: 'unipay', details: { repName: 'A' } }, token);
   assert.equal(bad.status, 400);
+  const unipayBase = { repName: 'Nguyễn Văn An', phone: '0912345678', email: 'ten@congty.vn', position: 'Giám đốc', businessName: 'An Phát', taxCode: '0123456789', address: '12 Nguyễn Huệ' };
+  const badModel = await call('POST', '/account/applications', { type: 'unipay', details: { ...unipayBase, model: 'nope' } }, token);
+  assert.equal(badModel.status, 400);
+  const badQty = await call('POST', '/account/applications', { type: 'unipay', details: { ...unipayBase, invoiceQty: -1 } }, token);
+  assert.equal(badQty.status, 400);
+  const dupDevice = await call('POST', '/account/applications', {
+    type: 'misa',
+    details: { items: [{ device: 'cpad', quantity: 1 }, { device: 'cpad', quantity: 2 }], address: '12 Nguyễn Huệ', einvoice: false, vat: 10 },
+  }, token);
+  assert.equal(dupDevice.status, 400);
   const pos = await call('POST', '/account/applications', {
     type: 'pos',
     details: { storeName: 'An Phát Mart', businessType: 'Bán lẻ', address: '12 Nguyễn Huệ', phone: '0912345678', email: 'ten@congty.vn', attachments: [{ name: 'gpkd.pdf', size: 10 }] },
@@ -253,4 +263,14 @@ test('seedTime: mốc dữ liệu mẫu không ở tương lai, "quá 24 giờ" 
   const old = new Date(daysAgo(1, 8, 15, now));
   assert.ok(now - old > 24 * 3600_000);
   assert.equal(atToday(10, 5, new Date(2026, 10, 7, 15, 0)), new Date(2026, 10, 7, 10, 5).toISOString());
+});
+
+test('UniPay: mô hình kinh doanh + gói hóa đơn được cộng vào phí', async () => {
+  const token = await loginAnPhat();
+  const details = { repName: 'Nguyễn Văn An', phone: '0912345678', email: 'ten@congty.vn', position: 'Giám đốc', businessName: 'An Phát', taxCode: '0123456789', address: '12 Nguyễn Huệ', model: 'pro', invoiceQty: 2 };
+  const before = (await call('GET', '/account/summary', undefined, token)).body.data.stats.balance;
+  const r = await call('POST', '/account/applications', { type: 'unipay', details }, token);
+  assert.equal(r.status, 201);
+  assert.equal(r.body.data.application.amount, 500_000 + 2 * 880_000);
+  assert.equal(r.body.data.balance, before - 2_260_000);
 });

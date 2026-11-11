@@ -1,60 +1,91 @@
-/* Figma 74:3172 – thẻ "Thiết bị": khoảng cách 14px giữa tiêu đề / lựa chọn / ô nhập */
+/* Figma 74:3172 – thẻ "Thiết bị": khoảng cách 14px giữa tiêu đề / lưới thiết bị / ô địa chỉ */
 .deviceCard {
   gap: 14px;
 }
 
-/* 74:3175 – 2 thẻ thiết bị chia đều, cách 12px */
+/* 74:3175 – lưới 2 cột, cách 8px */
 .devices {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-/* 74:3185 – thẻ thiết bị: pad 18px, bo 16px, viền 1.5px #e3e5e9 */
-.devices .device {
-  align-items: flex-start;
-  gap: 14px;
-  padding: 18px;
-  border-radius: 16px;
+/* 74:3185 – thẻ thiết bị: pad 12px, bo 12px, viền 1.5px #e3e5e9 */
+.device {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 12px;
+  background: #fff;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-/* 74:3176 – đang chọn: viền 2px #0f7a86, nền #e8fbfb */
-.devices .deviceOn,
-.devices .deviceOn:hover:not(:disabled) {
+/* 74:3176 – đã chọn (số lượng > 0): viền 2px #0f7a86, nền #e8fbfb */
+.deviceOn {
+  padding: 11.5px;
   border: 2px solid #0f7a86;
   background: #e8fbfb;
 }
 
-.device > span:last-child {
-  gap: 1px;
+.deviceTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* 286:8569 – ô ảnh 60px; các lớp ảnh đặt theo % như Figma */
+.deviceImg {
+  position: relative;
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+}
+
+.layer {
+  position: absolute;
+  max-width: none;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom;
+}
+
+.fallback {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
+.deviceText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   padding-top: 1px;
 }
 
-.device > span:last-child > span:last-child {
+.deviceName {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 21px;
+  color: #0b0c0e;
+}
+
+.devicePrice {
+  font-size: 13px;
   line-height: 19.5px;
-}
-
-/* 74:3186 – ô biểu tượng 40px bo 12px: trắng khi chọn, #f7f8fa khi không */
-.deviceIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #f7f8fa;
-}
-
-.deviceOn .deviceIcon {
-  background: #fff;
-}
-
-/* 74:3194 – Số lượng 200px + Địa chỉ phần còn lại, cách 16px */
-.row {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: 16px;
+  color: #6a6e77;
 }
 
 .error {
@@ -63,67 +94,69 @@
   color: #b3202a;
 }
 
-/* 74:3207 – thẻ hóa đơn MISA */
-.invoiceHead {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-height: 40px;
+/* 74:3234 – thẻ chi phí: pad 8px, bo 20px, không tiêu đề */
+.cost {
+  gap: 0;
+  padding: 8px;
+  border-radius: 20px;
 }
 
-.invoiceIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #fff;
+.cost dl {
+  gap: 0;
+  padding: 0 8px;
 }
 
-.invoiceText {
+/* 74:3243 – dòng thiết bị: tên 140px / số lượng giữa / thành tiền phải */
+.items {
   display: flex;
-  flex: 1;
   flex-direction: column;
-  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 4px 0;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.itemName {
+  flex-shrink: 0;
+  width: 140px;
+  color: #3a3d44;
+}
+
+.itemQty,
+.itemPrice {
+  flex: 1 0 0;
   min-width: 0;
-}
-
-.invoiceTitle {
   font-weight: 500;
-  font-size: 16px;
-  line-height: normal;
   color: #0b0c0e;
+  white-space: nowrap;
 }
 
-.invoiceSub {
-  font-size: 13px;
-  line-height: 18.2px;
+.itemQty {
+  text-align: center;
+}
+
+.itemPrice {
+  text-align: right;
+}
+
+.emptyItems {
+  padding: 8px 0;
+  font-size: 14px;
+  line-height: 20px;
   color: #6a6e77;
 }
 
-/* Tắt hóa đơn điện tử: ô Thuế VAT mờ đi (thuế vẫn tính vào tổng) */
-.off {
-  opacity: 0.7;
-}
-
-.off select {
-  cursor: not-allowed;
-}
-
-/* 74:3234 – tiêu đề → các dòng 6px, các dòng → ghi chú 10px */
-.cost {
-  gap: 6px;
-}
-
-.cost > p:last-child {
-  margin-top: 4px;
-}
-
 @media (max-width: 640px) {
-  .devices,
-  .row {
+  .devices {
     grid-template-columns: 1fr;
   }
 }
