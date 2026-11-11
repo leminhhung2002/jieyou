@@ -136,155 +136,303 @@
   border-color: #b3202a;
 }
 
-/* Danh sách dịch vụ dạng cây: danh mục → các gói, luôn hiển thị để chọn trực tiếp */
-.tree {
+/* ===== Loại dịch vụ – như menu con của hotrodvfb (Facebook Buff › Like bài viết…) ===== */
+.groupSection {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 520px;
-  overflow-y: auto;
-  margin: 0 -4px;
-  padding: 0 4px;
+  gap: 8px;
 }
 
-.treeHead {
+.groupSection + .groupSection {
+  margin-top: 6px;
+}
+
+.groupHeading {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #9296a0;
+}
+
+.groupList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+}
+
+.groupItem {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%;
-  padding: 12px 14px;
+  min-height: 44px;
+  padding: 10px 12px;
   border: 1.5px solid #e3e5e9;
   border-radius: 12px;
-  background: #f7f8fa;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 21px;
-  color: #0b0c0e;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.treeHead:hover {
-  border-color: #12909c;
-}
-
-.treeHeadOn {
-  border-color: #0f7a86;
-  background: #e8fbfb;
-}
-
-.treeHeadText {
-  flex: 1;
-  min-width: 0;
-}
-
-.treeCount {
-  flex-shrink: 0;
-  min-width: 24px;
-  padding: 1px 8px;
-  border-radius: 999px;
   background: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  color: #6a6e77;
-  text-align: center;
-}
-
-.chevron {
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid #6a6e77;
-  border-bottom: 2px solid #6a6e77;
-  transform: rotate(-45deg);
-  transition: transform 0.15s;
-}
-
-.chevronOpen {
-  transform: rotate(45deg);
-}
-
-.treeList {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 6px 0 4px 14px;
-  padding-left: 12px;
-  border-left: 2px solid #cfeff1;
-}
-
-.treeItem {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid transparent;
-  border-radius: 10px;
-  background: transparent;
   font: inherit;
   font-size: 14px;
-  line-height: 20px;
-  color: #33363d;
+  line-height: 19.6px;
   text-align: left;
+  color: #3a3d44;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
 
-.treeItem:hover {
-  background: #f2f4f6;
+.groupItem:hover {
+  border-color: #c8cbd1;
 }
 
-.treeItem:focus-visible,
-.treeHead:focus-visible {
-  outline: 2px solid var(--color-primary);
+.groupItem:focus-visible,
+.server:focus-visible {
+  outline: 2px solid #0f7a86;
   outline-offset: 2px;
 }
 
-.treeItemOn,
-.treeItemOn:hover {
-  border-color: #0f7a86;
+.groupItemOn,
+.groupItemOn:hover {
+  border: 2px solid #0f7a86;
+  padding: 9.5px 11.5px;
   background: #e8fbfb;
-  color: #0b0c0e;
-  font-weight: 600;
+  color: #0c626c;
+  font-weight: 500;
 }
 
 .dot {
   flex-shrink: 0;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #c8cbd1;
 }
 
-.treeItemOn .dot {
+.groupItemOn .dot {
   background: #0f7a86;
-  box-shadow: 0 0 0 4px #bfe9ec;
+  box-shadow: 0 0 0 3px rgba(15, 122, 134, 0.18);
 }
 
-.treeItemName {
+.groupName {
   flex: 1;
   min-width: 0;
 }
 
-.treeItemPrice {
+.groupCount {
   flex-shrink: 0;
-  font-size: 13px;
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #f0f1f4;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  color: #6a6e77;
+}
+
+.groupItemOn .groupCount {
+  background: #fff;
+  color: #0c626c;
+}
+
+/* ===== Mua dịch vụ – thứ tự giống form hotrodvfb ===== */
+.buy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 19.6px;
+  color: #0b0c0e;
+}
+
+/* Chọn server: mỗi dòng "● SV5: … 118 đ [Hoạt động]" */
+.servers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.server {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1.5px solid #e3e5e9;
+  border-radius: 12px;
+  background: #fff;
+  font: inherit;
+  font-size: 15px;
+  line-height: 21px;
+  text-align: left;
+  color: #3a3d44;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.server:hover {
+  border-color: #c8cbd1;
+}
+
+.serverOn,
+.serverOn:hover {
+  padding: 9.5px 13.5px;
+  border: 2px solid #0f7a86;
+  background: #f3fcfc;
+}
+
+.radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #c8cbd1;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.serverOn .radio {
+  border: 5px solid #0f7a86;
+}
+
+.serverName {
+  flex: 1;
+  min-width: 0;
+}
+
+.serverName strong {
+  font-weight: 600;
+  color: #0b0c0e;
+}
+
+.serverPrice {
+  flex-shrink: 0;
   font-weight: 600;
   color: #b3202a;
   white-space: nowrap;
 }
 
+.badge {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #e6f6ec;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: #157a3d;
+}
+
+/* Ô thông tin server đang chọn: ID, các ghi chú ✓, tối thiểu/tối đa */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #dff7f7 0%, #f3fcfc 100%);
+  font-size: 14px;
+  line-height: 20px;
+  color: #0b0c0e;
+}
+
+.infoId {
+  font-weight: 600;
+  color: #e8590c;
+}
+
+.infoList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.infoList li {
+  position: relative;
+  padding-left: 22px;
+}
+
+.infoList li::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  width: 9px;
+  height: 5px;
+  border-bottom: 2px solid #12909c;
+  border-left: 2px solid #12909c;
+  transform: rotate(-45deg);
+}
+
+.infoMinMax {
+  font-weight: 500;
+}
+
+/* Chọn loại cảm xúc */
+.reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.reactions .reaction {
+  width: auto;
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+
+.reactions .reactionOn,
+.reactions .reactionOn:hover:not(:disabled) {
+  padding: 7.5px 13.5px;
+  border: 2px solid #0f7a86;
+  background: #e8fbfb;
+}
+
+.totalInput {
+  font-weight: 600;
+  color: #0c626c;
+}
+
+/* Lưu ý (cột phải) */
+.notes {
+  gap: 10px;
+  background: #f7f8fa;
+}
+
+.notesList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #3a3d44;
+}
+
 @media (max-width: 640px) {
-  .treeItem {
+  .server {
     flex-wrap: wrap;
   }
 
-  .treeItemPrice {
-    width: 100%;
-    padding-left: 18px;
+  .serverName {
+    flex-basis: calc(100% - 30px);
+  }
+
+  .serverPrice {
+    margin-left: 30px;
   }
 
   .header {

@@ -16,7 +16,6 @@ import {
   OutlineButton,
   PageHeader,
   PrimaryButton,
-  SelectField,
   SubmitError,
   TextField,
 } from '../ui.jsx';
@@ -52,13 +51,31 @@ const COMMENT_TYPES = {
 
 const lineCount = (text) => text.split(/\r?\n/).filter((l) => l.trim()).length;
 const amountOf = (svc, qty) => (svc ? Math.ceil((svc.pricePer1000 * qty) / 1000) : 0);
+/** Giá 1 lượt như hotrodvfb ("118 đ", "54,08 đ") */
+const unitPrice = (svc) => `${new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 }).format(svc.pricePer1000 / 1000)} đ`;
+/** 100000 → 100k, 1500000 → 1,5tr (giống "Tối thiểu/Tối đa: 50/100k" của hotrodvfb) */
+const shortNum = (n) => {
+  const f = (v) => new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 }).format(v);
+  if (n >= 1_000_000) return `${f(n / 1_000_000)}tr`;
+  if (n >= 1_000) return `${f(n / 1_000)}k`;
+  return String(n);
+};
+/** Mô tả NCC → từng dòng */
+const descLines = (text) =>
+  String(text || '')
+    .split(/\r?\n/)
+    .map((l) => l.replace(/^[-•*\s]+/, '').trim())
+    .filter(Boolean);
 
-/** Đơn tăng tương tác tự động qua hotrodvfb: chọn dịch vụ theo nền tảng → danh mục → gói. */
+/**
+ * Đơn tăng tương tác tự động qua hotrodvfb – bố cục giống form "Mua dịch vụ" của hotrodvfb:
+ * nền tảng → loại dịch vụ → link → chọn server → thông tin server → cảm xúc → số lượng → giá tiền → tổng giá.
+ */
 export default function SmmSocialForm() {
   const { summary } = useAccount();
   const { submit, submitting, error, fieldErrors, insufficient, clearError } = useSubmitApplication('social');
   const { data, loading, error: loadError } = useApi((o) => accountApi.socialServices(o), []);
-  const [form, setForm] = useState({ platform: 'facebook', category: '', service: '', quantity: '', link: '', reaction: '', comments: '', accepted: false });
+  const [form, setForm] = useState({ platform: 'facebook', group: '', service: '', quantity: '', link: '', reaction: '', comments: '', accepted: false });
   const [uid, setUid] = useState({ busy: false, message: '' });
   const warnId = useId();
 
@@ -70,22 +87,23 @@ export default function SmmSocialForm() {
   const all = data?.services ?? [];
   const platforms = (data?.platforms ?? []).filter((p) => all.some((s) => s.platform === p.key));
   const inPlatform = useMemo(() => all.filter((s) => s.platform === form.platform), [all, form.platform]);
-  const categories = useMemo(() => [...new Set(inPlatform.map((s) => s.category))], [inPlatform]);
-  const category = categories.includes(form.category) ? form.category : categories[0] || '';
-  const inCategory = inPlatform.filter((s) => s.category === category);
-  const svc = inCategory.find((s) => String(s.id) === form.service) ?? inCategory[0] ?? null;
+  // Danh mục NCC (Facebook Speed / Buff / Mắt-View…) → loại dịch vụ (Like bài viết, Theo dõi…) → server, giữ thứ tự của NCC
+  const sections = useMemo(() => {
+    const out = [];
+    for (const s of inPlatform) {
+      let sec = out.find((x) => x.category === s.category);
+      if (!sec) out.push((sec = { category: s.category, groups: [] }));
+      let g = sec.groups.find((x) => x.name === s.group);
+      if (!g) sec.groups.push((g = { name: s.group, key: `${s.category}::${s.group}`, servers: [] }));
+      g.servers.push(s);
+    }
+    return out;
+  }, [inPlatform]);
+  const groups = sections.flatMap((x) => x.groups);
+  const group = groups.find((g) => g.key === form.group) ?? groups[0] ?? null;
+  const servers = group?.servers ?? [];
+  const svc = servers.find((s) => String(s.id) === form.service) ?? servers[0] ?? null;
   const commentType = svc ? COMMENT_TYPES[svc.type] : null;
-
-  // Danh sách dạng cây: mặc định chỉ mở danh mục đang chọn; bấm tiêu đề để mở/đóng từng danh mục
-  const [openCats, setOpenCats] = useState(null);
-  const open = openCats ?? new Set([category]);
-  const toggleCategory = (c) =>
-    setOpenCats((prev) => {
-      const s = new Set(prev ?? [category]);
-      if (s.has(c)) s.delete(c);
-      else s.add(c);
-      return s;
-    });
 
   // Đổi gói → số lượng mặc định = tối thiểu, cảm xúc mặc định = cái đầu tiên
   useEffect(() => {
@@ -140,10 +158,7 @@ export default function SmmSocialForm() {
                   <ChoiceCard
                     key={p.key}
                     selected={form.platform === p.key}
-                    onSelect={() => {
-                      update({ platform: p.key, category: '', service: '' });
-                      setOpenCats(null);
-                    }}
+                    onSelect={() => update({ platform: p.key, group: '', service: '' })}
                     className={`${styles.platform} ${form.platform === p.key ? styles.platformOn : ''}`}
                     icon={<img src={asset(PLATFORM_ICON[p.key])} width="32" height="32" alt="" />}
                     title={p.name}
@@ -154,67 +169,42 @@ export default function SmmSocialForm() {
               {loadError && <p className={styles.error}>{loadError.message}</p>}
             </Card>
 
-            {categories.length > 0 && (
-              <Card title="Dịch vụ">
-                <div className={styles.tree}>
-                  {categories.map((c) => {
-                    const isOpen = open.has(c);
-                    const items = inPlatform.filter((s) => s.category === c);
-                    return (
-                      <div key={c} className={styles.treeGroup}>
-                        <button
-                          type="button"
-                          className={`${styles.treeHead} ${c === category ? styles.treeHeadOn : ''}`}
-                          aria-expanded={isOpen}
-                          onClick={() => toggleCategory(c)}
-                        >
-                          <span className={styles.treeHeadText}>{c}</span>
-                          <span className={styles.treeCount}>{items.length}</span>
-                          <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`} aria-hidden="true" />
-                        </button>
-                        {isOpen && (
-                          <ChoiceGroup label={c} className={styles.treeList}>
-                            {items.map((s) => {
-                              const on = svc?.id === s.id;
-                              return (
-                                <button
-                                  key={s.id}
-                                  type="button"
-                                  role="radio"
-                                  aria-checked={on}
-                                  tabIndex={on || (!items.some((x) => x.id === svc?.id) && s === items[0]) ? 0 : -1}
-                                  className={`${styles.treeItem} ${on ? styles.treeItemOn : ''}`}
-                                  onClick={() => update({ category: c, service: String(s.id) })}
-                                >
-                                  <span className={styles.dot} aria-hidden="true" />
-                                  <span className={styles.treeItemName}>{s.name}</span>
-                                  <span className={styles.treeItemPrice}>{vnd(s.pricePer1000)}/1.000</span>
-                                </button>
-                              );
-                            })}
-                          </ChoiceGroup>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-                {fieldErrors.service && <p className={styles.error}>{fieldErrors.service}</p>}
+            {groups.length > 0 && (
+              <Card title="Loại dịch vụ">
+                {sections.map((sec) => (
+                  <div key={sec.category} className={styles.groupSection}>
+                    {sections.length > 1 && <p className={styles.groupHeading}>{sec.category}</p>}
+                    <ChoiceGroup label={sec.category} className={styles.groupList}>
+                      {sec.groups.map((g) => {
+                        const on = group?.key === g.key;
+                        return (
+                          <button
+                            key={g.key}
+                            type="button"
+                            role="radio"
+                            aria-checked={on}
+                            tabIndex={on || (!sec.groups.some((x) => x.key === group?.key) && g === sec.groups[0]) ? 0 : -1}
+                            className={`${styles.groupItem} ${on ? styles.groupItemOn : ''}`}
+                            onClick={() => update({ group: g.key, service: '' })}
+                          >
+                            <span className={styles.dot} aria-hidden="true" />
+                            <span className={styles.groupName}>{g.name}</span>
+                            <span className={styles.groupCount}>{g.servers.length}</span>
+                          </button>
+                        );
+                      })}
+                    </ChoiceGroup>
+                  </div>
+                ))}
               </Card>
             )}
 
             {svc && (
-              <Card title={svc.name}>
-                <FormGrid className={styles.grid}>
-                  {(svc.description || svc.refill || svc.cancel) && (
-                    <p className={`${styles.hint} ${styles.span}`}>
-                      {svc.description}
-                      {svc.refill && ` · Bảo hành ${svc.refillDays} ngày`}
-                      {svc.cancel && ' · Có thể huỷ'}
-                    </p>
-                  )}
-                  <div className={styles.span}>
+              <Card title={`Mua dịch vụ · ${group.name}`}>
+                <div className={styles.buy}>
+                  <div>
                     <TextField
-                      label="Đường dẫn trang hoặc bài viết"
+                      label="ID hoặc link đối tượng"
                       name="link"
                       type="url"
                       inputMode="url"
@@ -239,38 +229,93 @@ export default function SmmSocialForm() {
                       </div>
                     )}
                   </div>
-                  {!commentType?.fromLines && (
-                    <TextField
-                      label="Số lượng"
-                      name="quantity"
-                      inputMode="numeric"
-                      autoComplete="off"
-                      value={form.quantity ? formatVnd(Number(form.quantity)) : ''}
-                      onChange={(e) => update({ quantity: e.target.value.replace(/\D/g, '').replace(/^0+/, '').slice(0, 9) })}
-                      error={fieldErrors.quantity || (form.quantity && !qtyValid ? `Từ ${formatVnd(svc.min)} đến ${formatVnd(svc.max)}` : '')}
-                      hint={`Từ ${formatVnd(svc.min)} đến ${formatVnd(svc.max)}`}
-                      required
-                    />
-                  )}
+
+                  <div className={styles.block}>
+                    <p className={styles.label} id={`${warnId}-sv`}>
+                      Chọn server
+                    </p>
+                    <div role="radiogroup" aria-labelledby={`${warnId}-sv`} className={styles.servers}>
+                      {servers.map((s, i) => {
+                        const on = svc.id === s.id;
+                        const [code, ...rest] = s.server.split(' ');
+                        return (
+                          <button
+                            key={s.id}
+                            type="button"
+                            role="radio"
+                            aria-checked={on}
+                            tabIndex={on ? 0 : -1}
+                            className={`${styles.server} ${on ? styles.serverOn : ''}`}
+                            onClick={() => update({ service: String(s.id) })}
+                            onKeyDown={(e) => {
+                              if (!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+                              e.preventDefault();
+                              const step = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : -1;
+                              const j = (i + step + servers.length) % servers.length;
+                              update({ service: String(servers[j].id) });
+                              e.currentTarget.parentElement.children[j]?.focus();
+                            }}
+                          >
+                            <span className={styles.radio} aria-hidden="true" />
+                            <span className={styles.serverName}>
+                              <strong>{code}</strong>
+                              {rest.length > 0 && `: ${rest.join(' ')}`}
+                            </span>
+                            <span className={styles.serverPrice}>{unitPrice(s)}</span>
+                            <span className={styles.badge}>Hoạt động</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {fieldErrors.service && <p className={styles.error}>{fieldErrors.service}</p>}
+                  </div>
+
+                  <div className={styles.info}>
+                    <p className={styles.infoId}>ID: {svc.id}</p>
+                    <ul className={styles.infoList}>
+                      {descLines(svc.description).map((l) => (
+                        <li key={l}>{l}</li>
+                      ))}
+                      {svc.refill && <li>Bảo hành {svc.refillDays} ngày</li>}
+                      {svc.cancel && <li>Có thể huỷ đơn</li>}
+                    </ul>
+                    <p className={styles.infoMinMax}>
+                      Tối thiểu/Tối đa: {shortNum(svc.min)}/{shortNum(svc.max)}
+                    </p>
+                  </div>
+
                   {svc.reactions.length > 0 && (
-                    <SelectField
-                      label="Cảm xúc"
-                      name="reaction"
-                      options={svc.reactions.map((r) => ({ value: r, label: REACTION_LABEL[r] || r }))}
-                      value={form.reaction}
-                      onChange={(e) => update({ reaction: e.target.value })}
-                      error={fieldErrors.reaction}
-                    />
+                    <div className={styles.block}>
+                      <p className={styles.label}>Chọn loại cảm xúc</p>
+                      <ChoiceGroup label="Loại cảm xúc" className={styles.reactions}>
+                        {svc.reactions.map((r) => (
+                          <ChoiceCard
+                            key={r}
+                            selected={form.reaction === r}
+                            onSelect={() => update({ reaction: r })}
+                            className={`${styles.reaction} ${form.reaction === r ? styles.reactionOn : ''}`}
+                            title={REACTION_LABEL[r] || r}
+                          />
+                        ))}
+                      </ChoiceGroup>
+                      {fieldErrors.reaction && <p className={styles.error}>{fieldErrors.reaction}</p>}
+                    </div>
                   )}
+
                   {commentType && (
                     <Field
-                      span
-                      label={commentType.fromLines ? `Nội dung (mỗi dòng một nội dung · ${formatVnd(qty)} dòng)` : 'Nội dung (không bắt buộc, mỗi dòng một nội dung)'}
+                      label={
+                        commentType.fromLines
+                          ? `Nội dung bình luận (mỗi dòng một nội dung · ${formatVnd(qty)} dòng)`
+                          : 'Ghi chú / nội dung (không bắt buộc, mỗi dòng một nội dung)'
+                      }
                       error={fieldErrors.comments}
                       hint={[
                         commentType.fromLines && `Số lượng tính theo số dòng: từ ${formatVnd(svc.min)} đến ${formatVnd(svc.max)}`,
                         commentType.minLine && `Mỗi dòng tối thiểu ${commentType.minLine} ký tự`,
-                      ].filter(Boolean).join('. ')}
+                      ]
+                        .filter(Boolean)
+                        .join('. ')}
                     >
                       {(id, describedBy, invalid) => (
                         <textarea
@@ -286,7 +331,27 @@ export default function SmmSocialForm() {
                       )}
                     </Field>
                   )}
-                </FormGrid>
+
+                  <FormGrid className={styles.grid}>
+                    {commentType?.fromLines ? (
+                      <TextField label="Số lượng" name="quantity" value={formatVnd(qty)} readOnly hint="Tính theo số dòng nội dung" />
+                    ) : (
+                      <TextField
+                        label="Số lượng"
+                        name="quantity"
+                        inputMode="numeric"
+                        autoComplete="off"
+                        value={form.quantity ? formatVnd(Number(form.quantity)) : ''}
+                        onChange={(e) => update({ quantity: e.target.value.replace(/\D/g, '').replace(/^0+/, '').slice(0, 9) })}
+                        error={fieldErrors.quantity || (form.quantity && !qtyValid ? `Từ ${formatVnd(svc.min)} đến ${formatVnd(svc.max)}` : '')}
+                        hint={`Từ ${formatVnd(svc.min)} đến ${formatVnd(svc.max)}`}
+                        required
+                      />
+                    )}
+                    <TextField label="Giá tiền (1 lượt)" name="unitPrice" value={unitPrice(svc)} readOnly />
+                    <TextField label="Tổng giá" name="total" value={vnd(total)} readOnly span inputClassName={styles.totalInput} />
+                  </FormGrid>
+                </div>
               </Card>
             )}
 
@@ -313,7 +378,7 @@ export default function SmmSocialForm() {
           <>
             <CostCard
               rows={[
-                { label: 'Đơn giá / 1.000', value: vnd(svc?.pricePer1000 ?? 0) },
+                { label: 'Giá 1 lượt', value: svc ? unitPrice(svc) : '0 đ' },
                 { label: 'Số lượng', value: formatVnd(qty), sign: 'times' },
                 { label: 'Tổng thanh toán', value: vnd(total), sign: 'equals', total: true },
                 { label: 'Số dư sau khi gửi', value: vnd(balance - total) },
@@ -324,6 +389,15 @@ export default function SmmSocialForm() {
               {submitting ? 'Đang gửi…' : `Đặt đơn, trừ ${vnd(total)}`}
             </PrimaryButton>
             <SubmitError error={error} insufficient={insufficient} />
+            {svc && descLines(svc.description).length > 0 && (
+              <Card title="Lưu ý" className={styles.notes}>
+                <ul className={styles.notesList}>
+                  {descLines(svc.description).map((l) => (
+                    <li key={l}>{l}</li>
+                  ))}
+                </ul>
+              </Card>
+            )}
           </>
         }
       />

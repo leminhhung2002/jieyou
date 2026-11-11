@@ -38,6 +38,40 @@ export const SMM_TYPES = {
 };
 export const REACTIONS = ['like', 'love', 'care', 'wow', 'haha', 'sad', 'angry'];
 
+/**
+ * Tách tên dịch vụ NCC thành "loại dịch vụ" + "server" giống menu hotrodvfb.
+ *   "Facebook - Like bài viết sv3"                 → Like bài viết · SV3
+ *   "Tiktok - Mắt xem live streams sv1 ~ 30 phút"  → Mắt xem livestream · SV1 ~ 30 phút
+ *   "View video 600k phút - Video 3 giờ"           → View video 600k phút · Video 3 giờ
+ */
+const PLATFORM_PREFIX = /^\s*(facebook|instagram|threads|tiktok|shopee|youtube|twitter|lazada)\s*-\s*/i;
+export function splitServiceName(rawName) {
+  const name = String(rawName || '').replace(/\s+/g, ' ').trim();
+  const body = name.replace(PLATFORM_PREFIX, '');
+  // "<loại dịch vụ> sv3 <phần còn lại>" – mã server: sv3, sv 1, sv1c, V2, v13…
+  const m = body.match(/^(.+?)\s+(sv\s*\d+[a-z]?|v\d+)(?=[\s,]|$)[\s,]*(.*)$/i);
+  let group;
+  let server;
+  if (m) {
+    group = m[1];
+    const code = m[2].replace(/\s+/g, '').toUpperCase().replace(/^V(?=\d)/, 'SV');
+    server = `${code} ${m[3].replace(/^[-\s]+/, '')}`.trim();
+  } else if (body.includes(' - ')) {
+    group = body.slice(0, body.indexOf(' - '));
+    server = body.slice(body.indexOf(' - ') + 3);
+  } else {
+    group = body;
+    server = 'SV1';
+  }
+  group = group
+    .replace(/(^|\s)(tiktok|youtube|instagram|twitter|threads|shopee|lazada|facebook)(?=\s|$)/gi, '$1')
+    .replace(/live\s*streams?/gi, 'livestream')
+    .replace(/\s+/g, ' ')
+    .trim();
+  group = group.charAt(0).toUpperCase() + group.slice(1);
+  return { group: group || 'Khác', server: server || 'SV1' };
+}
+
 const TTL = 10 * 60_000;
 let cache = null; // { at, services: Map(id → dịch vụ chưa tính giá), vndRate }
 let loading = null;
@@ -54,6 +88,7 @@ function toService(s) {
     platform: platform.key,
     name: String(s.name || '').slice(0, 120),
     category: String(s.category || 'Khác').slice(0, 80),
+    ...((({ group, server }) => ({ group: group.slice(0, 80), server: server.slice(0, 60) }))(splitServiceName(s.name))),
     description: String(s.description || '').slice(0, 500),
     type: s.type,
     min,

@@ -7,7 +7,7 @@ import { adminStore } from '../src/services/adminStore.js';
 import { accountStore } from '../src/services/accountStore.js';
 import { userStore } from '../src/services/userStore.js';
 import { _resetOtps } from '../src/services/otpService.js';
-import { _resetSmmCatalog } from '../src/services/smmCatalog.js';
+import { _resetSmmCatalog, splitServiceName } from '../src/services/smmCatalog.js';
 import { syncProviderOrders } from '../src/services/smmSync.js';
 
 /* ---------------- hotrodvfb giả lập (API V2: luôn HTTP 200, lỗi ở trường `error`) ---------------- */
@@ -241,4 +241,20 @@ test('admin: xem giá gốc / giá bán, chỉnh % lãi, đặt giá riêng, ẩ
   assert.equal((await call('POST', '/account/applications', likeOrder(), token)).body.error.details.field, 'service');
   assert.equal((await call('GET', '/admin/smm', undefined, adminToken)).body.data.services.find((s) => s.id === 63).disabled, true);
   assert.equal((await call('PATCH', '/admin/smm/services/999', { price: 1000 }, adminToken)).status, 404);
+});
+
+test('tách tên dịch vụ NCC thành loại dịch vụ + server (giống menu hotrodvfb)', () => {
+  const cases = [
+    ['Facebook - Like bài viết sv3', 'Like bài viết', 'SV3'],
+    ['Tiktok - Mắt xem live streams sv1 ~ 30 phút', 'Mắt xem livestream', 'SV1 ~ 30 phút'],
+    ['Tiktok - Mắt xem livestream tiktok sv2 ~ 60 phút', 'Mắt xem livestream', 'SV2 ~ 60 phút'],
+    ['Facebook - Mắt xem livestream sv4, số mắt tự do ', 'Mắt xem livestream', 'SV4 số mắt tự do'],
+    ['Facebook - Lượt xem video/reel sv7 - Xem 10 giây', 'Lượt xem video/reel', 'SV7 Xem 10 giây'],
+    ['View video 600k phút - Video 3 giờ', 'View video 600k phút', 'Video 3 giờ'],
+    [' Tiktok - Lượt xem tự động sv 1', 'Lượt xem tự động', 'SV1'],
+    ['Vip Like V13', 'Vip Like', 'SV13'],
+    ['youtube bình luận v1', 'Bình luận', 'SV1'],
+    ['chọc bạn bè', 'Chọc bạn bè', 'SV1'],
+  ];
+  for (const [name, group, server] of cases) assert.deepEqual(splitServiceName(name), { group, server }, name);
 });
