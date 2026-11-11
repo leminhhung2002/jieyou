@@ -12,8 +12,8 @@ const machineFeatures = [
 // Figma: Dịch vụ / Máy bán hàng hóa đơn (126:7918)
 export default {
   hero: {
-    title: 'Máy bán hàng kèm hóa đơn điện tử 1INVOICE.',
-    description: 'Chọn máy, đặt hàng và xuất hóa đơn điện tử 1INVOICE meInvoice với VAT 8% hoặc 10%.',
+    title: 'Máy bán hàng kèm hóa đơn điện tử MISA.',
+    description: 'Chọn máy, đặt hàng và xuất hóa đơn điện tử MISA meInvoice với VAT 8% hoặc 10%.',
   },
   // Section "Quy trình" bị ẩn trong thiết kế (126:7932) – giữ dữ liệu nhưng trang không hiển thị
   process: defaultProcess,
@@ -39,9 +39,9 @@ export default {
       features: machineFeatures,
     },
   ],
-  // "Gói hóa đơn 1INVOICE" (126:8063)
+  // "Gói hóa đơn MISA" (126:8063)
   invoicePlans: {
-    title: 'Gói hóa đơn 1INVOICE',
+    title: 'Gói hóa đơn MISA',
     columns: ['Gói', 'Số hóa đơn', 'Giá'],
     plans: [
       { id: 'S', invoices: 1000, price: 500000 },

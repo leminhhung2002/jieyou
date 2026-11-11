@@ -16,7 +16,7 @@ const SERVICE_LABEL = {
   ads: 'Quảng cáo\ntrên sàn',
   unipay: 'Tài khoản\nUniPay',
   bct: 'Hồ sơ\nBộ Công Thương',
-  misa: 'Máy bán hàng +\nHóa đơn 1INVOICE',
+  misa: 'Máy bán hàng +\nHóa đơn MISA',
   pos: 'Hồ sơ cổng\nthanh toán POS',
   webapp: 'Làm app/web\ntheo yêu cầu',
   license: 'Key phần mềm\nbản quyền',

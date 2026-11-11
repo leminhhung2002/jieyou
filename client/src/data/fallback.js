@@ -6,7 +6,7 @@ export const fallbackServices = [
   { slug: 'ho-so-bo-cong-thuong', name: 'Hồ sơ Bộ Công Thương', icon: 'dossier', description: 'Lập và theo dõi hồ sơ với Bộ Công Thương.' },
   { slug: 'cong-thanh-toan-pos', name: 'Hồ sơ cổng thanh toán POS', icon: 'terminal', description: 'Đăng ký cổng thanh toán POS, miễn phí.' },
   { slug: 'tang-tuong-tac-mxh', name: 'Tăng tương tác MXH', icon: 'social', description: 'Tăng lượt thích, theo dõi, xem cho trang mạng xã hội.' },
-  { slug: 'may-ban-hang-misa', name: 'Máy bán hàng + Hóa đơn 1INVOICE', icon: 'card', description: 'Trang bị máy bán hàng kèm hóa đơn điện tử 1INVOICE.' },
+  { slug: 'may-ban-hang-misa', name: 'Máy bán hàng + Hóa đơn MISA', icon: 'card', description: 'Trang bị máy bán hàng kèm hóa đơn điện tử MISA.' },
   { slug: 'lam-app-web-theo-yeu-cau', name: 'Làm app/web theo yêu cầu', icon: 'code', description: 'Thiết kế website, landing page, app điện thoại, phần mềm quản lý theo nhu cầu.' },
   { slug: 'key-ban-quyen', name: 'Key phần mềm bản quyền', icon: 'key', description: 'Mua key bản quyền chính hãng, thanh toán bằng số dư, nhận key ngay.' },
 ];
@@ -14,7 +14,7 @@ export const fallbackServices = [
 export const fallbackPricing = [
   { id: 'ads', name: 'Quảng cáo', fromPrice: 1000000, unit: '/ ngày' },
   { id: 'pos-machine', name: 'Máy bán hàng', fromPrice: 1000000, unit: '/ máy' },
-  { id: 'misa', name: 'Gói HĐ 1INVOICE', fromPrice: 1000000, unit: '/gói' },
+  { id: 'misa', name: 'Gói HĐ MISA', fromPrice: 1000000, unit: '/gói' },
   { id: 'bct', name: 'Hồ sơ BCT', fromPrice: 1000000, unit: '/hồ sơ' },
   { id: 'social', name: 'Tương tác MXH', fromPrice: 1000000, unit: '/1000 lượt' },
 ];

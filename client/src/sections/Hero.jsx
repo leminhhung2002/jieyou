@@ -20,7 +20,7 @@ export default function Hero() {
               <span>một tài khoản.</span>
             </h1>
             <p className={styles.lead}>
-              Quảng cáo, Hồ sơ Bộ Công Thương, Máy bán hàng, Hóa đơn 1INVOICE và nhiều hơn nữa. Nạp tiền một lần, dùng cho
+              Quảng cáo, Hồ sơ Bộ Công Thương, Máy bán hàng, Hóa đơn MISA và nhiều hơn nữa. Nạp tiền một lần, dùng cho
               mọi dịch vụ.
             </p>
           </div>

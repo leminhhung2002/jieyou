@@ -11,9 +11,17 @@ import { startTopupSync } from './services/topupPayments.js';
 const loaded = openDatabase(config.dbFile);
 if (loaded) {
   console.log(`[DB] Đã nạp dữ liệu từ ${config.dbFile}`);
-  // Đổi tên hiển thị "Máy bán hàng + MISA" -> "+ 1INVOICE" cho các dòng Bảng giá đã lưu trước đây
+  // Khôi phục tên "Máy bán hàng + MISA" cho dữ liệu đã bị đổi thành "1INVOICE" (bản deploy 11/11/2026)
   for (const p of adminStore.listPriceItems()) {
-    if (p.serviceName === 'Máy bán hàng + MISA') p.serviceName = 'Máy bán hàng + 1INVOICE';
+    if (p.serviceName === 'Máy bán hàng + 1INVOICE') p.serviceName = 'Máy bán hàng + MISA';
+  }
+  for (const a of adminStore.listApplications()) {
+    if (a.details && 'Hóa đơn 1INVOICE' in a.details) {
+      a.details = Object.fromEntries(Object.entries(a.details).map(([k, v]) => [k === 'Hóa đơn 1INVOICE' ? 'Hóa đơn MISA' : k, v]));
+    }
+  }
+  for (const l of adminStore.listLogs()) {
+    if (l.action === 'Cập nhật phí 1INVOICE & POS') l.action = 'Cập nhật phí MISA & POS';
   }
 } else {
   // Dữ liệu mẫu (khách hàng, hồ sơ, giao dịch, bảng giá, vai trò quản trị)

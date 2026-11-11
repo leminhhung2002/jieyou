@@ -162,7 +162,7 @@ function catalog() {
     adSlots: AD_SLOTS.map(({ key, name, note, priceName, defaultPrice }) => ({
       key, name, note, price: priceOf(priceName, defaultPrice, 'quang-cao-tren-san'),
     })),
-    // Giá máy, VAT, phí POS: chỉnh ở Admin › Phí 1INVOICE & POS (services/feeSettings.js)
+    // Giá máy, VAT, phí POS: chỉnh ở Admin › Phí MISA & POS (services/feeSettings.js)
     misaDevices: MISA_DEVICES.map((d) => ({ key: d.key, name: d.name, price: misaDevicePrice(d) })),
     vatRates: vatRates(),
     socialPlatforms: SOCIAL_PLATFORMS,
@@ -292,7 +292,7 @@ const SERVICES = {
         'Mẫu máy': device.name,
         'Số lượng': String(quantity),
         'Địa chỉ lắp đặt': address,
-        'Hóa đơn 1INVOICE': einvoice ? `Có, VAT ${vat}%, MST ${invoiceTaxCode}` : 'Không',
+        'Hóa đơn MISA': einvoice ? `Có, VAT ${vat}%, MST ${invoiceTaxCode}` : 'Không',
       },
       meta: { device: device.key, quantity, address, einvoice, vat, invoiceTaxCode, subtotal },
     };
@@ -803,7 +803,7 @@ router.get('/invoices/:no/document', (req, res) => {
 p{margin:4px 0;color:#3a3d44}table{width:100%;border-collapse:collapse;margin-top:24px}td{padding:10px 0;border-top:1px solid #e3e5e9}
 td:last-child{text-align:right}.total td{font-weight:600;font-size:18px}</style></head><body>
 <h1>HÓA ĐƠN ĐIỆN TỬ</h1><p>Số: <b>${escapeHtml(inv.no)}</b> · Ngày phát hành: ${escapeHtml(date)}</p>
-<p>Đơn vị bán: JIEYOU – Sàn Dịch vụ Doanh nghiệp (phát hành qua 1INVOICE meInvoice)</p>
+<p>Đơn vị bán: JIEYOU – Sàn Dịch vụ Doanh nghiệp (phát hành qua MISA meInvoice)</p>
 <p>Người mua: ${escapeHtml(u.businessName)} · MST ${escapeHtml(u.taxCode)}</p>
 <table><tr><td>Hồ sơ</td><td>${escapeHtml(app?.title || inv.applicationCode)}</td></tr>${rows}
 <tr class="total"><td>Tổng tiền</td><td>${escapeHtml(vnd(inv.total))}</td></tr></table>

@@ -51,7 +51,7 @@ npm test -w server
 | `/tai-khoan/hoa-don`, `/thong-bao`, `/cai-dat` | Hóa đơn, Thông báo, Cài đặt tài khoản |
 | `/app` … | **App mobile (web, 390px)** – Figma trang *App Mobile*: Trang chủ, `/app/dang-nhap`, `/app/dang-ky`, `/app/nap-tien` (+ `/thanh-cong`), `/app/ho-so` (+ `/:code`), `/app/thong-bao`; `/app/lich-su`, `/app/cai-dat` (tab chưa có trong Figma) |
 | `/admin/dang-nhap` | Đăng nhập quản trị (không có trong Figma) |
-| `/admin` … `/admin/nhat-ky` | Admin: Tổng quan, Duyệt hồ sơ, Khách hàng, Giao dịch, Nội dung · Bảng giá, Giá MXH, Phí 1INVOICE & POS (`/admin/phi-misa-pos`), Key bản quyền, Phân quyền, Nhật ký |
+| `/admin` … `/admin/nhat-ky` | Admin: Tổng quan, Duyệt hồ sơ, Khách hàng, Giao dịch, Nội dung · Bảng giá, Giá MXH, Phí MISA & POS (`/admin/phi-misa-pos`), Key bản quyền, Phân quyền, Nhật ký |
 | mọi đường dẫn khác | 404 |
 
 ## API
@@ -88,7 +88,7 @@ npm test -w server
 | GET/PATCH | `/api/admin/customers[/:id/status]` | Khách hàng, khóa/mở khóa |
 | GET | `/api/admin/transactions` | Giao dịch + số liệu đối soát |
 | GET/POST/PATCH/DELETE | `/api/admin/price-items[/:id]` | Bảng giá |
-| GET/PATCH | `/api/admin/fees` | Phí 1INVOICE & POS: giá máy bán hàng, mức VAT, phí hồ sơ POS, giá mẫu máy và gói hóa đơn trên trang dịch vụ (`null` = mặc định) |
+| GET/PATCH | `/api/admin/fees` | Phí MISA & POS: giá máy bán hàng, mức VAT, phí hồ sơ POS, giá mẫu máy và gói hóa đơn trên trang dịch vụ (`null` = mặc định) |
 | GET/POST/PATCH | `/api/admin/roles[/:id]` | Phân quyền |
 | GET | `/api/admin/logs` | Nhật ký hoạt động |
 

@@ -291,7 +291,7 @@ function validatePriceItem(body, partial = false) {
 const SERVICE_NAMES = {
   'quang-cao-tren-san': 'Quảng cáo trên sàn',
   'ho-so-bo-cong-thuong': 'Hồ sơ Bộ Công Thương',
-  'may-ban-hang-misa': 'Máy bán hàng + 1INVOICE',
+  'may-ban-hang-misa': 'Máy bán hàng + MISA',
   'tang-tuong-tac-mxh': 'Tăng tương tác MXH',
   'cong-thanh-toan-pos': 'Hồ sơ cổng thanh toán POS',
   'tai-khoan-unipay': 'Tài khoản UniPay',
@@ -329,7 +329,7 @@ router.delete('/price-items/:id', requireAdmin('content'), (req, res) => {
   res.json({ data: { ok: true } });
 });
 
-/* ===================== Phí Máy bán hàng + 1INVOICE và hồ sơ POS ===================== */
+/* ===================== Phí Máy bán hàng + MISA và hồ sơ POS ===================== */
 
 router.get('/fees', requireAdmin('content'), (_req, res) => {
   res.json({ data: feeSettingsView() });
@@ -342,7 +342,7 @@ router.patch('/fees', requireAdmin('content'), (req, res) => {
   } catch (err) {
     throw badRequest(err.message, err.field ? { field: err.field } : undefined);
   }
-  adminStore.log(req.admin.username, 'Cập nhật phí 1INVOICE & POS', changes.join('; ').slice(0, 300));
+  adminStore.log(req.admin.username, 'Cập nhật phí MISA & POS', changes.join('; ').slice(0, 300));
   res.json({ data: feeSettingsView() });
 });
 

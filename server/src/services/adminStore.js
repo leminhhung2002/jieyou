@@ -20,7 +20,7 @@ export const PERMISSIONS = [
 export const SERVICE_TYPES = {
   ads: { label: 'Quảng cáo', name: 'Quảng cáo trên sàn', prefix: 'QC' },
   bct: { label: 'BCT', name: 'Hồ sơ Bộ Công Thương', prefix: 'BCT' },
-  misa: { label: 'Máy bán hàng', name: 'Máy bán hàng + 1INVOICE', prefix: 'MB' },
+  misa: { label: 'Máy bán hàng', name: 'Máy bán hàng + MISA', prefix: 'MB' },
   pos: { label: 'POS', name: 'Hồ sơ cổng thanh toán POS', prefix: 'POS' },
   unipay: { label: 'UniPay', name: 'Tài khoản UniPay', prefix: 'UP' },
   social: { label: 'MXH', name: 'Tăng tương tác MXH', prefix: 'MXH' },
@@ -41,7 +41,7 @@ const db = {
   // Key phần mềm bản quyền (services/licenseStore.js)
   licenseProducts: [],
   licenseKeys: [],
-  // Phí Máy bán hàng + 1INVOICE và hồ sơ POS (services/feeSettings.js)
+  // Phí Máy bán hàng + MISA và hồ sơ POS (services/feeSettings.js)
   feeSettings: { misaDevices: {}, vatRates: null, posFee: null, machines: {}, invoicePlans: null },
 };
 
@@ -208,7 +208,7 @@ export const adminStore = {
       db.priceItems.push({ id: crypto.randomUUID(), serviceSlug, serviceName, name, unitPrice, vat, status, updatedAt });
     I('quang-cao-tren-san', 'Quảng cáo trên sàn', 'Banner đầu trang chủ / ngày', 500_000, 10, 'published', '2026-11-01T08:00:00.000Z');
     I('ho-so-bo-cong-thuong', 'Hồ sơ Bộ Công Thương', 'Phí dịch vụ / hồ sơ', 800_000, 10, 'published', '2026-11-01T08:00:00.000Z');
-    I('may-ban-hang-misa', 'Máy bán hàng + 1INVOICE', 'Máy bán hàng cơ bản', 2_400_000, 10, 'published', '2026-10-20T08:00:00.000Z');
+    I('may-ban-hang-misa', 'Máy bán hàng + MISA', 'Máy bán hàng cơ bản', 2_400_000, 10, 'published', '2026-10-20T08:00:00.000Z');
     I('tang-tuong-tac-mxh', 'Tăng tương tác MXH', 'Lượt thích Facebook / lượt', 30, 8, 'draft', '2026-11-02T08:00:00.000Z');
     I('cong-thanh-toan-pos', 'Hồ sơ cổng thanh toán POS', 'Phí dịch vụ', 0, null, 'published', '2026-10-15T08:00:00.000Z');
 

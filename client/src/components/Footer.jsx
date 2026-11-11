@@ -6,7 +6,7 @@ const SERVICE_LINKS = [
   ['Quảng cáo trên sàn', '/dich-vu/quang-cao-tren-san'],
   ['Tài khoản UniPay', '/dich-vu/tai-khoan-unipay'],
   ['Hồ sơ Bộ Công Thương', '/dich-vu/ho-so-bo-cong-thuong'],
-  ['Máy bán hàng + 1INVOICE', '/dich-vu/may-ban-hang-misa'],
+  ['Máy bán hàng + MISA', '/dich-vu/may-ban-hang-misa'],
   ['Làm app/web theo yêu cầu', '/dich-vu/lam-app-web-theo-yeu-cau'],
   ['Key phần mềm bản quyền', '/dich-vu/key-ban-quyen'],
 ];

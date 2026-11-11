@@ -4,7 +4,7 @@ import { FLAT_FEES, MISA_DEVICES, VAT_RATES } from '../data/accountCatalog.js';
 import misaContent from '../data/serviceContent/may-ban-hang-misa.js';
 
 /**
- * Cài đặt phí Máy bán hàng + 1INVOICE và Hồ sơ cổng thanh toán POS (màn Admin › Phí 1INVOICE & POS).
+ * Cài đặt phí Máy bán hàng + MISA và Hồ sơ cổng thanh toán POS (màn Admin › Phí MISA & POS).
  * Lưu trong adminStore.db.feeSettings (SQLite). Giá trị `null` = dùng mặc định
  * (Bảng giá đã xuất bản nếu có, không thì giá trong danh mục).
  */
@@ -13,7 +13,7 @@ export const EMPTY_FEE_SETTINGS = () => ({
   vatRates: null, // [0, 5, 8, 10]
   posFee: null, // Phí dịch vụ hồ sơ POS (0 = miễn phí)
   machines: {}, // id -> giá / tháng (trang dịch vụ: Mẫu máy)
-  invoicePlans: null, // [{ id, invoices, price }] (trang dịch vụ: Gói hóa đơn 1INVOICE)
+  invoicePlans: null, // [{ id, invoices, price }] (trang dịch vụ: Gói hóa đơn MISA)
 });
 
 const s = () => {

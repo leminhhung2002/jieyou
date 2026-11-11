@@ -5,7 +5,7 @@ import styles from './Auth.module.css';
 const FEATURES = [
   ['ic-ads', 'Quảng cáo trên sàn'],
   ['ic-bct', 'Hồ sơ Bộ Công Thương'],
-  ['ic-misa', 'Máy bán hàng và hóa đơn 1INVOICE'],
+  ['ic-misa', 'Máy bán hàng và hóa đơn MISA'],
 ];
 
 /**

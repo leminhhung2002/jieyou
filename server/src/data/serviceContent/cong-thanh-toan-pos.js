@@ -4,8 +4,8 @@ import { defaultProcess } from './_common.js';
 export default {
   hero: {
     // Nội dung hero giữ nguyên như thiết kế hiện tại
-    title: 'Máy bán hàng kèm hóa đơn điện tử 1INVOICE.',
-    description: 'Chọn máy, đặt hàng và xuất hóa đơn điện tử 1INVOICE meInvoice với VAT 8% hoặc 10%.',
+    title: 'Máy bán hàng kèm hóa đơn điện tử MISA.',
+    description: 'Chọn máy, đặt hàng và xuất hóa đơn điện tử MISA meInvoice với VAT 8% hoặc 10%.',
   },
   process: defaultProcess,
   documents: {
