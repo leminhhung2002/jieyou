@@ -131,6 +131,7 @@ export function cleanPaymentUrl(url) {
 const BVBANK_VERIFY_HOSTS = {
   'checkout-payment.bvbank.net.vn': 'https://api-inscope-pos.bvbank.net.vn',
 };
+// Sandbox: trang thẻ là bvb-uat-checkout-payment.atomsolution.vn – chưa có endpoint verify công khai, nên bỏ qua đối soát BvBank.
 export function bvbankVerifyUrl(paymentUrl) {
   try {
     const u = new URL(cleanPaymentUrl(paymentUrl));
@@ -195,7 +196,7 @@ export const unipay = {
 
   /** Tạo link thanh toán thẻ ECOM (VISA / Master / JCB / ATM). */
   async createEcomLink({ orderId, amount, description, returnUrl, ipnUrl, expiresIn = 900, customer, timeoutMs }) {
-    const data = await call('POST', '/openapi/v1/ecom/payments/link', {
+    const res = await call('POST', '/openapi/v1/ecom/payments/link', {
       serviceCode: cfg().ecomServiceCode,
       timeoutMs,
       body: {
@@ -209,7 +210,9 @@ export const unipay = {
         ...(customer && (customer.name || customer.email || customer.phone) ? { customer } : {}),
       },
     });
-    if (!data.payment_url) throw new UnipayError('UniPay không trả link thanh toán', 'provider');
+    // Sandbox trả `{ code, message, data: { payment_url, ... } }`; có nơi trả phẳng → nhận cả hai dạng.
+    const data = res?.data && typeof res.data === 'object' && !Array.isArray(res.data) ? res.data : res;
+    if (!data.payment_url) throw new UnipayError(res?.message ? `UniPay: ${res.message}` : 'UniPay không trả link thanh toán', 'provider');
     return { paymentUrl: cleanPaymentUrl(data.payment_url), paymentId: data.payment_id || null, expiresAt: data.expires_at || null };
   },
 
